@@ -35,6 +35,4 @@ grails.gorm.default.mapping = {
 	"user-type" type: org.joda.time.contrib.hibernate.PersistentPeriod, class: org.joda.time.Period
 }
 
-graphviz.dot.executable='/usr/local/bin/dot'
-
-grails.validateable.packages = ['org.powertac.common']
+//graphviz.dot.executable='/usr/local/bin/dot'

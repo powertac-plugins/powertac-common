@@ -68,8 +68,8 @@ class Shout {
     dateMod(nullable: false)
     modReasonCode(nullable: false)
     outdated(nullable: false)
-    transactionId(nullable: false, min: 0L)
-    shoutId(nullable: false, min: 0L)
+    transactionId(nullable: false)
+    shoutId(nullable: false)
     comment(nullable: true)
     latest (nullable: false)
   }

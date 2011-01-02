@@ -50,12 +50,12 @@ class Timeslot {
     return "$startDateTime - $endDateTime";
   }
 
-  public Product next() {
-    return Product.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1l)
+  public Timeslot next() {
+    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1l)
   }
 
-  public Product previous() {
-    return Product.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1l)
+  public Timeslot previous() {
+    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1l)
   }
 
 }
