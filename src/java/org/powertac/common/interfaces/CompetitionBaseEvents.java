@@ -54,11 +54,11 @@ public interface CompetitionBaseEvents {
 
 
   /**
-   * This method is invoked after the competition end if the competiton is reset.
+   * This method is invoked after the competition end if the competiton is competitionReset.
    * Each module implementing this interface should put all business logic here
-   * that needs to be executed upon reset of a competition.
+   * that needs to be executed upon competitionReset of a competition.
    *
-   * @param competitionId id of the competition to be reset
+   * @param competitionId id of the competition to be competitionReset
    */
-  public void reset(String competitionId);
+  public void competitionReset(String competitionId);
 }
