@@ -35,11 +35,13 @@ class Timeslot {
   static hasMany = [meterReadings: MeterReading, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
+    serialNumber(nullable: false)
     competition(nullable: false)
+    enabled(nullable: false)
+    current(nullable: false)
     startDateTime(nullable: false)
     endDateTime(nullable: false)
-    current(nullable: true)
-    serialNumber(nullable: false)
   }
 
   static mapping = {
