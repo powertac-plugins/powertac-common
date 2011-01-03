@@ -34,6 +34,7 @@ class CashUpdate implements Serializable {
   static belongsTo = [broker: Broker, competition: Competition]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
     competition(nullable: false)
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
@@ -41,7 +42,7 @@ class CashUpdate implements Serializable {
     reason(nullable: true)
     origin(nullable: true)
     dateCreated(nullable: false)
-    transactionId(nullable: false)
+    transactionId(nullable: false, blank: false)
     latest (nullable: false)
   }
 
