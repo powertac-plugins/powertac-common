@@ -26,7 +26,7 @@ class TransactionLog implements Serializable {
   Competition competition
   Product product
   Timeslot timeslot
-  TransactionType type
+  TransactionType transactionType
   LocalDateTime dateCreated = new LocalDateTime()
   String transactionId
   Boolean latest
@@ -47,41 +47,63 @@ class TransactionLog implements Serializable {
   static belongsTo = [competition: Competition, product: Product, timeslot: Timeslot]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
     competition(nullable: false)
     product(nullable: false)
     timeslot (nullable: false)
-    type(nullable: false)
+    transactionType(nullable: false)
     dateCreated(nullable: false)
     transactionId(nullable: false)
     latest (nullable: false)
 
-    price(nullable: true, scale: 2, validator: { price, tl ->
-      (tl.type == TransactionType.QUOTE && !price) || (tl.type == TransactionType.TRADE && price)
+    price(nullable: true, scale: 2, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.price.null']
+      if (obj.transactionType == TransactionType.QUOTE && val) return ['quote.price.notnull']
+      return true
     })
-    quantity(nullable: true, scale: 2, min: 0.0, validator: { quantity, tl ->
-      (tl.type == TransactionType.QUOTE && !quantity) || (tl.type == TransactionType.TRADE && quantity)
+    quantity(nullable: true, scale: 2, min: 0.0, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.quantity.null']
+      if (obj.transactionType == TransactionType.QUOTE && val) return ['quote.quantity.notnull']
+      return true
     })
-    buyer(nullable: true, validator: { buyerId, tl ->
-      (tl.type == TransactionType.QUOTE && !buyerId) || (tl.type == TransactionType.TRADE && buyerId)
+    buyer(nullable: true, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.buyer.null']
+      if (obj.transactionType == TransactionType.QUOTE && val) return ['quote.buyer.notnull']
+      return true
     })
-    seller(nullable: true, validator: { sellerId, tl ->
-      (tl.type == TransactionType.QUOTE && !sellerId) || (tl.type == TransactionType.TRADE && sellerId)
+    seller(nullable: true, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.seller.null']
+      if (obj.transactionType == TransactionType.QUOTE && val) return ['quote.seller.notnull']
+      return true
     })
-    buySellIndicator(nullable: true, validator: { bsInd, tl ->
-      (tl.type == TransactionType.QUOTE && !bsInd) || (tl.type == TransactionType.TRADE && bsInd)
+    buySellIndicator(nullable: true, validator: { bsInd, obj ->
+      if (obj.transactionType == TransactionType.TRADE && !bsInd) return ['trade.buysellindicator.null']
+      if (obj.transactionType == TransactionType.QUOTE && bsInd) return ['quote.buysellindicator.notnull']
+      return true
     })
 
-    bid(nullable: true, scale: 2, validator: { bid, tl ->
-      (tl.type == TransactionType.TRADE && !bid) || TransactionType.QUOTE
+    bid(nullable: true, scale: 2, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && val) return ['trade.bid.notnull']
+      if (TransactionType.QUOTE && !val) return ['quote.bid.null']
+      return true
     })
-    bidSize(nullable: true, scale: 2, validator: { bidSize, tl ->
-      (tl.type == TransactionType.TRADE && !bidSize) || TransactionType.QUOTE
+
+    bidSize(nullable: true, scale: 2, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && val) return ['trade.bidSize.notnull']
+      if (TransactionType.QUOTE && !val) return ['quote.bidSize.null']
+      return true
     })
-    ask(nullable: true, scale: 2, validator: { ask, tl ->
-      (tl.type == TransactionType.TRADE && !ask) || TransactionType.QUOTE
+
+    ask(nullable: true, scale: 2, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && val) return ['trade.ask.notnull']
+      if (TransactionType.QUOTE && !val) return ['quote.ask.null']
+      return true
     })
-    askSize(nullable: true, scale: 2, validator: { askSize, tl ->
-      (tl.type == TransactionType.TRADE && !askSize) || TransactionType.QUOTE
+
+    askSize(nullable: true, scale: 2, validator: { val, obj ->
+      if (obj.transactionType == TransactionType.TRADE && val) return ['trade.askSize.notnull']
+      if (TransactionType.QUOTE && !val) return ['quote.askSize.null']
+      return true
     })
   }
 
@@ -92,6 +114,6 @@ class TransactionLog implements Serializable {
 
 
   String toString() {
-    return "${dateCreated}-${type}-${product}-${timeslot}"
+    return "${dateCreated}-${transactionType}-${product}-${timeslot}"
   }
 }
