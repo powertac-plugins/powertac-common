@@ -16,23 +16,73 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
+import org.powertac.common.*
 
- /**
+/**
  * Command object that represents a new (incoming) shout from a broker that should be
  * matched in the power tac wholesale market
  *
  * @author Carsten Block
  * @version 1.0, Date: 01.12.10
  */
-class ShoutDoCreateCmd {
+@Validateable class ShoutDoCreateCmd {
   String competitionId
-  String authToken
+  String userName
+  String apiKey
   String productId
   String timeslotId
   BuySellIndicator buySellIndicator
   BigDecimal quantity
   BigDecimal limitPrice
   OrderType orderType
+
+  static constraints = {
+    competitionId(nullable: false, blank: false, validator: {val ->
+      def competition = Competition.get(val)
+      if (!competition) {
+        return ['invalid.competition']
+      } else if (!competition.current){
+        return ['inactive.competition']
+      } else {
+        return true
+      }
+    })
+    userName(nullable: false, blank: false)
+    apiKey(nullable: false, blank: false, validator: {val, obj ->
+      def results = Broker.withCriteria {
+        eq('competition.id', obj.competitionId)
+        eq('userName', obj.userName)
+        eq('apiKey', obj.apiKey)
+        cache(true)
+      }
+      return results.size() == 1 ? true : ['invalid.credentials']
+    })
+    productId (nullable: false, blank: false, validator: {val->
+      def product = Product.get(val)
+      if (!product) {
+        return ['invalid.product']
+      } else {
+        return true
+      }
+    })
+    timeslotId (nullable: false, blank: false, validator: {val->
+      def timeslot = Timeslot.get(val)
+      if (!timeslot) {
+        return ['invalid.timeslot']
+      } else {
+        return true
+      }
+    })
+    buySellIndicator(nullable: false)
+    quantity(nullable: false, min: 0.0, Scale: Constants.DECIMALS)
+    limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
+      if (obj.orderType == OrderType.LIMIT && val == null) return ['nullable.limitorder']
+      if (obj.orderType == OrderType.MARKET && val != null) return ['nullable.marketorder']
+      return true
+    })
+    orderType(nullable: false)
+  }
 }

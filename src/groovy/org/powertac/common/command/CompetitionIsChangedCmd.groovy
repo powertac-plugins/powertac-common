@@ -18,7 +18,9 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
 import org.joda.time.LocalDateTime
+import org.powertac.common.Constants
 import org.powertac.common.enumerations.CompetitionStatus
 
 /**
@@ -27,7 +29,7 @@ import org.powertac.common.enumerations.CompetitionStatus
  * @author Carsten Block
  * @version 1.0, Date: 02.01.11
  */
-class CompetitionIsChangedCmd implements Serializable {
+@Validateable class CompetitionIsChangedCmd implements Serializable {
   String id
   String name
   Boolean enabled
@@ -49,14 +51,48 @@ class CompetitionIsChangedCmd implements Serializable {
 
   //Liquidity Provider properties
   Boolean liquidityProviderEnabled
-  Double premium
-  Double fixCost
+  BigDecimal premium
+  BigDecimal fixCost
   String profileUrl
   String timeseriesName
   Long profileId
   String authToken
   Integer regularCapacity
   Integer maxCapacity
-  Double percentPriceIncrease
-  Double priceScaling
+  BigDecimal percentPriceIncrease
+  BigDecimal priceScaling
+
+  static constraints = {
+    name(nullable: false, blank: false)
+    enabled(nullable: false)
+    current(nullable: false)
+    currentCompetitionTime(nullable: true)
+    competitionStatus(nullable: false)
+    description(nullable: true)
+    initialDuration(nullable: false, min: 1l)
+    durationBetweenShifts(nullable: false, min: 1l)
+    timeslotLength(nullable: false, min: 1)
+    timeslotsOverall(nullable: false, min: 1)
+    timeslotsOpen(nullable: false, min: 1, validator: { timeslotsOpen, competition ->
+      timeslotsOpen <= (competition.timeslotsOverall - competition.deactivateTimeslotsAhead) ? true : ['timeslotsOpen.greater.timeslotsAhead']
+    })
+    deactivateTimeslotsAhead(nullable: false, min: 0, validator: {deactivateTimeslotsAhead, competition ->
+      deactivateTimeslotsAhead <= (competition.timeslotsOverall - competition.timeslotsOpen) ? true : ['deactivateTimeslotsAhead.greater.timeslotsOpen']
+    })
+    simulationStartTime(nullable: false)
+    dateCreated(nullable: false)
+    lastUpdated(nullable: false)
+    balancingCostOver(nullable: false, scale: Constants.DECIMALS)
+    balancingCostUnder(nullable: false, scale: Constants.DECIMALS)
+    liquidityProviderEnabled(nullable: false)
+    premium(nullable: false)
+    fixCost(nullable: false)
+    profileUrl(nullable: false)
+    timeseriesName(nullable: false)
+    profileId(nullable: false)
+    authToken(nullable: false)
+    regularCapacity(nullable: false)
+    percentPriceIncrease(nullable: false)
+    priceScaling(nullable: false)
+  }
 }

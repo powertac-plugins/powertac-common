@@ -28,6 +28,7 @@ class MeterReading {
   static belongsTo = [competition: Competition, customer: Customer, timeslot: Timeslot]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
     competition (nullable: false)
     customer (nullable: false)
     timeslot (nullable: false)

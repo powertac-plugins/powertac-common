@@ -29,9 +29,9 @@ class Competition {
   String description
   Long initialDuration = 60l //seconds before and initial deactivation / activation cylce is started
   Long durationBetweenShifts = 60l //seconds between deactivation of oldest and activation of newest product
-  Integer timeslotLength = 60l //minutes
-  Integer timeslotsOverall = 24l //overall timeslotsOverall
-  Integer timeslotsOpen = 12l //concurrently open timeslotsOverall (time window)
+  Integer timeslotLength = 60 //minutes
+  Integer timeslotsOverall = 24 //overall timeslotsOverall
+  Integer timeslotsOpen = 12 //concurrently open timeslotsOverall (time window)
   Integer deactivateTimeslotsAhead = 1
   LocalDateTime simulationStartTime = new LocalDateTime()
   LocalDateTime dateCreated = new LocalDateTime()
@@ -41,16 +41,16 @@ class Competition {
 
   //Liquidity Provider properties
   Boolean liquidityProviderEnabled = true
-  Double premium = 0.01d
-  Double fixCost = 0d
+  BigDecimal premium = 0.01
+  BigDecimal fixCost = 0
   String profileUrl = 'http://ibwmarkets.iw.uni-karlsruhe.de/ps/rest'
   String timeseriesName = 'Average Price'
   Long profileId = 82 //EEX Timeseries for 2008
   String authToken = 'FYtlyOAmeCmfdVbgkm37oQJsyZ0U1d2u' //Special TAC Liquidity provider user account in profile store
   Integer regularCapacity = Integer.MAX_VALUE - 1
   Integer maxCapacity = Integer.MAX_VALUE
-  Double percentPriceIncrease = 0.05d
-  Double priceScaling = 1
+  BigDecimal percentPriceIncrease = 0.05
+  BigDecimal priceScaling = 1
 
   static hasMany = [brokers: Broker, cashUpdates: CashUpdate, customers: Customer, meterReadings: MeterReading, orderbooks: Orderbook, positionUpdates: PositionUpdate, products: Product, shouts: Shout, tariffs: Tariff, timeslots: Timeslot, transactionLogs: TransactionLog]
 
@@ -63,6 +63,7 @@ class Competition {
   }
 
   static constraints = {
+    id (nullable: false, unique: true, blank: false)
     name(unique: true, blank: false)
     enabled(nullable: false)
     current(nullable: false)
@@ -74,16 +75,16 @@ class Competition {
     timeslotLength(nullable: false, min: 1)
     timeslotsOverall(nullable: false, min: 1)
     timeslotsOpen(nullable: false, min: 1, validator: { timeslotsOpen, competition ->
-      timeslotsOpen <= (competition.timeslotsOverall - competition.deactivateTimeslotsAhead)
+      timeslotsOpen <= (competition.timeslotsOverall - competition.deactivateTimeslotsAhead) ? true : ['timeslotsOpen.greater.timeslotsAhead']
     })
     deactivateTimeslotsAhead(nullable: false, min: 0, validator: {deactivateTimeslotsAhead, competition ->
-      deactivateTimeslotsAhead <= (competition.timeslotsOverall - competition.timeslotsOpen)
+      deactivateTimeslotsAhead <= (competition.timeslotsOverall - competition.timeslotsOpen) ? true : ['deactivateTimeslotsAhead.greater.timeslotsOpen']
     })
     simulationStartTime(nullable: false)
     dateCreated(nullable: false)
     lastUpdated(nullable: false)
-    balancingCostOver(nullable: false, scale: 2)
-    balancingCostUnder(nullable: false, scale: 2)
+    balancingCostOver(nullable: false, scale: Constants.DECIMALS)
+    balancingCostUnder(nullable: false, scale: Constants.DECIMALS)
     liquidityProviderEnabled(nullable: false)
     premium(nullable: false)
     fixCost(nullable: false)

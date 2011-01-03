@@ -21,19 +21,24 @@ class Broker {
   String id = IdGenerator.createId()
   Competition competition
   String userName
-  String apiKey
+  String apiKey = IdGenerator.createId()
 
   static belongsTo = [competition: Competition]
 
   static hasMany = [cashUpdates: CashUpdate, positionUpdates: PositionUpdate, shouts: Shout, tariffs: Tariff]
 
   static constraints = {
-    userName(nullable: false, blank: false, unique: true, minSize: 5, matches: /([a-zA-Z0-9])*/)
-    apiKey(blank: false, unique: false, minSize: 32)
+    id(nullable: false, blank: false, unique: true)
+    userName(nullable: false, blank: false, unique: 'competition', minSize: 5, matches: /([a-zA-Z0-9])*/)
+    apiKey(nullable: false, blank: false, minSize: 32)
   }
 
   static mapping = {
-    id (generator: 'assigned')
+    cache(true)
+    id(generator: 'assigned')
+    competition(index: 'competition_username_apikey_idx')
+    userName(index: 'competition_username_apikey_idx')
+    apiKey(index: 'competition_username_apikey_idx')
   }
 
   public String toString() {

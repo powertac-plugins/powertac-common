@@ -16,8 +16,9 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.Constants
 import org.powertac.common.enumerations.CustomerType
-import org.powertac.common.Competition
 
 /**
  * Command object that provides information about
@@ -27,9 +28,9 @@ import org.powertac.common.Competition
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-class CustomerIsAvailableCmd {
+@Validateable class CustomerIsAvailableCmd {
   String id
-  Competition competition
+  String competitionId
   String name
   CustomerType customerType //gives a "rough" classification what type of customer to expect based on an enumeration, i.e. a fixed set of customer types
   Boolean multiContracting // describes whether or not this customer engages in multiple contracts at the same time
@@ -39,5 +40,20 @@ class CustomerIsAvailableCmd {
   BigDecimal carbonEmissionRate // >=0 - gram CO2 per kW/h
   BigDecimal windToPowerConversion // measures how wind changes translate into load / generation changes of the customer
   BigDecimal tempToPowerConversion // measures how temperature changes translate into load / generation changes of the customer
-  BigDecimal sunToPowerConersion // measures how sun intensity changes translate into load /generation changes of the customer
+  BigDecimal sunToPowerConversion // measures how sun intensity changes translate into load /generation changes of the customer
+
+  static constraints = {
+    id (nullable: false, blank: false)
+    competitionId(nullable: false, blank: false)
+    name (nullable: false, blank: false)
+    customerType(nullable: false)
+    multiContracting (nullable: false)
+    canNegotiate (nullable: false)
+    upperPowerCap (nullable: false, scale: Constants.DECIMALS)
+    lowerPowerCap (nullable: false, scale: Constants.DECIMALS)
+    carbonEmissionRate (nullable: false, scale: Constants.DECIMALS)
+    windToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+    tempToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+    sunToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+  }
 }

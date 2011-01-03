@@ -7,9 +7,9 @@ class TimeslotTests extends GroovyTestCase {
   Timeslot timeslot2
 
   protected void setUp() {
+    super.setUp()
     competition = new Competition(name: "test")
     assert (competition.save())
-    super.setUp()
   }
 
   protected void tearDown() {

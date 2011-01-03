@@ -16,16 +16,27 @@
 
 package org.powertac.common.command
 
- /**
+import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.Constants
+
+/**
  * Command object that represents a meter reading
  *
  * @author Carsten Block
- * @version 1.0, Date: 02.01.11
+ * @version 1.0 , Date: 02.01.11
  */
-class MeterIsReadCmd {
+@Validateable class MeterIsReadCmd {
   String id
   String competitionId
   String customerId
   String timeslotId
   BigDecimal amount
+
+  static constraints = {
+    id(nullable: false, blank: false)
+    competitionId(nullable: false, blank: false)
+    customerId(nullable: false, blank: false)
+    timeslotId(nullable: false, blank: false)
+    amount(nullable: false, scale: Constants.DECIMALS)
+  }
 }

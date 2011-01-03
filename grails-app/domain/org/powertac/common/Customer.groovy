@@ -31,7 +31,7 @@ class Customer {
   BigDecimal carbonEmissionRate // >=0 - gram CO2 per kW/h
   BigDecimal windToPowerConversion // measures how wind changes translate into load / generation changes of the customer
   BigDecimal tempToPowerConversion // measures how temperature changes translate into load / generation changes of the customer
-  BigDecimal sunToPowerConersion // measures how sun intensity changes translate into load /generation changes of the customer
+  BigDecimal sunToPowerConversion // measures how sun intensity changes translate into load /generation changes of the customer
 
   //TODO: Possibly add parameters as the ones below that provide descriptive statistical information on historic power consumption / production of the customer
   /*
@@ -46,16 +46,18 @@ class Customer {
   static hasMany = [meterReadings: MeterReading, tariffs: Tariff]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
+    competition(nullable: false)
     name (blank: false, unique: true)
     customerType(nullable: false)
     multiContracting (nullable: false)
     canNegotiate (nullable: false)
-    upperPowerCap (nullable: false)
-    lowerPowerCap (nullable: false)
-    carbonEmissionRate (nullable: false)
-    windToPowerConversion (nullable: false)
-    tempToPowerConversion (nullable: false)
-    sunToPowerConersion (nullable: false)
+    upperPowerCap (nullable: false, scale: Constants.DECIMALS)
+    lowerPowerCap (nullable: false, scale: Constants.DECIMALS)
+    carbonEmissionRate (nullable: false, scale: Constants.DECIMALS)
+    windToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+    tempToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+    sunToPowerConversion (nullable: false, scale: Constants.DECIMALS)
   }
 
   static mapping = {

@@ -18,9 +18,11 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
 import org.joda.time.LocalDateTime
+import org.powertac.common.Constants
 
- /**
+/**
  * Command object that represents an cash transaction
  * (add / deduce money) that should be executed on a
  * specific broker cash account for a given reason.
@@ -28,7 +30,7 @@ import org.joda.time.LocalDateTime
  * @author Carsten Block
  * @version 1.0 , Date: 02.12.10
  */
-class CashIsChangedCmd implements Serializable {
+@Validateable class CashIsChangedCmd implements Serializable {
   String id
   String competitionId
   String transactionId
@@ -38,4 +40,16 @@ class CashIsChangedCmd implements Serializable {
   String reason
   String origin
   LocalDateTime dateCreated = new LocalDateTime()
+
+  static constraints = {
+    id (nullable: false, blank: false)
+    competitionId (nullable: false, blank: false)
+    transactionId (nullable: false, blank: false)
+    brokerId (nullable: false, blank: false)
+    relativeChange (nullable: false, scale: Constants.DECIMALS)
+    overallBalance (nullable: false, scale: Constants.DECIMALS)
+    reason (nullable: true)
+    origin (nullable: true)
+    dateCreated (nullable: false)
+  }
 }
