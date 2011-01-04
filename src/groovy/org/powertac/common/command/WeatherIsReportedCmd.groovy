@@ -16,17 +16,34 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+
 /**
- * Represents the real metered weather data
- * for timeslot {@code timeslotId}
+ * Represents the forecast or real metered weather data
+ * for timeslot {@code targetTimeslotId} as forecast / reported
+ * from the perspective of {@code currentTimeslotId}
  *
  * @author Carsten Block
  * @version 1.0, Date: 02.01.11
  */
-class WeatherIsMeasuredCmd {
+@Validateable class WeatherIsReportedCmd {
+  String id
   String competitionId
-  String timeslotId
+  String targetTimeslotId
+  String currentTimeslotId
   BigDecimal temperature
   BigDecimal windSpeed
   BigDecimal sunIntensity
+  Boolean forecast
+
+  static constraints = {
+    id (nullable: false, blank: false, unique: true)
+    competitionId (nullable: false, blank: false)
+    targetTimeslotId (nullable: false, blank: false)
+    currentTimeslotId (nullable: false, blank: false)
+    temperature (nullable: true)
+    windSpeed (nullable: true)
+    sunIntensity (nullable: true)
+    forecast(nullable: false)
+  }
 }

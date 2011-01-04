@@ -16,8 +16,7 @@
 
 package org.powertac.common.interfaces;
 
-import org.powertac.common.command.WeatherForecastIsUpdatedCmd;
-import org.powertac.common.command.WeatherIsMeasuredCmd;
+import org.powertac.common.command.WeatherIsReportedCmd;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ public interface PhysicalEnvironment extends CompetitionBaseEvents {
    * @param currentTimeslotId if of the changed (deactivated) timeslot
    * @return The actual weather data for the given timeslotIsChanged parameter
    */
-  WeatherIsMeasuredCmd generateRealWeatherData(String currentTimeslotId);
+  WeatherIsReportedCmd generateRealWeatherData(String currentTimeslotId);
 
   /**
    * Generates and returns weather forecasts for every enabled timeslot
@@ -48,5 +47,5 @@ public interface PhysicalEnvironment extends CompetitionBaseEvents {
    * @param currentTimeslotId the id of the current timeslot
    * @return a list of weather forecast objects
    */
-  List<WeatherForecastIsUpdatedCmd> generateForecastWeatherData(String currentTimeslotId);
+  List<WeatherIsReportedCmd> generateForecastWeatherData(String currentTimeslotId);
 }

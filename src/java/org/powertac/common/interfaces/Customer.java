@@ -35,22 +35,21 @@ public interface Customer extends CompetitionBaseEvents {
   public List<TariffDoReplyCmd> processTariffList(List<TariffDoPublishCmd> tariffDoPublishCmdList);
 
   /**
-   * Called when a new weather forecast is available
+   * Called when new weather forecasts are available
    *
-   * @param weatherForecastIsUpdatedCmdList
-   *         weather forecast for a timeslot
+   * @param weatherIsReportedCmdList new weather forecasts
    */
-  public void processWeatherForecasts(List<WeatherForecastIsUpdatedCmd> weatherForecastIsUpdatedCmdList);
+  public void processWeatherForecasts(List<WeatherIsReportedCmd> weatherIsReportedCmdList);
 
   /**
    * Called to make the customer model produce its "real consumption" / real production
    * based on the given "real weather data" (which might only be relevant to customer
    * models that react to weather impact, such as PV or wind turbine customers.
    *
-   * @param weatherIsMeasuredCmd real measured weather data for a particular timeslot
-   * @return real consumption / production of the customer for the timeslot specified in the given {@link WeatherIsMeasuredCmd}
+   * @param weatherIsReportedCmd real measured weather data for a particular timeslot
+   * @return real consumption / production of the customer for the timeslot specified in the given {@link org.powertac.common.command.WeatherIsReportedCmd}
    */
-  public MeterIsReadCmd generateMeterReading(WeatherIsMeasuredCmd weatherIsMeasuredCmd);
+  public MeterIsReadCmd generateMeterReading(WeatherIsReportedCmd weatherIsReportedCmd);
 
   /**
    * As soon as this method is called the customer model is required to store / update
