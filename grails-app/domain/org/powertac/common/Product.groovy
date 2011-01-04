@@ -31,6 +31,7 @@ class Product {
   static hasMany = [orderbooks: Orderbook, transactionLogs: TransactionLog]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
     competition(nullable: false)
     productType(nullable: false)
   }

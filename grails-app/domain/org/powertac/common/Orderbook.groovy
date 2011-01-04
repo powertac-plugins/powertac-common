@@ -164,16 +164,16 @@ class Orderbook implements Serializable {
     bid8 = orderbookArray[0][0][8]
     bid9 = orderbookArray[0][0][9]
 
-    bidSize0 = orderbookArray[0][1][0] == null ? 0 : orderbookArray[0][1][0]
-    bidSize1 = orderbookArray[0][1][1] == null ? 0 : orderbookArray[0][1][1]
-    bidSize2 = orderbookArray[0][1][2] == null ? 0 : orderbookArray[0][1][2]
-    bidSize3 = orderbookArray[0][1][3] == null ? 0 : orderbookArray[0][1][3]
-    bidSize4 = orderbookArray[0][1][4] == null ? 0 : orderbookArray[0][1][4]
-    bidSize5 = orderbookArray[0][1][5] == null ? 0 : orderbookArray[0][1][5]
-    bidSize6 = orderbookArray[0][1][6] == null ? 0 : orderbookArray[0][1][6]
-    bidSize7 = orderbookArray[0][1][7] == null ? 0 : orderbookArray[0][1][7]
-    bidSize8 = orderbookArray[0][1][8] == null ? 0 : orderbookArray[0][1][8]
-    bidSize9 = orderbookArray[0][1][9] == null ? 0 : orderbookArray[0][1][9]
+    bidSize0 = orderbookArray[0][1][0] == null ? 0.0 : orderbookArray[0][1][0]
+    bidSize1 = orderbookArray[0][1][1] == null ? 0.0 : orderbookArray[0][1][1]
+    bidSize2 = orderbookArray[0][1][2] == null ? 0.0 : orderbookArray[0][1][2]
+    bidSize3 = orderbookArray[0][1][3] == null ? 0.0 : orderbookArray[0][1][3]
+    bidSize4 = orderbookArray[0][1][4] == null ? 0.0 : orderbookArray[0][1][4]
+    bidSize5 = orderbookArray[0][1][5] == null ? 0.0 : orderbookArray[0][1][5]
+    bidSize6 = orderbookArray[0][1][6] == null ? 0.0 : orderbookArray[0][1][6]
+    bidSize7 = orderbookArray[0][1][7] == null ? 0.0 : orderbookArray[0][1][7]
+    bidSize8 = orderbookArray[0][1][8] == null ? 0.0 : orderbookArray[0][1][8]
+    bidSize9 = orderbookArray[0][1][9] == null ? 0.0 : orderbookArray[0][1][9]
 
     ask0 = orderbookArray[1][0][0]
     ask1 = orderbookArray[1][0][1]
@@ -186,16 +186,16 @@ class Orderbook implements Serializable {
     ask8 = orderbookArray[1][0][8]
     ask9 = orderbookArray[1][0][9]
 
-    askSize0 = orderbookArray[1][1][0] == null ? 0 : orderbookArray[1][1][0]
-    askSize1 = orderbookArray[1][1][1] == null ? 0 : orderbookArray[1][1][1]
-    askSize2 = orderbookArray[1][1][2] == null ? 0 : orderbookArray[1][1][2]
-    askSize3 = orderbookArray[1][1][3] == null ? 0 : orderbookArray[1][1][3]
-    askSize4 = orderbookArray[1][1][4] == null ? 0 : orderbookArray[1][1][4]
-    askSize5 = orderbookArray[1][1][5] == null ? 0 : orderbookArray[1][1][5]
-    askSize6 = orderbookArray[1][1][6] == null ? 0 : orderbookArray[1][1][6]
-    askSize7 = orderbookArray[1][1][7] == null ? 0 : orderbookArray[1][1][7]
-    askSize8 = orderbookArray[1][1][8] == null ? 0 : orderbookArray[1][1][8]
-    askSize9 = orderbookArray[1][1][9] == null ? 0 : orderbookArray[1][1][9]
+    askSize0 = orderbookArray[1][1][0] == null ? 0.0 : orderbookArray[1][1][0]
+    askSize1 = orderbookArray[1][1][1] == null ? 0.0 : orderbookArray[1][1][1]
+    askSize2 = orderbookArray[1][1][2] == null ? 0.0 : orderbookArray[1][1][2]
+    askSize3 = orderbookArray[1][1][3] == null ? 0.0 : orderbookArray[1][1][3]
+    askSize4 = orderbookArray[1][1][4] == null ? 0.0 : orderbookArray[1][1][4]
+    askSize5 = orderbookArray[1][1][5] == null ? 0.0 : orderbookArray[1][1][5]
+    askSize6 = orderbookArray[1][1][6] == null ? 0.0 : orderbookArray[1][1][6]
+    askSize7 = orderbookArray[1][1][7] == null ? 0.0 : orderbookArray[1][1][7]
+    askSize8 = orderbookArray[1][1][8] == null ? 0.0 : orderbookArray[1][1][8]
+    askSize9 = orderbookArray[1][1][9] == null ? 0.0 : orderbookArray[1][1][9]
   }
 
 
@@ -236,16 +236,16 @@ class Orderbook implements Serializable {
     orderbookArray[0][0][8] = bid8
     orderbookArray[0][0][9] = bid9
 
-    orderbookArray[0][1][0] = bidSize0 == null ? 0 : bidSize0
-    orderbookArray[0][1][1] = bidSize1 == null ? 0 : bidSize1
-    orderbookArray[0][1][2] = bidSize2 == null ? 0 : bidSize2
-    orderbookArray[0][1][3] = bidSize3 == null ? 0 : bidSize3
-    orderbookArray[0][1][4] = bidSize4 == null ? 0 : bidSize4
-    orderbookArray[0][1][5] = bidSize5 == null ? 0 : bidSize5
-    orderbookArray[0][1][6] = bidSize6 == null ? 0 : bidSize6
-    orderbookArray[0][1][7] = bidSize7 == null ? 0 : bidSize7
-    orderbookArray[0][1][8] = bidSize8 == null ? 0 : bidSize8
-    orderbookArray[0][1][9] = bidSize9 == null ? 0 : bidSize9
+    orderbookArray[0][1][0] = bidSize0 == null ? 0.0 : bidSize0
+    orderbookArray[0][1][1] = bidSize1 == null ? 0.0 : bidSize1
+    orderbookArray[0][1][2] = bidSize2 == null ? 0.0 : bidSize2
+    orderbookArray[0][1][3] = bidSize3 == null ? 0.0 : bidSize3
+    orderbookArray[0][1][4] = bidSize4 == null ? 0.0 : bidSize4
+    orderbookArray[0][1][5] = bidSize5 == null ? 0.0 : bidSize5
+    orderbookArray[0][1][6] = bidSize6 == null ? 0.0 : bidSize6
+    orderbookArray[0][1][7] = bidSize7 == null ? 0.0 : bidSize7
+    orderbookArray[0][1][8] = bidSize8 == null ? 0.0 : bidSize8
+    orderbookArray[0][1][9] = bidSize9 == null ? 0.0 : bidSize9
 
     orderbookArray[1][0][0] = ask0
     orderbookArray[1][0][1] = ask1
@@ -258,16 +258,16 @@ class Orderbook implements Serializable {
     orderbookArray[1][0][8] = ask8
     orderbookArray[1][0][9] = ask9
 
-    orderbookArray[1][1][0] = askSize0 == null ? 0 : askSize0
-    orderbookArray[1][1][1] = askSize1 == null ? 0 : askSize1
-    orderbookArray[1][1][2] = askSize2 == null ? 0 : askSize2
-    orderbookArray[1][1][3] = askSize3 == null ? 0 : askSize3
-    orderbookArray[1][1][4] = askSize4 == null ? 0 : askSize4
-    orderbookArray[1][1][5] = askSize5 == null ? 0 : askSize5
-    orderbookArray[1][1][6] = askSize6 == null ? 0 : askSize6
-    orderbookArray[1][1][7] = askSize7 == null ? 0 : askSize7
-    orderbookArray[1][1][8] = askSize8 == null ? 0 : askSize8
-    orderbookArray[1][1][9] = askSize9 == null ? 0 : askSize9
+    orderbookArray[1][1][0] = askSize0 == null ? 0.0 : askSize0
+    orderbookArray[1][1][1] = askSize1 == null ? 0.0 : askSize1
+    orderbookArray[1][1][2] = askSize2 == null ? 0.0 : askSize2
+    orderbookArray[1][1][3] = askSize3 == null ? 0.0 : askSize3
+    orderbookArray[1][1][4] = askSize4 == null ? 0.0 : askSize4
+    orderbookArray[1][1][5] = askSize5 == null ? 0.0 : askSize5
+    orderbookArray[1][1][6] = askSize6 == null ? 0.0 : askSize6
+    orderbookArray[1][1][7] = askSize7 == null ? 0.0 : askSize7
+    orderbookArray[1][1][8] = askSize8 == null ? 0.0 : askSize8
+    orderbookArray[1][1][9] = askSize9 == null ? 0.0 : askSize9
 
     return orderbookArray
   }
