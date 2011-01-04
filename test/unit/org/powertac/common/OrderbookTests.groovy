@@ -203,4 +203,54 @@ class OrderbookTests extends GrailsUnitTestCase {
     assertEquals(10008.0, orderbookArray[1][1][8])
     assertEquals(10009.0, orderbookArray[1][1][9])
   }
+
+  void testSetOrderbookArrayWithNullValues() {
+    Orderbook orderbook = new Orderbook()
+    BigDecimal[][][] orderbookArray = new BigDecimal[2][2][10]
+    orderbook.setOrderbookArray(orderbookArray)
+
+    assertNull(orderbook.bid0)
+    assertNull(orderbook.bid1)
+    assertNull(orderbook.bid2)
+    assertNull(orderbook.bid3)
+    assertNull(orderbook.bid4)
+    assertNull(orderbook.bid5)
+    assertNull(orderbook.bid6)
+    assertNull(orderbook.bid7)
+    assertNull(orderbook.bid8)
+    assertNull(orderbook.bid9)
+
+    assertNull(orderbook.ask0)
+    assertNull(orderbook.ask1)
+    assertNull(orderbook.ask2)
+    assertNull(orderbook.ask3)
+    assertNull(orderbook.ask4)
+    assertNull(orderbook.ask5)
+    assertNull(orderbook.ask6)
+    assertNull(orderbook.ask7)
+    assertNull(orderbook.ask8)
+    assertNull(orderbook.ask9)
+
+    assertEquals(0.0, orderbook.bidSize0)
+    assertEquals(0.0, orderbook.bidSize1)
+    assertEquals(0.0, orderbook.bidSize2)
+    assertEquals(0.0, orderbook.bidSize3)
+    assertEquals(0.0, orderbook.bidSize4)
+    assertEquals(0.0, orderbook.bidSize5)
+    assertEquals(0.0, orderbook.bidSize6)
+    assertEquals(0.0, orderbook.bidSize7)
+    assertEquals(0.0, orderbook.bidSize8)
+    assertEquals(0.0, orderbook.bidSize9)
+
+    assertEquals(0.0, orderbook.askSize0)
+    assertEquals(0.0, orderbook.askSize1)
+    assertEquals(0.0, orderbook.askSize2)
+    assertEquals(0.0, orderbook.askSize3)
+    assertEquals(0.0, orderbook.askSize4)
+    assertEquals(0.0, orderbook.askSize5)
+    assertEquals(0.0, orderbook.askSize6)
+    assertEquals(0.0, orderbook.askSize7)
+    assertEquals(0.0, orderbook.askSize8)
+    assertEquals(0.0, orderbook.askSize9)
+  }
 }
