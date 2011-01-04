@@ -38,6 +38,7 @@ class PositionUpdate {
   static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot, competition: Competition]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
     competition(nullable: false)
     product(nullable: false)
     timeslot(nullable: false)
@@ -47,7 +48,6 @@ class PositionUpdate {
     reason(nullable: true)
     origin(nullable: true)
     dateCreated(nullable: false)
-    product(nullable: false)
     transactionId(nullable: false)
     latest (nullable: false)
   }
