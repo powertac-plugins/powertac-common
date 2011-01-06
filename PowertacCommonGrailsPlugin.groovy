@@ -1,7 +1,8 @@
 class PowertacCommonGrailsPlugin {
     def groupId = 'org.powertac.plugins'
     // the plugin version
-    def version = "0.2"
+    def version = "version
+0.2.1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.6 > *"
     // the other plugins this plugin depends on
