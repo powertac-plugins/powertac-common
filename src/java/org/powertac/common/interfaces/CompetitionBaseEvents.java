@@ -44,7 +44,7 @@ public interface CompetitionBaseEvents {
   public void competitionAfterStart(String competitionId);
 
   /**
-   * This method is invoked upon competition end.
+   * This method is invoked immediately before competition end.
    * Each module implementing this interface should put all business logic here
    * that needs to be executed immediately *before* a competition is stopped.
    *
@@ -52,6 +52,13 @@ public interface CompetitionBaseEvents {
    */
   public void competitionBeforeStop(String competitionId);
 
+  /**
+   * Each module implementing this interface should put all business logic here
+   * that needs to be executed immediately *after* a competition is stopped.
+   *
+   * @param competitionId id of the competition to be stopped
+   */
+  public void competitionAfterStop(String competitionId);
 
   /**
    * This method is invoked after the competition end if the competiton is competitionReset.
