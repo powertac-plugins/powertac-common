@@ -16,15 +16,54 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.Broker
+import org.powertac.common.Competition
+import org.powertac.common.Shout
+
 /**
  * Command object that can be used by
  * a broker to require the server to delete
  * as specific shout;
  *
  * @author Carsten Block
- * @version 1.0, Date: 01.12.10
+ * @version 1.0 , Date: 01.12.10
  */
-class ShoutDoDeleteCmd {
-  private String authToken;
-  private Long shoutId;
+@Validateable class ShoutDoDeleteCmd {
+  String competitionId
+  String userName
+  String apiKey
+  Long shoutId
+
+  static constraints = {
+    competitionId(nullable: false, blank: false, validator: {val ->
+      def competition = Competition.get(val)
+      if (!competition) {
+        return ['invalid.competition']
+      } else if (!competition.current) {
+        return ['inactive.competition']
+      } else {
+        return true
+      }
+    })
+    userName(nullable: false, blank: false)
+    apiKey(nullable: false, blank: false, validator: {val, obj ->
+      def results = Broker.withCriteria {
+        eq('competition.id', obj.competitionId)
+        eq('userName', obj.userName)
+        eq('apiKey', obj.apiKey)
+        cache(true)
+      }
+      return results.size() == 1 ? true : ['invalid.credentials']
+    })
+    shoutId(nullable: false, blank: false, validator: {val ->
+      def shout = Shout.get(val)
+      if (!shout) {
+        return ['invalid.shout']
+      } else {
+        return true
+      }
+    })
+  }
+
 }
