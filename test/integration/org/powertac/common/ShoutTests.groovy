@@ -69,8 +69,8 @@ class ShoutTests extends GroovyTestCase {
 
   void testInactiveCompetitionId() {
     competition.current = false
-    assertNotNull(competition.save(flush:true))
-    assertFalse (competition.current)
+    assertNotNull(competition.save(flush: true))
+    assertFalse(competition.current)
     Shout shout = new Shout(competition: competition)
     assertFalse(shout.validate())
     assertEquals('inactive.competition', shout.errors.getFieldError('competition').getCode())
@@ -99,12 +99,12 @@ class ShoutTests extends GroovyTestCase {
   void testInitModification() {
     competition.current = true
     competition.save(flush: true)
-    assertTrue (competition.current)
+    assertTrue(competition.current)
     Shout shout1 = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET, transactionId: 'testTransaction2', latest: true, shoutId: 'testShoutId')
     assertTrue(shout1.validate())
-    Shout shout2 = shout1.initModification (ModReasonCode.DELETIONBYUSER)
+    Shout shout2 = shout1.initModification(ModReasonCode.DELETIONBYUSER)
     assertNotNull(shout2.id)
-    assertFalse (shout1.id.equals(shout2.id))
+    assertFalse(shout1.id.equals(shout2.id))
     assertEquals(shout1.competition, shout2.competition)
     assertEquals(shout1.broker, shout2.broker)
     assertEquals(shout1.product, shout2.product)
@@ -122,10 +122,18 @@ class ShoutTests extends GroovyTestCase {
     assertEquals(ModReasonCode.DELETIONBYUSER, shout2.modReasonCode)
     assertEquals('testTransaction2', shout1.transactionId)
     assertNull(shout2.transactionId)
-    assertEquals (shout1.shoutId, shout2.shoutId)
-    assertEquals (shout1.comment, shout2.comment)
-    assertFalse (shout1.latest)
-    assertTrue (shout2.latest)
+    assertEquals(shout1.shoutId, shout2.shoutId)
+    assertEquals(shout1.comment, shout2.comment)
+    assertFalse(shout1.latest)
+    assertTrue(shout2.latest)
 
+  }
+
+  void testShoutCreateByNestedIds() {
+    competition.current = true
+    competition.save(flush: true)
+    assertTrue(competition.current)
+    Shout shout1 = new Shout('competition.id': competition.id, 'product.id': product.id, 'timeslot.id': timeslot.id, 'broker.id': broker.id, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET, transactionId: 'testTransaction2', latest: true, shoutId: 'testShoutId')
+    assertTrue(shout1.validate())
   }
 }
