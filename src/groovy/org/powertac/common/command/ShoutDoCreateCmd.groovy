@@ -28,7 +28,7 @@ import org.powertac.common.*
  * @author Carsten Block
  * @version 1.0, Date: 01.12.10
  */
-@Validateable class ShoutDoCreateCmd {
+@Validateable class ShoutDoCreateCmd implements Serializable {
   String competitionId
   String userName
   String apiKey

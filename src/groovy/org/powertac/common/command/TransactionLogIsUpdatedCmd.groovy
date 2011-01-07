@@ -28,7 +28,7 @@ import org.powertac.common.enumerations.TransactionType
  * @author Carsten Block
  * @version 1.0, Date: 02.01.11
  */
-class TransactionLogIsUpdatedCmd {
+class TransactionLogIsUpdatedCmd implements Serializable {
   String id
   String competitionId
   String productId

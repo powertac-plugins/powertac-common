@@ -18,7 +18,7 @@ package org.powertac.common
 
 import org.joda.time.LocalDateTime
 
-class Timeslot {
+class Timeslot implements Serializable {
 
   String id = IdGenerator.createId()
   Long serialNumber

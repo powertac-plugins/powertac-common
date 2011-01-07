@@ -16,7 +16,7 @@
 
 package org.powertac.common
 
-class Weather {
+class Weather implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

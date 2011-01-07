@@ -19,7 +19,7 @@ package org.powertac.common
 import org.joda.time.LocalDateTime
 import org.powertac.common.enumerations.TariffState
 
-class Tariff {
+class Tariff implements Serializable {
 
   String id = IdGenerator.createId()
   String transactionId

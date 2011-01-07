@@ -29,7 +29,7 @@ import org.powertac.common.Shout
  * @author Carsten Block
  * @version 1.0 , Date: 01.12.10
  */
-@Validateable class ShoutDoDeleteCmd {
+@Validateable class ShoutDoDeleteCmd implements Serializable {
   String competitionId
   String userName
   String apiKey

@@ -24,6 +24,6 @@ package org.powertac.common.command
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-class TariffIsRevokedCmd {
+class TariffIsRevokedCmd implements Serializable {
   Long tariffId
 }

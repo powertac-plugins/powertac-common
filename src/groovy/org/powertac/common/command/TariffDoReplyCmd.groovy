@@ -28,7 +28,7 @@ import org.powertac.common.enumerations.TariffState
  * @version 1.0, Date: 01.12.10
  * @see org.powertac.common.command.TariffDoPublishCmd
  */
-class TariffDoReplyCmd extends AbstractTariff {
+class TariffDoReplyCmd extends AbstractTariff implements Serializable {
   String authToken
   TariffState tariffState
   String customerId

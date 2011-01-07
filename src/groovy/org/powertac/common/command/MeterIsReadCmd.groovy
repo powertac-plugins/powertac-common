@@ -25,7 +25,7 @@ import org.powertac.common.Constants
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-@Validateable class MeterIsReadCmd {
+@Validateable class MeterIsReadCmd implements Serializable  {
   String id
   String competitionId
   String customerId

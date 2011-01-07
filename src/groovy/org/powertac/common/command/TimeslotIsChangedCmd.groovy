@@ -26,7 +26,7 @@ import org.joda.time.LocalDateTime
  * @author Carsten Block
  * @version 1.0, Date: 02.01.11
  */
-class TimeslotIsChangedCmd {
+class TimeslotIsChangedCmd implements Serializable {
   String id
   Long serialNumber
   String competitionId

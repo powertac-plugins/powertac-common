@@ -18,7 +18,7 @@ package org.powertac.common
 
 import org.powertac.common.enumerations.CustomerType
 
-class Customer {
+class Customer implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

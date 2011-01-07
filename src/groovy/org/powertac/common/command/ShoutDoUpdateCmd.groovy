@@ -30,7 +30,7 @@ import org.powertac.common.Shout
  * @author Carsten Block
  * @version 1.0 , Date: 01.12.10
  */
-@Validateable class ShoutDoUpdateCmd {
+@Validateable class ShoutDoUpdateCmd implements Serializable {
   String competitionId
   String userName
   String apiKey

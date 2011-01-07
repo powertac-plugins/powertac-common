@@ -16,7 +16,7 @@
 
 package org.powertac.common
 
-class MeterReading {
+class MeterReading implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

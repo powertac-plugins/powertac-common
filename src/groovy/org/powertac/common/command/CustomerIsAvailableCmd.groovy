@@ -28,7 +28,7 @@ import org.powertac.common.enumerations.CustomerType
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-@Validateable class CustomerIsAvailableCmd {
+@Validateable class CustomerIsAvailableCmd implements Serializable {
   String id
   String competitionId
   String name

@@ -24,7 +24,7 @@ import org.joda.time.LocalDateTime
  * @author Carsten Block
  * @version 1.0, Date: 02.01.11
  */
-class PositionIsChangedCmd {
+class PositionIsChangedCmd implements Serializable {
   String id
   String competitionId
   String productId

@@ -20,7 +20,7 @@ package org.powertac.common
 
 import org.joda.time.LocalDateTime
 
-class PositionUpdate {
+class PositionUpdate implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

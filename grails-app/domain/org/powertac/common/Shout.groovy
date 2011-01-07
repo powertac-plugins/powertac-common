@@ -21,7 +21,7 @@ import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
 
-class Shout {
+class Shout implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

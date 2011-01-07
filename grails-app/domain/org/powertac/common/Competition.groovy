@@ -19,7 +19,7 @@ package org.powertac.common
 import org.joda.time.LocalDateTime
 import org.powertac.common.enumerations.CompetitionStatus
 
-class Competition {
+class Competition implements Serializable {
   String id = IdGenerator.createId()
   String name
   Boolean enabled = false

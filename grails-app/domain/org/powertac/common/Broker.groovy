@@ -16,7 +16,7 @@
 
 package org.powertac.common
 
-class Broker {
+class Broker implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

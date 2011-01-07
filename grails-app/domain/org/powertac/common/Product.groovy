@@ -20,7 +20,7 @@ package org.powertac.common
 
 import org.powertac.common.enumerations.ProductType
 
-class Product {
+class Product implements Serializable {
 
   String id = IdGenerator.createId()
   Competition competition

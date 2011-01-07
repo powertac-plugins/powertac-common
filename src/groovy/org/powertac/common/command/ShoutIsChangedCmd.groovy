@@ -32,7 +32,7 @@ import org.powertac.common.enumerations.OrderType
  * @author Carsten Block
  * @version 1.0, Date: 01.12.10
  */
-class ShoutIsChangedCmd {
+class ShoutIsChangedCmd implements Serializable {
   String id
   String competitionId
   String brokerId
@@ -47,7 +47,6 @@ class ShoutIsChangedCmd {
   LocalDateTime dateCreated
   LocalDateTime dateMod
   ModReasonCode modReasonCode
-  Boolean outdated
   String transactionId
   String shoutId
   String comment
