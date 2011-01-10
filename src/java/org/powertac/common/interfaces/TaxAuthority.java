@@ -16,7 +16,10 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.Competition;
 import org.powertac.common.command.CashDoUpdateCmd;
+import org.powertac.common.exceptions.SubsidyException;
+import org.powertac.common.exceptions.TaxingException;
 
 import java.util.List;
 
@@ -30,14 +33,16 @@ import java.util.List;
 public interface TaxAuthority extends CompetitionBaseEvents {
 
   /**
-   * @param competitionId id of the competition in which brokers should be taxed
+   * @param competition the competition in which brokers should be taxed
    * @return List of CashDoUpdateCmd objects specifying which brokers to tax for which purpose. This list can then be processed by the accounting service who does the actual booking of the cash changes
+   * @throws org.powertac.common.exceptions.TaxingException thrown if an error occurs during the tax authority taxing brokers.
    */
-  public List<CashDoUpdateCmd> taxBrokers(String competitionId);
+  public List<CashDoUpdateCmd> taxBrokers(Competition competition) throws TaxingException;
 
   /**
-   * @param competitionId id of the competition in which brokers should be subsidized
+   * @param competition the competition in which brokers should be subsidized
    * @return List of CashDoUpdateCmd objects specifying which brokers to subsidise and for which purpose. This list can then be processed by the accounting service who does the actual booking of the cash changes
+   * @throws org.powertac.common.exceptions.SubsidyException thrown if an error occurs during the tax authority subsidizing brokers.
    */
-  public List<CashDoUpdateCmd> subsidiseBrokers(String competitionId);
+  public List<CashDoUpdateCmd> subsidiseBrokers(Competition competition) throws SubsidyException;
 }
