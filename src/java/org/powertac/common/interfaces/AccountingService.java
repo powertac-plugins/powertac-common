@@ -75,8 +75,9 @@ public interface AccountingService extends CompetitionBaseEvents {
    * @param tariffDoReplyCmd the tariff reply to store in the database
    * @return the processed tariffDoReplyCmd object
    * @throws org.powertac.common.exceptions.TariffReplyException is thrown if the tariff publishing fails
+   * @throws org.powertac.common.exceptions.TariffNotFoundException thrown if the tariff specified is not found in the database
    */
-  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
+  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException, TariffNotFoundException;
 
   /**
    * Method processes incoming tariffDoRevokeCmd of a broker. This method needs to
@@ -86,8 +87,9 @@ public interface AccountingService extends CompetitionBaseEvents {
    * @param tariffDoRevokeCmd describing the tariff to be revoked
    * @return Tariff updated tariff object that reflects the revocation of the tariff
    * @throws org.powertac.common.exceptions.TariffRevokeException is thrown if the tariff publishing fails
+   * @throws org.powertac.common.exceptions.TariffNotFoundException thrown if the tariff specified is not found in the database
    */
-  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd) throws TariffRevokeException;
+  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd) throws TariffRevokeException, TariffNotFoundException;
 
 
   /**
