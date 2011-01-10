@@ -16,6 +16,8 @@
 
 package org.powertac.common.command
 
+import org.powertac.common.Broker
+
 /**
  * Command object that represent's a broker's request to revoke
  * a particular tariff.
@@ -24,6 +26,7 @@ package org.powertac.common.command
  * @version 1.0 , Date: 02.01.11
  */
 class TariffDoRevokeCmd implements Serializable {
-  String authToken
-  Long tariffId
+  Broker broker
+  String tariffId
+  String customTariffId
 }

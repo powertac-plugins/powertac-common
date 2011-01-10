@@ -17,6 +17,8 @@
 package org.powertac.common.command
 
 import org.joda.time.LocalDateTime
+import org.powertac.common.Broker
+import org.powertac.common.Competition
 
 /**
  * TODO: Add Description
@@ -28,8 +30,8 @@ abstract class AbstractTariff {
   String id
   String tariffId //this id remains identical over all db instances of the tariff (where one instance is generated for each change in the tariff, e.g. a price update)
   String customTariffId //this id is only populated if a broker and a customer enter a private tariff negotiation. In this case customTariffId remains the same across all negotiation offers and also for tariff updates during tariff runtime
-  String competitionId
-  String brokerId
+  Competition competition
+  Broker broker
 
   Boolean isDynamic
   Boolean isNegotiable

@@ -30,5 +30,4 @@ package org.powertac.common.command
  */
 class TariffDoPublishCmd extends AbstractTariff implements Serializable {
   String permittedCustomerTypes
-  String authToken
 }

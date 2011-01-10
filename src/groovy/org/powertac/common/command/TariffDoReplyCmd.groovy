@@ -16,9 +16,9 @@
 
 package org.powertac.common.command
 
-import org.powertac.common.enumerations.TariffState
+import org.powertac.common.Customer
 
- /**
+/**
  * Command object that represents a tariff reply, i.e.
  * a subscription to a <code>PublishTariffCommand</code>
  * or a counter offer in a negotiation process.
@@ -29,7 +29,5 @@ import org.powertac.common.enumerations.TariffState
  * @see org.powertac.common.command.TariffDoPublishCmd
  */
 class TariffDoReplyCmd extends AbstractTariff implements Serializable {
-  String authToken
-  TariffState tariffState
-  String customerId
+  Customer customer
 }
