@@ -17,6 +17,7 @@
 package org.powertac.common.interfaces;
 
 import org.powertac.common.Timeslot;
+import org.powertac.common.exceptions.TimeslotBalancingException;
 
 import java.util.List;
 
@@ -40,7 +41,8 @@ public interface DistributionUtility extends CompetitionBaseEvents {
    *
    * @param currentTimeslot the timeslot to compute the balancing for
    * @return a list of {@link org.powertac.common.command.PositionDoUpdateCmd} and {@link org.powertac.common.command.CashDoUpdateCmd} objects
+   * @throws org.powertac.common.exceptions.TimeslotBalancingException thrown if the distribution utility fails to balance the given timeslot
    */
-  List balanceTimeslot(Timeslot currentTimeslot);
+  List balanceTimeslot(Timeslot currentTimeslot) throws TimeslotBalancingException;
 
 }
