@@ -26,7 +26,8 @@ class Tariff implements Serializable {
   Competition competition
   Broker broker
   Customer customer
-  String tariffId
+  String tariffId //this id remains identical over all db instances of the tariff (where one instance is generated for each change in the tariff, e.g. a price update)
+  String customTariffId //this id is only populated if a broker and a customer enter a private tariff negotiation. In this case customTariffId remains the same across all negotiation offers and also for tariff updates during tariff runtime
   TariffState tariffState
   Boolean isDynamic
   Boolean isNegotiable
@@ -116,6 +117,7 @@ class Tariff implements Serializable {
     broker(nullable: false)
     customer(nullable: true)
     tariffId(nullable: false)
+    customTariffId(nullable: true)
     tariffState(nullable: false)
     isDynamic(nullable: false)
     isNegotiable(nullablee: false)
