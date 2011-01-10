@@ -20,6 +20,9 @@ import org.powertac.common.CashUpdate;
 import org.powertac.common.PositionUpdate;
 import org.powertac.common.Tariff;
 import org.powertac.common.command.*;
+import org.powertac.common.exceptions.CashUpdateException;
+import org.powertac.common.exceptions.PositionUpdateException;
+import org.powertac.common.exceptions.TariffProcessingException;
 
 import java.util.List;
 
@@ -43,24 +46,27 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @param positionDoUpdateCmd the object that describes what position change to book in the database
    * @return PositionUpdate Latest {@link PositionUpdate} which contains relative change, new overall balance, origin and reason for the position change
+   * @throws org.powertac.common.exceptions.PositionUpdateException is thrown if a position updated fails
    */
-  public PositionUpdate processPositionUpdate (PositionDoUpdateCmd positionDoUpdateCmd);
+  public PositionUpdate processPositionUpdate (PositionDoUpdateCmd positionDoUpdateCmd) throws PositionUpdateException;
 
   /**
    * Method processes cashDoUpdateCmd objects adjusting the booked amounts of cash for a specific broker.
    * @param cashDoUpdateCmd the object that describes what cash change to book in the database
    * @return CashUpdate Latest {@link CashUpdate} which contains relative change, new overall balance, origin and reason for the cash update
+   * @throws org.powertac.common.exceptions.CashUpdateException is thrown if a cash update fails
    */
-  public CashUpdate processCashUpdate(CashDoUpdateCmd cashDoUpdateCmd);
+  public CashUpdate processCashUpdate(CashDoUpdateCmd cashDoUpdateCmd) throws CashUpdateException;
 
   /**
    * Method processes incoming tariffDoPublishCmd of a broker. The method does not
    * return any results objects as tariffs are published only periodically through the
    * {@code publishTariffList()} method
    *
-   * @param tariffDoPublishCmd
+   * @param tariffDoPublishCmd command object that contains the tariff detais to be published
+   * @throws org.powertac.common.exceptions.TariffProcessingException is thrown if the tariff publishing fails
    */
-  public void processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd);
+  public void processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffProcessingException;
 
 
   /**
@@ -70,8 +76,9 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @param tariffDoReplyCmd the tariff reply to store in the database
    * @return the processed tariffDoReplyCmd object
+   * @throws org.powertac.common.exceptions.TariffProcessingException is thrown if the tariff publishing fails
    */
-  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd);
+  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffProcessingException;
 
   /**
    * Method processes incoming tariffDoRevokeCmd of a broker. This method needs to
@@ -80,14 +87,15 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @param tariffDoRevokeCmd describing the tariff to be revoked
    * @return Tariff updated tariff object that reflects the revocation of the tariff
+   * @throws org.powertac.common.exceptions.TariffProcessingException is thrown if the tariff publishing fails
    */
-  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd);
+  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd) throws TariffProcessingException;
 
 
   /**
    * Returns a list of all currently active (i.e. subscribable) tariffs
    *
-   * @return a list of all active tariffs
+   * @return a list of all active tariffs, which might be empty if no tariffs are published
    */
   List<Tariff> publishTariffList();
 
@@ -95,7 +103,7 @@ public interface AccountingService extends CompetitionBaseEvents {
   /**
    * Publishes the list of available customers
    *
-   * @return the identical customerInfo parameter
+   * @return a list of all available customers, which might be empty if no customers are available
    */
   List<Customer> publishCustomersAvailable();
 
