@@ -16,6 +16,10 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.exceptions.CompetitionFinalizationException;
+import org.powertac.common.exceptions.CompetitionInitializationException;
+import org.powertac.common.exceptions.CompetitionResetException;
+
 /**
  * This interface defines base methods that are
  * invoked upon competition status changes.
@@ -31,8 +35,9 @@ public interface CompetitionBaseEvents {
    * to be executed *before* a competition starts into this method.
    *
    * @param competitionId id of the competition to be initialized
+   * @throws org.powertac.common.exceptions.CompetitionInitializationException thrown if competition initialization fails
    */
-  public void competitionBeforeStart(String competitionId);
+  public void competitionBeforeStart(String competitionId) throws CompetitionInitializationException;
 
   /**
    * This method is invoked upon competition start.
@@ -40,8 +45,9 @@ public interface CompetitionBaseEvents {
    * to be executed immediately *after* a competition starts into this method.
    *
    * @param competitionId id of the competition just started
+   * @throws org.powertac.common.exceptions.CompetitionInitializationException thrown if competition initialization fails
    */
-  public void competitionAfterStart(String competitionId);
+  public void competitionAfterStart(String competitionId) throws CompetitionInitializationException;
 
   /**
    * This method is invoked immediately before competition end.
@@ -49,16 +55,18 @@ public interface CompetitionBaseEvents {
    * that needs to be executed immediately *before* a competition is stopped.
    *
    * @param competitionId id of the competition to be stopped
+   * @throws org.powertac.common.exceptions.CompetitionFinalizationException thrown if an error occurs during competition shutdown
    */
-  public void competitionBeforeStop(String competitionId);
+  public void competitionBeforeStop(String competitionId) throws CompetitionFinalizationException;
 
   /**
    * Each module implementing this interface should put all business logic here
    * that needs to be executed immediately *after* a competition is stopped.
    *
    * @param competitionId id of the competition to be stopped
+   * @throws org.powertac.common.exceptions.CompetitionFinalizationException thrown if an error occurs during competition shutdown
    */
-  public void competitionAfterStop(String competitionId);
+  public void competitionAfterStop(String competitionId) throws CompetitionFinalizationException;
 
   /**
    * This method is invoked after the competition end if the competiton is competitionReset.
@@ -66,6 +74,7 @@ public interface CompetitionBaseEvents {
    * that needs to be executed upon competitionReset of a competition.
    *
    * @param competitionId id of the competition to be competitionReset
+   * @throws org.powertac.common.exceptions.CompetitionResetException thrown if an error occurs during competition reset
    */
-  public void competitionReset(String competitionId);
+  public void competitionReset(String competitionId) throws CompetitionResetException;
 }
