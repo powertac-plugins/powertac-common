@@ -19,7 +19,9 @@ package org.powertac.common.command
 import org.codehaus.groovy.grails.validation.Validateable
 import org.powertac.common.Broker
 import org.powertac.common.Competition
+import org.powertac.common.Constants
 import org.powertac.common.Shout
+import org.powertac.common.enumerations.ModReasonCode
 
 /**
  * Command object that can be used by
@@ -31,43 +33,48 @@ import org.powertac.common.Shout
  * @version 1.0 , Date: 01.12.10
  */
 @Validateable class ShoutDoUpdateCmd implements Serializable {
-  String competitionId
-  String userName
-  String apiKey
+  Competition competition
+  Broker broker
   String shoutId
   BigDecimal quantity
   BigDecimal limitPrice
 
   static constraints = {
-    competitionId(nullable: false, blank: false, validator: {val ->
-      def competition = Competition.get(val)
-      if (!competition) {
-        return ['invalid.competition']
-      } else if (!competition.current) {
-        return ['inactive.competition']
+    competition(nullable: false, validator: {val ->
+      if (!val) {
+        return [Constants.COMPETITION_NOT_FOUND]
+      } else if (!val.current) {
+        return [Constants.COMPETITION_INACTIVE]
       } else {
         return true
       }
     })
-    userName(nullable: false, blank: false)
-    apiKey(nullable: false, blank: false, validator: {val, obj ->
-      def results = Broker.withCriteria {
-        eq('competition.id', obj.competitionId)
-        eq('userName', obj.userName)
-        eq('apiKey', obj.apiKey)
-        cache(true)
-      }
-      return results.size() == 1 ? true : ['invalid.credentials']
-    })
+    broker(nullable: false)
     shoutId(nullable: false, blank: false, validator: {val ->
-      def shout = Shout.get(val)
+      def shout = Shout.findByShoutIdAndLatest(val,true)
       if (!shout) {
-        return ['invalid.shout']
+        return [Constants.SHOUT_NOT_FOUND]
+      } else if (shout.modReasonCode == ModReasonCode.DELETIONBYUSER || shout.modReasonCode == ModReasonCode.DELETIONBYSYSTEM) {
+        return [Constants.SHOUT_DELETED]
+      } else if (shout.modReasonCode == ModReasonCode.EXECUTION) {
+        return [Constants.SHOUT_EXECUTED]
       } else {
         return true
       }
     })
-    quantity(nullable: true)
-    limitPrice(nullable: true)
+    quantity(nullable: true, min: 0.0, scale: Constants.DECIMALS, validator: {val, obj ->
+      if (obj.limitPrice == null && obj.quantity == null) {
+        return [Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY]
+      } else {
+        return true
+      }
+    })
+    limitPrice(nullable: true, min: 0.0, scale: Constants.DECIMALS, validator: {val, obj ->
+      if (obj.limitPrice == null && obj.quantity == null) {
+        return [Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY]
+      } else {
+        return true
+      }
+    })
   }
 }

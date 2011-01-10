@@ -30,7 +30,7 @@ import org.powertac.common.*
  */
 @Validateable class ShoutDoCreateCmd implements Serializable {
   Competition competition
-  String apiKey
+  Broker broker
   Product product
   Timeslot timeslot
   BuySellIndicator buySellIndicator
@@ -41,41 +41,19 @@ import org.powertac.common.*
   static constraints = {
     competition(nullable: false, validator: {val ->
       if (!val?.current){
-        return ['inactive.competition']
+        return [Constants.COMPETITION_INACTIVE]
       } else {
         return true
       }
     })
-    apiKey(nullable: false, blank: false, validator: {val, obj ->
-      def results = Broker.withCriteria {
-        eq('competition.id', obj.competitionId)
-        eq('userName', obj.userName)
-        eq('apiKey', obj.apiKey)
-        cache(true)
-      }
-      return results.size() == 1 ? true : ['invalid.credentials']
-    })
-    productId (nullable: false, blank: false, validator: {val->
-      def product = Product.get(val)
-      if (!product) {
-        return ['invalid.product']
-      } else {
-        return true
-      }
-    })
-    timeslotId (nullable: false, blank: false, validator: {val->
-      def timeslot = Timeslot.get(val)
-      if (!timeslot) {
-        return ['invalid.timeslot']
-      } else {
-        return true
-      }
-    })
+    broker(nullable: false)
+    product (nullable: false)
+    timeslot(nullable: false)
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, Scale: Constants.DECIMALS)
     limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.orderType == OrderType.LIMIT && val == null) return ['nullable.limitorder']
-      if (obj.orderType == OrderType.MARKET && val != null) return ['nullable.marketorder']
+      if (obj.orderType == OrderType.LIMIT && val == null) return [Constants.SHOUT_LIMITORDER_NULL_LIMIT]
+      if (obj.orderType == OrderType.MARKET && val != null) return [Constants.SHOUT_MARKETORDER_WITH_LIMIT]
       return true
     })
     orderType(nullable: false)

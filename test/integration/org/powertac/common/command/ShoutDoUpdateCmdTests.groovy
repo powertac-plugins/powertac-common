@@ -20,6 +20,7 @@ import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.enumerations.ProductType
 import org.powertac.common.*
+import org.powertac.common.enumerations.ModReasonCode
 
 class ShoutDoUpdateCmdTests extends GroovyTestCase {
 
@@ -54,59 +55,59 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
   void testNullableValidationLogic() {
     ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd()
     assertFalse(cmd.validate())
-    assertEquals('nullable', cmd.errors.getFieldError('competitionId').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('userName').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('apiKey').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('shoutId').getCode())
   }
 
   void testBlankValidationLogic() {
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competitionId: '', userName: '', apiKey: '', shoutId: '')
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: '')
     assertFalse(cmd.validate())
-    assertEquals('blank', cmd.errors.getFieldError('competitionId').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('userName').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('apiKey').getCode())
     assertEquals('blank', cmd.errors.getFieldError('shoutId').getCode())
-  }
-
-  void testInvalidCompetitionId() {
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competitionId: 'invalidCompetitionId')
-    assertFalse(cmd.validate())
-    assertEquals('invalid.competition', cmd.errors.getFieldError('competitionId').getCode())
   }
 
   void testInactiveCompetitionId() {
     competition.current = false
     competition.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competitionId: competition.id)
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition)
     assertFalse(cmd.validate())
-    assertEquals('inactive.competition', cmd.errors.getFieldError('competitionId').getCode())
+    assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
   void testInvalidShoutId() {
     ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: 'invalidShoutId')
     assertFalse(cmd.validate())
-    assertEquals('invalid.shout', cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_NOT_FOUND, cmd.errors.getFieldError('shoutId').getCode())
   }
 
-  void testInvalidCredentials() {
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competitionId: competition.id, userName: "$userName invalid", apiKey: apiKey)
+  void testShoutExecuted() {
+    shout.modReasonCode = ModReasonCode.EXECUTION;
+    shout.save()
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: shout.shoutId)
     assertFalse(cmd.validate())
-    assertEquals('invalid.credentials', cmd.errors.getFieldError('apiKey').getCode())
+    assertEquals(Constants.SHOUT_EXECUTED, cmd.errors.getFieldError('shoutId').getCode())
+  }
 
-    ShoutDoUpdateCmd cmd2 = new ShoutDoUpdateCmd(competitionId: competition.id, userName: userName, apiKey: "$apiKey invalid")
-    assertFalse(cmd2.validate())
-    assertEquals('invalid.credentials', cmd2.errors.getFieldError('apiKey').getCode())
+  void testShoutDeleted() {
+    shout.modReasonCode = ModReasonCode.DELETIONBYUSER;
+    shout.save()
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: shout.shoutId)
+    assertFalse(cmd.validate())
+    assertEquals(Constants.SHOUT_DELETED, cmd.errors.getFieldError('shoutId').getCode())
 
-    ShoutDoUpdateCmd cmd3 = new ShoutDoUpdateCmd(competitionId: "${competition.id} invalid", userName: userName, apiKey: apiKey)
-    assertFalse(cmd3.validate())
-    assertEquals('invalid.credentials', cmd3.errors.getFieldError('apiKey').getCode())
+    shout.modReasonCode = ModReasonCode.DELETIONBYSYSTEM;
+    shout.save()
+    ShoutDoUpdateCmd cmd1 = new ShoutDoUpdateCmd(shoutId: shout.shoutId)
+    assertFalse(cmd1.validate())
+    assertEquals(Constants.SHOUT_DELETED, cmd1.errors.getFieldError('shoutId').getCode())
   }
 
   void testValidShoutDoUpdateCmd() {
     competition.current = true
     competition.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competitionId: competition.id, shoutId: shout.id, userName: broker.userName, apiKey: broker.apiKey, quantity: 9.99, limitPrice: 99.99)
+    shout.modReasonCode = ModReasonCode.INSERT
+    shout.save()
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition, shoutId: shout.shoutId, broker: broker, quantity: 9.99, limitPrice: 99.99)
     assertTrue(cmd.validate())
   }
 }

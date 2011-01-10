@@ -16,13 +16,10 @@
 
 package org.powertac.common.command
 
-import org.powertac.common.Broker
-import org.powertac.common.Competition
-import org.powertac.common.Product
-import org.powertac.common.Timeslot
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.enumerations.ProductType
+import org.powertac.common.*
 
 class ShoutDoCreateCmdTests extends GroovyTestCase {
 
@@ -54,24 +51,13 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
   void testNullableValidationLogic() {
     ShoutDoCreateCmd cmd= new ShoutDoCreateCmd()
     assertFalse (cmd.validate())
-    assertEquals('nullable', cmd.errors.getFieldError('competitionId').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('userName').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('apiKey').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('productId').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('timeslotId').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('product').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('timeslot').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('buySellIndicator').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('quantity').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('orderType').getCode())
-  }
-
-  void testBlankValidationLogic() {
-    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(competitionId: '', userName: '', apiKey: '', productId: '', timeslotId: '')
-    assertFalse (cmd.validate())
-    assertEquals('blank', cmd.errors.getFieldError('competitionId').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('userName').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('apiKey').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('productId').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('timeslotId').getCode())
   }
 
   void testMinValidationLogic() {
@@ -81,63 +67,31 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
     assertEquals('min.notmet', cmd.errors.getFieldError('quantity').getCode())
   }
 
-  void testInvalidCompetitionId() {
-    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(competitionId: 'invalidCompetitionId')
-    assertFalse(cmd.validate())
-    assertEquals('invalid.competition', cmd.errors.getFieldError('competitionId').getCode())
-  }
-
-  void testInvalidProductId() {
-    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(productId: 'invalidProductId')
-    assertFalse(cmd.validate())
-    assertEquals('invalid.product', cmd.errors.getFieldError('productId').getCode())
-  }
-
-  void testInvalidTimeslotId() {
-    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(timeslotId: 'invalidTimeslotId')
-    assertFalse(cmd.validate())
-    assertEquals('invalid.timeslot', cmd.errors.getFieldError('timeslotId').getCode())
-  }
-
-  void testInactiveCompetitionId() {
+  void testInactiveCompetition() {
     competition.current = false
     competition.save()
-    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(competitionId: competition.id)
+    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(competition: competition)
     assertFalse(cmd.validate())
-    assertEquals('inactive.competition', cmd.errors.getFieldError('competitionId').getCode())
-  }
-  
-  void testInvalidCredentials() {
-    ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(competitionId: competition.id, userName: "$userName invalid", apiKey: apiKey)
-    assertFalse (cmd.validate())
-    assertEquals('invalid.credentials', cmd.errors.getFieldError('apiKey').getCode())
-
-    ShoutDoCreateCmd cmd2 = new ShoutDoCreateCmd(competitionId: competition.id, userName: userName, apiKey: "$apiKey invalid")
-    assertFalse (cmd2.validate())
-    assertEquals('invalid.credentials', cmd2.errors.getFieldError('apiKey').getCode())
-
-    ShoutDoCreateCmd cmd3 = new ShoutDoCreateCmd(competitionId: "${competition.id} invalid", userName: userName, apiKey: apiKey)
-    assertFalse (cmd3.validate())
-    assertEquals('invalid.credentials', cmd3.errors.getFieldError('apiKey').getCode())
+    assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
   void testMarketLimitOrderConstraints() {
     ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(orderType: OrderType.MARKET, limitPrice: 1.0)
     assertFalse (cmd.validate())
-    assertEquals('nullable.marketorder', cmd.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_MARKETORDER_WITH_LIMIT, cmd.errors.getFieldError('limitPrice').getCode())
 
     ShoutDoCreateCmd cmd2 = new ShoutDoCreateCmd(orderType: OrderType.LIMIT)
     assertFalse (cmd2.validate())
-    assertEquals('nullable.limitorder', cmd2.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_LIMITORDER_NULL_LIMIT, cmd2.errors.getFieldError('limitPrice').getCode())
   }
 
   void testValidShoutDoCreateCmd(){
     competition.current = true
     competition.save()
-    ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(competitionId: competition.id, productId: product.id, timeslotId: timeslot.id, userName: broker.userName, apiKey: broker.apiKey, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT)
+    ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT)
     assertTrue (cmd.validate())
 
-    ShoutDoCreateCmd cmd2 = new ShoutDoCreateCmd(competitionId: competition.id, productId: product.id, timeslotId: timeslot.id, userName: broker.userName, apiKey: broker.apiKey, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET)
+    ShoutDoCreateCmd cmd2 = new ShoutDoCreateCmd(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET)
     assertTrue (cmd2.validate())
   }
 }
