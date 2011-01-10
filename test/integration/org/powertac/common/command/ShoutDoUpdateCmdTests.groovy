@@ -66,6 +66,35 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     assertEquals('blank', cmd.errors.getFieldError('shoutId').getCode())
   }
 
+  void testMinValidationLogic() {
+    ShoutDoUpdateCmd cmd= new ShoutDoUpdateCmd(limitPrice: -1.0, quantity:  -1.0)
+    assertFalse(cmd.validate())
+    assertEquals('min.notmet', cmd.errors.getFieldError('limitPrice').getCode())
+    assertEquals('min.notmet', cmd.errors.getFieldError('quantity').getCode())
+  }
+
+  void testQuantityAndLimitNullLogic() {
+    ShoutDoUpdateCmd cmd= new ShoutDoUpdateCmd()
+    assertFalse(cmd.validate())
+    assertEquals(Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY, cmd.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY, cmd.errors.getFieldError('quantity').getCode())
+
+    ShoutDoUpdateCmd cmd1= new ShoutDoUpdateCmd(limitPrice: 1.0)
+    assertFalse(cmd1.validate())
+    assertNull(cmd1.errors.getFieldError('limitPrice')?.getCode())
+    assertNull(cmd1.errors.getFieldError('quantity')?.getCode())
+
+    ShoutDoUpdateCmd cmd2= new ShoutDoUpdateCmd(quantity: 1.0)
+    assertFalse(cmd2.validate())
+    assertNull(cmd2.errors.getFieldError('limitPrice')?.getCode())
+    assertNull(cmd2.errors.getFieldError('quantity')?.getCode())
+
+    ShoutDoUpdateCmd cmd3= new ShoutDoUpdateCmd(quantity: 1.0, limitPrice: 1.0)
+    assertFalse(cmd3.validate())
+    assertNull(cmd3.errors.getFieldError('limitPrice')?.getCode())
+    assertNull(cmd3.errors.getFieldError('quantity')?.getCode())
+  }
+
   void testInactiveCompetitionId() {
     competition.current = false
     competition.save()

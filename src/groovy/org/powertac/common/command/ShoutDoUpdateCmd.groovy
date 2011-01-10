@@ -63,14 +63,14 @@ import org.powertac.common.enumerations.ModReasonCode
       }
     })
     quantity(nullable: true, min: 0.0, scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.limitPrice == null && obj.quantity == null) {
+      if (obj.limitPrice == null && val == null) {
         return [Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY]
       } else {
         return true
       }
     })
     limitPrice(nullable: true, min: 0.0, scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.limitPrice == null && obj.quantity == null) {
+      if (val == null && obj.quantity == null) {
         return [Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY]
       } else {
         return true
