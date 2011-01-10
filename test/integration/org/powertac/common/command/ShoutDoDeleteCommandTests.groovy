@@ -58,6 +58,12 @@ class ShoutDoDeleteCommandTests extends GroovyTestCase {
     assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
+  void testInvalidShoutId() {
+    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(shoutId: 'invalidShoutId')
+    assertFalse(cmd.validate())
+    assertEquals(Constants.SHOUT_NOT_FOUND, cmd.errors.getFieldError('shoutId').getCode())
+  }
+
   void testDeletedShout() {
     shout.modReasonCode = ModReasonCode.DELETIONBYSYSTEM
     ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shoutId: shout.shoutId, broker: broker)
