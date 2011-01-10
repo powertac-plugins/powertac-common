@@ -20,6 +20,10 @@ import org.powertac.common.Shout;
 import org.powertac.common.command.ShoutDoCreateCmd;
 import org.powertac.common.command.ShoutDoDeleteCmd;
 import org.powertac.common.command.ShoutDoUpdateCmd;
+import org.powertac.common.exceptions.MarketClearingException;
+import org.powertac.common.exceptions.ShoutCreationException;
+import org.powertac.common.exceptions.ShoutDeletionException;
+import org.powertac.common.exceptions.ShoutUpdateExeption;
 
 import java.util.List;
 
@@ -46,16 +50,18 @@ public interface Auctioneer extends CompetitionBaseEvents {
    *
    * @param shoutDoCreate new incoming shout from a broker
    * @return List of objects, which might include {@link org.powertac.common.CashUpdate}, {@link org.powertac.common.Orderbook},{@link org.powertac.common.TransactionLog},{@link Shout}. These may then processed further "downstream" in the server, e.g. by accounting service
+   * @throws org.powertac.common.exceptions.ShoutCreationException thrown if the creation of the new shout fails
    */
-  List processShoutCreate(ShoutDoCreateCmd shoutDoCreate) ;
+  List processShoutCreate(ShoutDoCreateCmd shoutDoCreate) throws ShoutCreationException;
 
   /**
    * Deletes the shout specified by {@link Shout}
    *
    * @param shoutDoDeleteCmd command object that contains the shoutId that should be deleted
    * @return Shout object that contains the new status of the deleted shout
+   * @throws org.powertac.common.exceptions.ShoutDeletionException thrown if the shout deletion fails
    */
-  Shout processShoutDelete(ShoutDoDeleteCmd shoutDoDeleteCmd);
+  Shout processShoutDelete(ShoutDoDeleteCmd shoutDoDeleteCmd) throws ShoutDeletionException;
 
   /**
    * Updates the shout specified by the {@link ShoutDoUpdateCmd}. Changeable
@@ -63,15 +69,17 @@ public interface Auctioneer extends CompetitionBaseEvents {
    *
    * @param shoutDoUpdateCmd the shout object to update
    * @return a list of updated shout objects if a matching took place based on the shout change or null otherwise
+   * @throws org.powertac.common.exceptions.ShoutUpdateExeption thrown if the shout update fails
    */
-  List processShoutUpdate(ShoutDoUpdateCmd shoutDoUpdateCmd);
+  List processShoutUpdate(ShoutDoUpdateCmd shoutDoUpdateCmd) throws ShoutUpdateExeption;
 
   /**
    * This method is required for periodic clearing auctions and essentially tells
    * the Auctioneer module to clear the market matching all open shouts in the orderbooks
    *
    * @return a list of {@link Shout}, {@link org.powertac.common.command.PositionDoUpdateCmd}, and {@link org.powertac.common.command.CashDoUpdateCmd} objects
+   * @throws org.powertac.common.exceptions.MarketClearingException thrown if the market clearing fails
    */
-  List clearMarket();
+  List clearMarket() throws MarketClearingException;
 
 }
