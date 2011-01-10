@@ -45,10 +45,9 @@ public interface Auctioneer extends CompetitionBaseEvents {
    * can further process these objects later on.
    *
    * @param shoutDoCreate new incoming shout from a broker
-   * @return List of objects, which might include <code>PositionDoUpdate</code>, <code>CashDoUpdate</code>, <code>Orderbook</code>,<code>TransactionLog</code>,<code>Shout</code>
-   * @see org.powertac.common.command.PositionDoUpdateCmd, CashDoUpdate, Orderbook, TransactionLog, Shout
+   * @return List of objects, which might include {@link org.powertac.common.CashUpdate}, {@link org.powertac.common.Orderbook},{@link org.powertac.common.TransactionLog},{@link Shout}. These may then processed further "downstream" in the server, e.g. by accounting service
    */
-  List processShoutCreate(ShoutDoCreateCmd shoutDoCreate);
+  List processShoutCreate(ShoutDoCreateCmd shoutDoCreate) ;
 
   /**
    * Deletes the shout specified by {@link Shout}

@@ -20,9 +20,7 @@ import org.powertac.common.CashUpdate;
 import org.powertac.common.PositionUpdate;
 import org.powertac.common.Tariff;
 import org.powertac.common.command.*;
-import org.powertac.common.exceptions.CashUpdateException;
-import org.powertac.common.exceptions.PositionUpdateException;
-import org.powertac.common.exceptions.TariffProcessingException;
+import org.powertac.common.exceptions.*;
 
 import java.util.List;
 
@@ -64,9 +62,9 @@ public interface AccountingService extends CompetitionBaseEvents {
    * {@code publishTariffList()} method
    *
    * @param tariffDoPublishCmd command object that contains the tariff detais to be published
-   * @throws org.powertac.common.exceptions.TariffProcessingException is thrown if the tariff publishing fails
+   * @throws org.powertac.common.exceptions.TariffPublishException is thrown if the tariff publishing fails
    */
-  public void processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffProcessingException;
+  public void processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffPublishException;
 
 
   /**
@@ -76,9 +74,9 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @param tariffDoReplyCmd the tariff reply to store in the database
    * @return the processed tariffDoReplyCmd object
-   * @throws org.powertac.common.exceptions.TariffProcessingException is thrown if the tariff publishing fails
+   * @throws org.powertac.common.exceptions.TariffReplyException is thrown if the tariff publishing fails
    */
-  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffProcessingException;
+  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
 
   /**
    * Method processes incoming tariffDoRevokeCmd of a broker. This method needs to
@@ -87,13 +85,13 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @param tariffDoRevokeCmd describing the tariff to be revoked
    * @return Tariff updated tariff object that reflects the revocation of the tariff
-   * @throws org.powertac.common.exceptions.TariffProcessingException is thrown if the tariff publishing fails
+   * @throws org.powertac.common.exceptions.TariffRevokeException is thrown if the tariff publishing fails
    */
-  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd) throws TariffProcessingException;
+  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd) throws TariffRevokeException;
 
 
   /**
-   * Returns a list of all currently active (i.e. subscribable) tariffs
+   * Returns a list of all currently active (i.e. subscribeable) tariffs (which might be empty)
    *
    * @return a list of all active tariffs, which might be empty if no tariffs are published
    */
@@ -101,7 +99,7 @@ public interface AccountingService extends CompetitionBaseEvents {
 
 
   /**
-   * Publishes the list of available customers
+   * Publishes the list of available customers (which might be empty)
    *
    * @return a list of all available customers, which might be empty if no customers are available
    */
