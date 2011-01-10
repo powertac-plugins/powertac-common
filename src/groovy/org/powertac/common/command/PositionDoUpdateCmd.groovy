@@ -16,6 +16,9 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.*
+
 /**
  * Command Object that is used to send a position update request to the
  * accounting service, which - subsequently - processes this request
@@ -25,13 +28,22 @@ package org.powertac.common.command
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-class PositionDoUpdateCmd implements Serializable {
-  String id
-  String competitionId
-  String productId
-  String timeslotId
-  String brokerId
+@Validateable class PositionDoUpdateCmd implements Serializable {
+  Competition competition
+  Product product
+  Timeslot timeslot
+  Broker broker
   BigDecimal relativeChange
   String reason
   String origin
+
+  static constraints = {
+    competition(nullable: false)
+    product (nullable: false)
+    timeslot (nullable: false)
+    broker(nullable: false)
+    relativeChange(nullable: false, scale: Constants.DECIMALS)
+    reason(nullable: true)
+    origin(nullable: true)
+  }
 }
