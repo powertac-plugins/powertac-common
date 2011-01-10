@@ -18,6 +18,7 @@ package org.powertac.common.interfaces;
 
 import org.powertac.common.Timeslot;
 import org.powertac.common.Weather;
+import org.powertac.common.exceptions.WeatherDataGenerationException;
 
 import java.util.List;
 
@@ -29,24 +30,15 @@ import java.util.List;
  */
 public interface PhysicalEnvironment extends CompetitionBaseEvents {
   /**
-   * Generates and returns the real weather data for a given timeslot
-   * for customers, brokers, distribution utility
-   * <p/>
-   * Make sure that the timeslotIsChanged parameter is referenced within the WeatherReadData command
-   * so that customers/brokers know which timeslot the data is for
-   *
-   * @param currentTimeslot the "now" (deactivated) timeslot
-   * @return The actual weather data for the given timeslotIsChanged parameter
-   */
-  Weather generateRealWeatherData(Timeslot currentTimeslot);
-
-  /**
    * Generates and returns weather forecasts for every enabled timeslot
-   * The physical environment module is responsible for retrieving all enabled timeslots
-   * and to compute weather forecasts for each of it from the perspective of the "current timeslot" specified by the given {@code currentTimeslotId}.
+   * The physical environment module is responsible for computing weather forecasts for each entry in {@code targetTimeslots} from the perspective of the {@code currentTimeslot}.
+   *
+   * Note: For the specific resulting {@link Weather} instance for which {@code weatherInstance.targetTimeslot == weatherInstance.currentTimeslot} (i.e. the "now" timeslot) {@code forecast} attribute must be set to false as this is the real (i.e. metered) weather data and not a forecast anymore
    *
    * @param currentTimeslot the current timeslot
+   * @param targetTimeslots timeslots to generate weather forecasts for
    * @return a list of weather forecast objects
+   * @throws org.powertac.common.exceptions.WeatherDataGenerationException thrown if the generation of weather forecasts fails
    */
-  List<Weather> generateForecastWeatherData(Timeslot currentTimeslot);
+  List<Weather> generateWeatherData(Timeslot currentTimeslot, List<Timeslot> targetTimeslots) throws WeatherDataGenerationException;
 }
