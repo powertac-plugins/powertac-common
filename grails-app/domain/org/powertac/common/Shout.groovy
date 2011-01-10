@@ -47,15 +47,15 @@ class Shout implements Serializable {
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     competition(nullable: false, validator: {val ->
-      val?.current ? true : ['inactive.competition']
+      val?.current ? true : [Constants.COMPETITION_INACTIVE]
     })
     broker(nullable: false)
     product(nullable: false)
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, scale: Constants.DECIMALS)
     limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.orderType == OrderType.LIMIT && val == null) return ['nullable.limitorder']
-      if (obj.orderType == OrderType.MARKET && val != null) return ['nullable.marketorder']
+      if (obj.orderType == OrderType.LIMIT && val == null) return [Constants.SHOUT_LIMITORDER_NULL_LIMIT]
+      if (obj.orderType == OrderType.MARKET && val != null) return [Constants.SHOUT_MARKETORDER_WITH_LIMIT]
       return true
     })
     executionQuantity(nullable: true, min: 0.0, scale: Constants.DECIMALS)
@@ -73,6 +73,8 @@ class Shout implements Serializable {
 
   static mapping = {
     id (generator: 'assigned')
+    shoutId (index: 'shout_id_idx,shout_id_latest_idx')
+    latest (index: 'shout_id_latest_idx')
   }
 
   /**

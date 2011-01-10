@@ -73,17 +73,17 @@ class ShoutTests extends GroovyTestCase {
     assertFalse(competition.current)
     Shout shout = new Shout(competition: competition)
     assertFalse(shout.validate())
-    assertEquals('inactive.competition', shout.errors.getFieldError('competition').getCode())
+    assertEquals(Constants.COMPETITION_INACTIVE, shout.errors.getFieldError('competition').getCode())
   }
 
   void testMarketLimitOrderConstraints() {
     Shout shout1 = new Shout(orderType: OrderType.MARKET, limitPrice: 1.0)
     assertFalse(shout1.validate())
-    assertEquals('nullable.marketorder', shout1.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_MARKETORDER_WITH_LIMIT, shout1.errors.getFieldError('limitPrice').getCode())
 
     Shout shout2 = new Shout(orderType: OrderType.LIMIT)
     assertFalse(shout2.validate())
-    assertEquals('nullable.limitorder', shout2.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_LIMITORDER_NULL_LIMIT, shout2.errors.getFieldError('limitPrice').getCode())
   }
 
   void testValidShoutDoCreateCmd() {
