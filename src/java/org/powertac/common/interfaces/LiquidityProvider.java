@@ -16,6 +16,10 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.Competition;
+import org.powertac.common.Product;
+import org.powertac.common.Timeslot;
+import org.powertac.common.TransactionLog;
 import org.powertac.common.exceptions.QuoteCreationException;
 
 import java.util.List;
@@ -33,32 +37,32 @@ public interface LiquidityProvider extends CompetitionBaseEvents {
    * module generate quotes (i.e. buy and sell shouts) for all products
    * in all timeslots of a particular competition
    *
-   * @param competitionId the competition to generate quotes for
+   * @param competition the competition to generate quotes for
    * @return List of {@link org.powertac.common.command.ShoutDoCreateCmd}, {@link org.powertac.common.command.ShoutDoUpdateCmd}, and {@link org.powertac.common.command.ShoutDoDeleteCmd} objects to be processed by the auctioneer later on
    * @throws org.powertac.common.exceptions.QuoteCreationException thrown if the quote creation fails
    */
-  public List createAllQuotesFor (String competitionId) throws QuoteCreationException;
+  public List createAllQuotesFor (Competition competition) throws QuoteCreationException;
 
   /**
    * This is method is called in order to make the LiquidityProvider
    * module respond to a specific transaction that occurred in the market.
    *
-   * @param transactionLogId the id of the transactionLog to respond to
+   * @param transactionLog the transactionLog to respond to
    * @return List of {@link org.powertac.common.command.ShoutDoCreateCmd}, {@link org.powertac.common.command.ShoutDoUpdateCmd}, and {@link org.powertac.common.command.ShoutDoDeleteCmd} objects to be processed by the auctioneer later on
    * @throws org.powertac.common.exceptions.QuoteCreationException thrown if the quote creation fails
    */
-  public List createQuoteFor(String transactionLogId) throws QuoteCreationException;
+  public List createQuoteFor(TransactionLog transactionLog) throws QuoteCreationException;
 
   /**
    * This is method is called in order to make the LiquidityProvider
    * module generate / update its quote (i.e. buy and sell orders) for
    * a particular product in a particular timeslot.
    *
-   * @param productId the id of the product to generate a quote for
-   * @param timeslotId the id of the timeslot to generate a quote for
+   * @param product the product to generate a quote for
+   * @param timeslot the timeslot to generate a quote for
    * @return List of {@link org.powertac.common.command.ShoutDoCreateCmd}, {@link org.powertac.common.command.ShoutDoUpdateCmd}, and {@link org.powertac.common.command.ShoutDoDeleteCmd} objects to be processed by the auctioneer later on
    * @throws org.powertac.common.exceptions.QuoteCreationException thrown if the quote creation fails
    */
-  public List createQuoteFor(String productId, String timeslotId) throws QuoteCreationException;
+  public List createQuoteFor(Product product, Timeslot timeslot) throws QuoteCreationException;
 
 }
