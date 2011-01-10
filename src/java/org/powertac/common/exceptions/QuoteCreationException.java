@@ -7,4 +7,18 @@ package org.powertac.common.exceptions;
  * @version 1.0, Date: 10.01.11
  */
 public class QuoteCreationException extends PowerTacException {
+  public QuoteCreationException() {
+  }
+
+  public QuoteCreationException(String s) {
+    super(s);
+  }
+
+  public QuoteCreationException(String s, Throwable throwable) {
+    super(s, throwable);
+  }
+
+  public QuoteCreationException(Throwable throwable) {
+    super(throwable);
+  }
 }

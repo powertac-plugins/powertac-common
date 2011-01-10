@@ -1,8 +1,8 @@
 package org.powertac.common.command
 
 import grails.test.GrailsUnitTestCase
-import org.powertac.common.exceptions.CompetitionNotFoundException
-import org.powertac.common.exceptions.ShoutNotFoundException
+import org.powertac.common.exceptions.CompetitionResetException
+import org.powertac.common.exceptions.MeterReadingException
 
 class ErrorCmdTests extends GrailsUnitTestCase {
   protected void setUp() {
@@ -15,15 +15,15 @@ class ErrorCmdTests extends GrailsUnitTestCase {
 
   void testErrorCommandFromException() {
     try {
-      throw new CompetitionNotFoundException("Competition not found") //Throw first test excption
+      throw new MeterReadingException("Competition not found") //Throw first test excption
     } catch (Exception cnfe) {
       try {
-        throw new ShoutNotFoundException("Shout not found",cnfe) //Throw nested 2nd test excpetion
-      } catch (ShoutNotFoundException snfe) {
+        throw new CompetitionResetException("Shout not found",cnfe) //Throw nested 2nd test excpetion
+      } catch (Exception snfe) {
         ErrorCmd cmd = ErrorCmd.fromException(snfe)
-        assertEquals('org.powertac.common.exceptions.ShoutNotFoundException', cmd.className)
+        assertEquals('org.powertac.common.exceptions.CompetitionResetException', cmd.className)
         assertEquals('Shout not found', cmd.message)
-        assertEquals('org.powertac.common.exceptions.CompetitionNotFoundException: Competition not found', cmd.cause)
+        assertEquals('org.powertac.common.exceptions.MeterReadingException: Competition not found', cmd.cause)
         assertNotNull('Testtrace', cmd.stackTrace)
       }
 
