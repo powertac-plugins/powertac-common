@@ -16,6 +16,8 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.exceptions.TariffRuleException;
+
 /**
  * Tariff rule enforcer interface defines common methods a Tariff Rule Enforcer module in PowerTAC competition has to implement
  *
@@ -31,7 +33,8 @@ public interface TariffRuleEnforcer extends CompetitionBaseEvents {
    *
    * @param tariff object
    * @return whether tariffDoReply is accepted or not
+   * @throws org.powertac.common.exceptions.TariffRuleException thrown if an error occurs during tariff validation. Note that non-conformant tariffs do *not* cause an exception but simply result in "false" being returned. Exceptions should only occur of non tariff objects are provided or if, e.g., database access is broken.
    */
-  public boolean acceptTariff(Object tariff);
+  public boolean acceptTariff(Object tariff) throws TariffRuleException;
 
 }
