@@ -16,7 +16,7 @@
 
 package org.powertac.common.interfaces;
 
-import org.powertac.common.command.TimeslotIsChangedCmd;
+import org.powertac.common.Timeslot;
 
 import java.util.List;
 
@@ -41,6 +41,6 @@ public interface DistributionUtility extends CompetitionBaseEvents {
    * @param currentTimeslot the timeslot to compute the balancing for
    * @return a list of {@link org.powertac.common.command.PositionDoUpdateCmd} and {@link org.powertac.common.command.CashDoUpdateCmd} objects
    */
-  List balanceTimeslot(TimeslotIsChangedCmd currentTimeslot);
+  List balanceTimeslot(Timeslot currentTimeslot);
 
 }

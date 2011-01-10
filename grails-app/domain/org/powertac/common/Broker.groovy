@@ -30,7 +30,7 @@ class Broker implements Serializable {
   static constraints = {
     id(nullable: false, blank: false, unique: true)
     userName(nullable: false, blank: false, unique: 'competition', minSize: 5, matches: /([a-zA-Z0-9])*/)
-    apiKey(nullable: false, blank: false, minSize: 32)
+    apiKey(nullable: false, blank: false, unique: true, minSize: 32)
   }
 
   static mapping = {

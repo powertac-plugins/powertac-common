@@ -16,6 +16,9 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.CashUpdate;
+import org.powertac.common.PositionUpdate;
+import org.powertac.common.Tariff;
 import org.powertac.common.command.*;
 
 import java.util.List;
@@ -39,16 +42,16 @@ public interface AccountingService extends CompetitionBaseEvents {
    * of a product (e.g. energy futures) for particular broker and a particular timeslot
    *
    * @param positionDoUpdateCmd the object that describes what position change to book in the database
-   * @return PositionIsChangedCmd Latest {@link PositionIsChangedCmd} which contains relative change, new overall balance, origin and reason for the position change
+   * @return PositionUpdate Latest {@link PositionUpdate} which contains relative change, new overall balance, origin and reason for the position change
    */
-  public PositionIsChangedCmd processPositionUpdate (PositionDoUpdateCmd positionDoUpdateCmd);
+  public PositionUpdate processPositionUpdate (PositionDoUpdateCmd positionDoUpdateCmd);
 
   /**
    * Method processes cashDoUpdateCmd objects adjusting the booked amounts of cash for a specific broker.
    * @param cashDoUpdateCmd the object that describes what cash change to book in the database
-   * @return CashIsChangedCmd Latest {@link CashIsChangedCmd} which contains relative change, new overall balance, origin and reason for the cash update
+   * @return CashUpdate Latest {@link CashUpdate} which contains relative change, new overall balance, origin and reason for the cash update
    */
-  public CashIsChangedCmd processCashUpdate(CashDoUpdateCmd cashDoUpdateCmd);
+  public CashUpdate processCashUpdate(CashDoUpdateCmd cashDoUpdateCmd);
 
   /**
    * Method processes incoming tariffDoPublishCmd of a broker. The method does not
@@ -76,9 +79,9 @@ public interface AccountingService extends CompetitionBaseEvents {
    * published tariffs.
    *
    * @param tariffDoRevokeCmd describing the tariff to be revoked
-   * @return TariffIsRevokedCmd acknowledging the revocation of the tariff
+   * @return Tariff updated tariff object that reflects the revocation of the tariff
    */
-  public TariffIsRevokedCmd processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd);
+  public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd);
 
 
   /**
@@ -86,7 +89,7 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @return a list of all active tariffs
    */
-  List<TariffIsPublishedCmd> publishTariffList();
+  List<Tariff> publishTariffList();
 
 
   /**
@@ -94,6 +97,6 @@ public interface AccountingService extends CompetitionBaseEvents {
    *
    * @return the identical customerInfo parameter
    */
-  List<CustomerIsAvailableCmd> publishCustomersAvailable();
+  List<Customer> publishCustomersAvailable();
 
 }

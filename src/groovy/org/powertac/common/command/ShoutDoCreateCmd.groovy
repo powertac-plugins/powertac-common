@@ -29,28 +29,23 @@ import org.powertac.common.*
  * @version 1.0, Date: 01.12.10
  */
 @Validateable class ShoutDoCreateCmd implements Serializable {
-  String competitionId
-  String userName
+  Competition competition
   String apiKey
-  String productId
-  String timeslotId
+  Product product
+  Timeslot timeslot
   BuySellIndicator buySellIndicator
   BigDecimal quantity
   BigDecimal limitPrice
   OrderType orderType
 
   static constraints = {
-    competitionId(nullable: false, blank: false, validator: {val ->
-      def competition = Competition.get(val)
-      if (!competition) {
-        return ['invalid.competition']
-      } else if (!competition.current){
+    competition(nullable: false, validator: {val ->
+      if (!val?.current){
         return ['inactive.competition']
       } else {
         return true
       }
     })
-    userName(nullable: false, blank: false)
     apiKey(nullable: false, blank: false, validator: {val, obj ->
       def results = Broker.withCriteria {
         eq('competition.id', obj.competitionId)

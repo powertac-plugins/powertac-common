@@ -16,6 +16,8 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.MeterReading;
+import org.powertac.common.Weather;
 import org.powertac.common.command.*;
 
 import java.util.List;
@@ -37,19 +39,19 @@ public interface Customer extends CompetitionBaseEvents {
   /**
    * Called when new weather forecasts are available
    *
-   * @param weatherIsReportedCmdList new weather forecasts
+   * @param weatherList new weather forecasts
    */
-  public void processWeatherForecasts(List<WeatherIsReportedCmd> weatherIsReportedCmdList);
+  public void processWeatherForecasts(List<Weather> weatherList);
 
   /**
    * Called to make the customer model produce its "real consumption" / real production
    * based on the given "real weather data" (which might only be relevant to customer
    * models that react to weather impact, such as PV or wind turbine customers.
    *
-   * @param weatherIsReportedCmd real measured weather data for a particular timeslot
-   * @return real consumption / production of the customer for the timeslot specified in the given {@link org.powertac.common.command.WeatherIsReportedCmd}
+   * @param weather real measured weather data for a particular timeslot
+   * @return real consumption / production of the customer for the timeslot specified in the given {@link Weather}
    */
-  public MeterIsReadCmd generateMeterReading(WeatherIsReportedCmd weatherIsReportedCmd);
+  public MeterReading generateMeterReading(Weather weather);
 
   /**
    * As soon as this method is called the customer model is required to store / update

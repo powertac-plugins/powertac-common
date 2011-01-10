@@ -16,7 +16,8 @@
 
 package org.powertac.common.interfaces;
 
-import org.powertac.common.command.WeatherIsReportedCmd;
+import org.powertac.common.Timeslot;
+import org.powertac.common.Weather;
 
 import java.util.List;
 
@@ -34,18 +35,18 @@ public interface PhysicalEnvironment extends CompetitionBaseEvents {
    * Make sure that the timeslotIsChanged parameter is referenced within the WeatherReadData command
    * so that customers/brokers know which timeslot the data is for
    *
-   * @param currentTimeslotId if of the changed (deactivated) timeslot
+   * @param currentTimeslot the "now" (deactivated) timeslot
    * @return The actual weather data for the given timeslotIsChanged parameter
    */
-  WeatherIsReportedCmd generateRealWeatherData(String currentTimeslotId);
+  Weather generateRealWeatherData(Timeslot currentTimeslot);
 
   /**
    * Generates and returns weather forecasts for every enabled timeslot
    * The physical environment module is responsible for retrieving all enabled timeslots
    * and to compute weather forecasts for each of it from the perspective of the "current timeslot" specified by the given {@code currentTimeslotId}.
    *
-   * @param currentTimeslotId the id of the current timeslot
+   * @param currentTimeslot the current timeslot
    * @return a list of weather forecast objects
    */
-  List<WeatherIsReportedCmd> generateForecastWeatherData(String currentTimeslotId);
+  List<Weather> generateForecastWeatherData(Timeslot currentTimeslot);
 }

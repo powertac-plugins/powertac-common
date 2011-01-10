@@ -17,9 +17,11 @@
 package org.powertac.common.command
 
 import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.Broker
+import org.powertac.common.Competition
 import org.powertac.common.Constants
 
- /**
+/**
  * Command object that represents an cash transaction
  * (add / deduce money) that should be executed on a
  * specific broker cash account for a given reason.
@@ -28,15 +30,15 @@ import org.powertac.common.Constants
  * @version 1.0 , Date: 02.12.10
  */
 @Validateable class CashDoUpdateCmd implements Serializable {
-  String competitionId
-  String brokerId
+  Competition competition
+  Broker broker
   BigDecimal relativeChange
   String reason
   String origin
 
   static constraints = {
-    competitionId(nullable: false, blank: false)
-    brokerId(nullable: false, blank: false)
+    competition(nullable: false)
+    broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
     reason(nullable: true)
     origin(nullable: true)

@@ -16,10 +16,10 @@
 
 package org.powertac.common.interfaces;
 
+import org.powertac.common.Shout;
 import org.powertac.common.command.ShoutDoCreateCmd;
 import org.powertac.common.command.ShoutDoDeleteCmd;
 import org.powertac.common.command.ShoutDoUpdateCmd;
-import org.powertac.common.command.ShoutIsChangedCmd;
 
 import java.util.List;
 
@@ -45,18 +45,18 @@ public interface Auctioneer extends CompetitionBaseEvents {
    * can further process these objects later on.
    *
    * @param shoutDoCreate new incoming shout from a broker
-   * @return List of objects, which might include <code>PositionDoUpdate</code>, <code>CashDoUpdate</code>, <code>OrderbookIsChangedCmd</code>,<code>QuoteIsChanged</code>,<code>TradeIsExecuted</code>,<code>ShoutIsChanged</code>
-   * @see org.powertac.common.command.PositionDoUpdateCmd, CashDoUpdate, OrderbookIsChangedCmd, QuoteIsChanged, TradeIsExecuted, ShoutIsChanged
+   * @return List of objects, which might include <code>PositionDoUpdate</code>, <code>CashDoUpdate</code>, <code>Orderbook</code>,<code>TransactionLog</code>,<code>Shout</code>
+   * @see org.powertac.common.command.PositionDoUpdateCmd, CashDoUpdate, Orderbook, TransactionLog, Shout
    */
   List processShoutCreate(ShoutDoCreateCmd shoutDoCreate);
 
   /**
-   * Deletes the shout specified by {@link ShoutDoDeleteCmd}
+   * Deletes the shout specified by {@link Shout}
    *
    * @param shoutDoDeleteCmd command object that contains the shoutId that should be deleted
-   * @return ShoutChangedCommand object that contains the new status of the deleted shout
+   * @return Shout object that contains the new status of the deleted shout
    */
-  ShoutIsChangedCmd processShoutDelete(ShoutDoDeleteCmd shoutDoDeleteCmd);
+  Shout processShoutDelete(ShoutDoDeleteCmd shoutDoDeleteCmd);
 
   /**
    * Updates the shout specified by the {@link ShoutDoUpdateCmd}. Changeable
@@ -71,7 +71,7 @@ public interface Auctioneer extends CompetitionBaseEvents {
    * This method is required for periodic clearing auctions and essentially tells
    * the Auctioneer module to clear the market matching all open shouts in the orderbooks
    *
-   * @return a list of {@link ShoutIsChangedCmd}, {@link org.powertac.common.command.PositionDoUpdateCmd}, and {@link org.powertac.common.command.CashDoUpdateCmd} objects
+   * @return a list of {@link Shout}, {@link org.powertac.common.command.PositionDoUpdateCmd}, and {@link org.powertac.common.command.CashDoUpdateCmd} objects
    */
   List clearMarket();
 
