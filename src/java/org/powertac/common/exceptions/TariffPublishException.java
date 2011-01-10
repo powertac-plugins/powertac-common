@@ -6,7 +6,7 @@ package org.powertac.common.exceptions;
  * @author Carsten Block
  * @version 1.0, Date: 10.01.11
  */
-public class TariffPublishException extends Exception {
+public class TariffPublishException extends PowerTacException {
   public TariffPublishException() {
   }
 

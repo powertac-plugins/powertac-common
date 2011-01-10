@@ -6,7 +6,7 @@ package org.powertac.common.exceptions;
  * @author Carsten Block
  * @version 1.0, Date: 10.01.11
  */
-public class TariffReplyException extends Exception {
+public class TariffReplyException extends PowerTacException {
   public TariffReplyException() {
   }
 
