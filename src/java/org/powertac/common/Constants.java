@@ -26,10 +26,20 @@ import java.math.RoundingMode;
  * @version 1.0, Date: 13.12.10
  */
 public class Constants {
-    /**
-     * DECIMALS constant is used to set the common decimal scaling in
-     * BigDecimal numbers; for powertac this is set to 2 decimal digits
-     */
-    public static final int DECIMALS = 4;
-    public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+  /**
+   * DECIMALS constant is used to set the common decimal scaling in
+   * BigDecimal numbers; for powertac this is set to 2 decimal digits
+   */
+  public static final int DECIMALS = 4;
+  public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+
+  public static final String COMPETITION_INACTIVE = "competition.inactive";
+  public static final String COMPETITION_NOT_FOUND = "competition.not.found";
+
+  public static final String SHOUT_DELETED = "shout.deleted";
+  public static final String SHOUT_NOT_FOUND = "shout.not.found";
+  public static final String SHOUT_EXECUTED = "shout.executed";
+  public static final String SHOUT_LIMITORDER_NULL_LIMIT = "shout.limitorder.limit.null";
+  public static final String SHOUT_MARKETORDER_WITH_LIMIT = "shout.marketorder.limit.not.null";
+  public static final String SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY = "shout.update.limit.and.quantity.null";
 }
