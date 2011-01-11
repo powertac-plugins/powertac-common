@@ -189,6 +189,9 @@ class Tariff implements Serializable {
 
   static mapping = {
     id(generator: 'assigned')
+    competition(index: 'ta_competition_tariffstate_latest_idx')
+    tariffState(index: 'ta_competition_tariffstate_latest_idx')
+    latest(index: 'ta_competition_tariffstate_latest_idx')
   }
 
   static transients = ['powerConsumptionPrices', 'powerProductionPrices', 'powerProductionPriceForRange', 'powerConsumptionPriceForRange', 'powerProductionPriceFor', 'powerConsumptionPriceFor', 'flatPowerConsumptionPrice', 'flatPowerProductionPrice']
