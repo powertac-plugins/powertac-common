@@ -7,6 +7,9 @@ package org.powertac.common.exceptions;
  * @version 1.0, Date: 10.01.11
  */
 public class ShoutCreationException extends PowerTacException {
+
+  //TODO: Add property that is able to hold spring validation errors
+
   public ShoutCreationException() {
   }
 

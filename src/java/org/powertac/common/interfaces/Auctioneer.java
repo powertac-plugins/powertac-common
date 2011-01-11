@@ -23,7 +23,7 @@ import org.powertac.common.command.ShoutDoUpdateCmd;
 import org.powertac.common.exceptions.MarketClearingException;
 import org.powertac.common.exceptions.ShoutCreationException;
 import org.powertac.common.exceptions.ShoutDeletionException;
-import org.powertac.common.exceptions.ShoutUpdateExeption;
+import org.powertac.common.exceptions.ShoutUpdateException;
 
 import java.util.List;
 
@@ -69,9 +69,9 @@ public interface Auctioneer extends CompetitionBaseEvents {
    *
    * @param shoutDoUpdateCmd the shout object to update
    * @return a list of updated shout objects if a matching took place based on the shout change or null otherwise
-   * @throws org.powertac.common.exceptions.ShoutUpdateExeption thrown if the shout update fails
+   * @throws org.powertac.common.exceptions.ShoutUpdateException thrown if the shout update fails
    */
-  List processShoutUpdate(ShoutDoUpdateCmd shoutDoUpdateCmd) throws ShoutUpdateExeption;
+  List processShoutUpdate(ShoutDoUpdateCmd shoutDoUpdateCmd) throws ShoutUpdateException;
 
   /**
    * This method is required for periodic clearing auctions and essentially tells
