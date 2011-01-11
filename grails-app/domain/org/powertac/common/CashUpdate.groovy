@@ -48,6 +48,9 @@ class CashUpdate implements Serializable {
 
   static mapping = {
     id (generator: 'assigned')
+    competition(index:'cu_competition_broker_latest_idx')
+    broker(index:'cu_competition_broker_latest_idx')
+    latest(index:'cu_competition_broker_latest_idx')
   }
 
   public String toString() {
