@@ -136,4 +136,13 @@ class ShoutTests extends GroovyTestCase {
     Shout shout1 = new Shout('competition.id': competition.id, 'product.id': product.id, 'timeslot.id': timeslot.id, 'broker.id': broker.id, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET, transactionId: 'testTransaction2', latest: true, shoutId: 'testShoutId')
     assertTrue(shout1.validate())
   }
+
+  void testGetCurrentCompetition() {
+    competition.current = false
+    competition.save()
+    Competition competition2 = new Competition(name: "test2")
+    assertTrue (competition2.validate() && competition2.save())
+    Competition competition3 = Competition.currentCompetition.domainClass
+    assertEquals("test2", competition3.name)
+  }
 }
