@@ -8,3 +8,6 @@
 //
 //    ant.mkdir(dir:"${basedir}/grails-app/jobs")
 //
+includeTargets << new File("$powertacCommonPluginDir/scripts/InstallValidateableConfig.groovy")
+
+installValidateableConfiguration()
