@@ -28,7 +28,7 @@ import java.util.List;
  * Common interface for the PowerTAC accounting service.
  * The accouting service module is owner of the {@link org.powertac.common.CashUpdate},
  * {@link org.powertac.common.PositionUpdate}, {@link org.powertac.common.MeterReading},
- * {@link org.powertac.common.Customer}, and {@link org.powertac.common.Tariff} database
+ * and {@link org.powertac.common.Tariff} database
  * tables. It's main purpose is to do the bookeeping throught the competition by
  * manipulating the above mentioned database tables recording cash, position, tariff or
  * metering changes.
