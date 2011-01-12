@@ -140,9 +140,11 @@ class ShoutTests extends GroovyTestCase {
   void testGetCurrentCompetition() {
     competition.current = false
     competition.save()
-    Competition competition2 = new Competition(name: "test2")
+    Competition competition2 = new Competition(name: "test2", current: true)
     assertTrue (competition2.validate() && competition2.save())
-    Competition competition3 = Competition.currentCompetition.domainClass
-    assertEquals("test2", competition3.name)
+    assertEquals("test2", Competition.currentCompetition().name)
+    competition2.current = false
+    competition2.save()
+    assertNull(Competition.currentCompetition())
   }
 }

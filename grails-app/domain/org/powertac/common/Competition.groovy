@@ -54,14 +54,6 @@ class Competition implements Serializable {
 
   static hasMany = [brokers: Broker, cashUpdates: CashUpdate, customers: Customer, meterReadings: MeterReading, orderbooks: Orderbook, positionUpdates: PositionUpdate, products: Product, shouts: Shout, tariffs: Tariff, timeslots: Timeslot, transactionLogs: TransactionLog]
 
-
-  static namedQueries = {
-    currentCompetition {
-      uniqueResult = true
-      eq 'current', true
-    }
-  }
-
   static constraints = {
     id (nullable: false, unique: true, blank: false)
     name(unique: true, blank: false)
@@ -100,6 +92,10 @@ class Competition implements Serializable {
   static mapping = {
     cache true
     id (generator: 'assigned')
+  }
+
+  public static currentCompetition() {
+    return Competition.findByCurrent(true, [cache: true])
   }
 
   public String toString() {
