@@ -36,7 +36,7 @@ import java.util.List;
  * @author Carsten Block
  * @version 0.1 - January 2nd, 2011
  */
-public interface AccountingService extends CompetitionBaseEvents {
+public interface AccountingService {
 
   /**
    * Method processes positionDoUpdateCmd objects adjusting the booked amounts

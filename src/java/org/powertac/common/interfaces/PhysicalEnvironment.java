@@ -28,7 +28,7 @@ import java.util.List;
  * @author David Dauer, Carsten Block
  * @version 0.1, January 2nd, 2011
  */
-public interface PhysicalEnvironment extends CompetitionBaseEvents {
+public interface PhysicalEnvironment {
   /**
    * Generates and returns weather forecasts for every enabled timeslot
    * The physical environment module is responsible for computing weather forecasts for each entry in {@code targetTimeslots} from the perspective of the {@code currentTimeslot}.

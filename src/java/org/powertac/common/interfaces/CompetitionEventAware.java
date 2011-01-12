@@ -17,6 +17,7 @@
 package org.powertac.common.interfaces;
 
 import org.powertac.common.Competition;
+import org.powertac.common.Timeslot;
 import org.powertac.common.exceptions.CompetitionFinalizationException;
 import org.powertac.common.exceptions.CompetitionInitializationException;
 import org.powertac.common.exceptions.CompetitionResetException;
@@ -28,7 +29,7 @@ import org.powertac.common.exceptions.CompetitionResetException;
  * @author Carsten Block
  * @version 0.1, Date: 02.01.11
  */
-public interface CompetitionBaseEvents {
+public interface CompetitionEventAware {
 
   /**
    * This method is invoked upon competition initialization.
@@ -68,6 +69,15 @@ public interface CompetitionBaseEvents {
    * @throws org.powertac.common.exceptions.CompetitionFinalizationException thrown if an error occurs during competition shutdown
    */
   public void competitionAfterStop(Competition competition) throws CompetitionFinalizationException;
+
+  /**
+   * This method is triggered upon each timeslot change. Modules should put all business
+   * logic here that needs to be executed upon timeslot change
+   *
+   * @param competition the currently running competition
+   * @param newCurrentTimeslot the new current (i.e. "now" timeslot)
+   */
+  public void competitionOnTimeslotChange(Competition competition, Timeslot newCurrentTimeslot);
 
   /**
    * This method is invoked after the competition end if the competiton is competitionReset.

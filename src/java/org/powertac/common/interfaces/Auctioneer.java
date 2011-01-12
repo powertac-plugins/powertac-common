@@ -34,7 +34,7 @@ import java.util.List;
  * @author Carsten Block
  * @version 0.1, Date: 01.12.10
  */
-public interface Auctioneer extends CompetitionBaseEvents {
+public interface Auctioneer {
 
   /**
    * Process an incoming shout, e.g. by matching it against existing shouts

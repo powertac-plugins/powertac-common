@@ -28,7 +28,7 @@ import java.util.List;
  * @author Carsten Block
  * @version 0.1 - January 2nd, 2011
  */
-public interface DistributionUtility extends CompetitionBaseEvents {
+public interface DistributionUtility {
 
   /**
    * This method is invoked in order to make the distribution utility detect and

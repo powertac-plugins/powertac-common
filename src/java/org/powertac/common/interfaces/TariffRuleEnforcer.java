@@ -24,7 +24,7 @@ import org.powertac.common.exceptions.TariffRuleException;
  * @author Carsten Block
  * @version 0.1 - January 2nd, 2011
  */
-public interface TariffRuleEnforcer extends CompetitionBaseEvents {
+public interface TariffRuleEnforcer {
 
   /**
    * Evaluates a given tariff by checking tariff objects against a

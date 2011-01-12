@@ -30,7 +30,7 @@ import java.util.List;
  * @author Carsten Block
  * @version 0.1 - January 2, 2011
  */
-public interface TaxAuthority extends CompetitionBaseEvents {
+public interface TaxAuthority {
 
   /**
    * @param competition the competition in which brokers should be taxed

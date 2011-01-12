@@ -30,7 +30,7 @@ import java.util.List;
  * @author David Dauer, Carsten Block
  * @version 0.1 - January 2nd, 2011
  */
-public interface LiquidityProvider extends CompetitionBaseEvents {
+public interface LiquidityProvider {
 
   /**
    * This is method is called in order to make the LiquidityProvider
