@@ -63,8 +63,9 @@ public interface AccountingService {
    *
    * @param tariffDoPublishCmd command object that contains the tariff detais to be published
    * @throws org.powertac.common.exceptions.TariffPublishException is thrown if the tariff publishing fails
+   * @return the published tariff object
    */
-  public void processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffPublishException;
+  public Tariff processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffPublishException;
 
 
   /**
@@ -73,10 +74,10 @@ public interface AccountingService {
    * downstream for further processing.
    *
    * @param tariffDoReplyCmd the tariff reply to store in the database
-   * @return the processed tariffDoReplyCmd object
+   * @return the latest tariff instance
    * @throws org.powertac.common.exceptions.TariffReplyException is thrown if the tariff publishing fails
    */
-  public TariffDoReplyCmd processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
+  public Tariff processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
 
   /**
    * Method processes incoming tariffDoRevokeCmd of a broker. This method needs to
