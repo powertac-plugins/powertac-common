@@ -36,6 +36,8 @@ public class Constants {
   public static final String COMPETITION_INACTIVE = "competition.inactive";
   public static final String COMPETITION_NOT_FOUND = "competition.not.found";
 
+  public static final String TIMESLOT_INACTIVE = "timeslot.inactive";
+
   public static final String SHOUT_DELETED = "shout.deleted";
   public static final String SHOUT_NOT_FOUND = "shout.not.found";
   public static final String SHOUT_EXECUTED = "shout.executed";

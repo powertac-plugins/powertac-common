@@ -48,7 +48,13 @@ import org.powertac.common.*
     })
     broker(nullable: false)
     product (nullable: false)
-    timeslot(nullable: false)
+    timeslot(nullable: false, validator: {val ->
+      if (!val?.enabled){
+        return [Constants.TIMESLOT_INACTIVE]
+      } else {
+        return true
+      }
+    })
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, Scale: Constants.DECIMALS)
     limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->

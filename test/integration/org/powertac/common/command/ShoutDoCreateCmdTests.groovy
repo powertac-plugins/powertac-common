@@ -75,6 +75,14 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
     assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
+  void testInactiveTimeslot() {
+    timeslot.enabled = false
+    timeslot.save()
+    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(timeslot: timeslot)
+    assertFalse(cmd.validate())
+    assertEquals(Constants.TIMESLOT_INACTIVE, cmd.errors.getFieldError('timeslot').getCode())
+  }
+
   void testMarketLimitOrderConstraints() {
     ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(orderType: OrderType.MARKET, limitPrice: 1.0)
     assertFalse (cmd.validate())
@@ -86,6 +94,8 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
   }
 
   void testValidShoutDoCreateCmd(){
+    timeslot.enabled = true
+    timeslot.save()
     competition.current = true
     competition.save()
     ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT)
