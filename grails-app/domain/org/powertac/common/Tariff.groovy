@@ -19,6 +19,60 @@ package org.powertac.common
 import org.joda.time.LocalDateTime
 import org.powertac.common.enumerations.TariffState
 
+/**
+ * This domain class represents published tariffs, subscribed tariffs, and even
+ * individually negotiated tariffs as well as their changes over time.
+ *
+ * Example1: publish a new tariff:
+ * <code>
+ * //Broker publishes Tariff
+ * def t1 = new Tariff(parent: null, latest: true, tariffstate: TariffState.Published, [...])
+ * </code>
+ * <p/>
+ * Example2: publish and revoke a tariff:
+ * <code>
+ * //Broker publishes tariff
+ * def t1 = new Tariff(parent: null, latest: true, tariffstate: TariffState.Published, [...])
+ * //Broker revokes tariff
+ * t1.latest = false
+ * def tRevoke = new Tariff (parent: t1, latest: true, tariffState: TariffState.Revoked [...])
+ * </code>
+ * </p>
+ * Note: Do not set tariffState to revoked in the original t1 tariff instance. Instead only update its "latest" property to false, create a copy of the t1 tariffInstance (with latest=true) and put all required changes into this copy
+ *<p/>
+ * Example3: subscribe to a tariff, which eventually ends:
+ * <code>
+ * //Broker publishes tariff
+ * def t1 = new Tariff(parent: null, latest: true, tariffState: TariffState.Published, [...])
+ * //Customer subscribes to tariff
+ * def tSubscribe = new Tariff (parent: t1, latest: true, tariffState: TariffState.Subscribed, customer: myCustomerInstance [...])
+ * //Eventually, tariff is regularly finished at the end of its contract runtime
+ * tSubscribed.latest = false
+ * def tRegularEnd = new Tariff (parent: t1, latest: true, tariffState: TariffState.Finished, customer: myCustomerInstance [...])
+ *
+ * Note: Keep t1 tariffInstance unchanged and only add new tariffInstances, which reference t1 as "parent". Note also that the original tariff t1 is still published and can be subscribed to again!
+ * </code>
+ * <p/>
+ * Example4: negotiate an individual tariff
+ * <code>
+ * //Broker Publishes tariff
+ * def t1 = new Tariff(parent: null, latest: true, tariffstate: TariffState.Published, negotiable: true, baseFee: 10.0, [...])
+ *
+ * //Customer send initial negotiation offer
+ * def tCustomerOffer  = new Tariff(parent: t1, latest: true, tariffstate: TariffState.InNegotiation, negotiable: true, baseFee: 5.0, [...]
+ *
+ * //Broker sends counterOffer
+ * tCustomerOffer.latest = false
+ * def tBrokerCounterOffer = new Tariff(parent: t1, latest: true, tariffstate: TariffState.InNegotiation, negotiable: true, baseFee: 5.0, [...])
+ * //Customer accepts
+ * tBrokerCounterOffer.latest = false
+ * tCustomerSubscribe = new Tariff(parent: t1, latest: true, tariffstate: TariffState.Subscribed, negotiable: true, baseFee: 5.0, [...])
+ * [...]
+ * </code>
+ *
+ * @author Carsten Block
+ * @version 0.1 - January 13, 2011
+ */
 class Tariff implements Serializable {
 
   String id = IdGenerator.createId()
@@ -26,13 +80,12 @@ class Tariff implements Serializable {
   Competition competition
   Broker broker
   Customer customer
-  String tariffId //this id remains identical over all db instances of the tariff (where one instance is generated for each change in the tariff, e.g. a price update)
-  String customTariffId //this id is only populated if a broker and a customer enter a private tariff negotiation. In this case customTariffId remains the same across all negotiation offers and also for tariff updates during tariff runtime
+  Tariff parent //this reference is null for newly published tariffs
   TariffState tariffState
   Boolean isDynamic
   Boolean isNegotiable
   LocalDateTime dateCreated = new LocalDateTime()
-  Boolean latest
+  Boolean latest = true
 
   BigDecimal signupFee //one-time fee (>0) / reward (<0) charged / paid for contract signup
   BigDecimal earlyExitFee //payed by the customer if he leaves the contract before its regular end
@@ -116,8 +169,7 @@ class Tariff implements Serializable {
     competition(nullable: false)
     broker(nullable: false)
     customer(nullable: true)
-    tariffId(nullable: false)
-    customTariffId(nullable: true)
+    parent(nullable: true)
     tariffState(nullable: false)
     isDynamic(nullable: false)
     isNegotiable(nullablee: false)
