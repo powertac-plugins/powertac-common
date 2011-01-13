@@ -29,13 +29,12 @@ class TariffTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Tariff tariff = new Tariff(id: null, dateCreated: null)
+    Tariff tariff = new Tariff(id: null, dateCreated: null, latest: null)
     assertFalse(tariff.validate())
     assertEquals('nullable', tariff.errors.getFieldError('id').getCode())
     assertEquals('nullable', tariff.errors.getFieldError('transactionId').getCode())
     assertEquals('nullable', tariff.errors.getFieldError('competition').getCode())
     assertEquals('nullable', tariff.errors.getFieldError('broker').getCode())
-    assertEquals('nullable', tariff.errors.getFieldError('tariffId').getCode())
     assertEquals('nullable', tariff.errors.getFieldError('tariffState').getCode())
     assertEquals('nullable', tariff.errors.getFieldError('isDynamic').getCode())
     assertEquals('nullable', tariff.errors.getFieldError('isNegotiable').getCode())
