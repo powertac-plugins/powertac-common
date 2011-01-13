@@ -33,11 +33,38 @@ class TimeslotTests extends GroovyTestCase {
     assertTrue(timeslot1.validate() && timeslot1.save())
 
     timeslot2 = new Timeslot(competition: competition, serialNumber: 1)
-    assertTrue (timeslot2.validate() && timeslot2.save())
+    assertTrue(timeslot2.validate() && timeslot2.save())
 
-    assertEquals (timeslot1.id, timeslot2.previous().id)
-    assertEquals (timeslot2.id, timeslot1.next().id)
-    assertNull (timeslot1.previous())
-    assertNull (timeslot2.next())
+    assertEquals(timeslot1.id, timeslot2.previous().id)
+    assertEquals(timeslot2.id, timeslot1.next().id)
+    assertNull(timeslot1.previous())
+    assertNull(timeslot2.next())
+  }
+
+  void testCurrentTimeslot() {
+    competition.current = true
+    competition.save()
+    timeslot1 = new Timeslot(competition: competition, serialNumber: 0, current: false)
+    assertTrue(timeslot1.validate() && timeslot1.save())
+
+    timeslot2 = new Timeslot(competition: competition, serialNumber: 1, current: true)
+    assertTrue(timeslot2.validate() && timeslot2.save())
+
+    assertEquals(timeslot2, Timeslot.currentTimeslot())
+
+    timeslot2.current = false
+    timeslot2.save()
+
+    assertNull(Timeslot.currentTimeslot())
+
+    timeslot2.current = true
+    timeslot2.save()
+
+    assertEquals(timeslot2, Timeslot.currentTimeslot())
+
+    competition.current = false
+    competition.save()
+    assertNull (Timeslot.currentTimeslot())
+
   }
 }

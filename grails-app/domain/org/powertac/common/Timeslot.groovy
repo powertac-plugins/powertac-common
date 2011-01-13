@@ -46,10 +46,18 @@ class Timeslot implements Serializable {
 
   static mapping = {
     id (generator: 'assigned')
+    competition(index:'ts_competition_current_idx')
+    current(index:'ts_competition_current_idx')
   }
 
   public String toString() {
     return "$startDateTime - $endDateTime";
+  }
+
+  public static Timeslot currentTimeslot() {
+    def competition = Competition.currentCompetition()
+    if (!competition) return null
+    return Timeslot.findByCompetitionAndCurrent(competition, true, [cache: true])
   }
 
   public Timeslot next() {
