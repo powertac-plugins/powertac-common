@@ -51,6 +51,7 @@ class Shout implements Serializable {
     })
     broker(nullable: false)
     product(nullable: false)
+    timeslot(nullable: false)
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, scale: Constants.DECIMALS)
     limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
