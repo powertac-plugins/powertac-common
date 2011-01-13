@@ -58,10 +58,10 @@ public interface Auctioneer {
    * Deletes the shout specified by {@link Shout}
    *
    * @param shoutDoDeleteCmd command object that contains the shoutId that should be deleted
-   * @return Shout object that contains the new status of the deleted shout
+   * @return List of object, which can consist of {@link Shout} (deleted shout object), {@link org.powertac.common.TransactionLog}, {@link org.powertac.common.Orderbook}
    * @throws org.powertac.common.exceptions.ShoutDeletionException thrown if the shout deletion fails
    */
-  Shout processShoutDelete(ShoutDoDeleteCmd shoutDoDeleteCmd) throws ShoutDeletionException;
+  List processShoutDelete(ShoutDoDeleteCmd shoutDoDeleteCmd) throws ShoutDeletionException;
 
   /**
    * Updates the shout specified by the {@link ShoutDoUpdateCmd}. Changeable
