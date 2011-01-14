@@ -33,6 +33,7 @@ import org.powertac.common.Constants
   Competition competition
   Broker broker
   BigDecimal relativeChange
+  String transactionId
   String reason
   String origin
 
@@ -40,6 +41,7 @@ import org.powertac.common.Constants
     competition(nullable: false)
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
+    transactionId(nullable: true)
     reason(nullable: true)
     origin(nullable: true)
   }

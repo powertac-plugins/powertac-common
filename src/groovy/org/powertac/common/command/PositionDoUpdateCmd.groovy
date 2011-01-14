@@ -34,6 +34,7 @@ import org.powertac.common.*
   Timeslot timeslot
   Broker broker
   BigDecimal relativeChange
+  String transactionId
   String reason
   String origin
 
@@ -43,6 +44,7 @@ import org.powertac.common.*
     timeslot (nullable: false)
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
+    transactionId(nullable: true)
     reason(nullable: true)
     origin(nullable: true)
   }
