@@ -105,10 +105,10 @@ public interface AccountingService {
   /**
    * Method processes incoming {@link TariffDoRevokeCmd}. The method implements the logic required to unsubscribe a customer from a tariff ahead of the originally agreed contract end.
    * @param tariffDoEarlyExitCmd contains references to the customer who wishes to exit the tariff contract ahead of time as well as to the tariff contract that should be cancelled.
-   * @return Tariff updated tariff object that reflects the cancellation of the tariff subscription
+   * @return List of objects which can include {@link CashDoUpdateCmd} and {@link Tariff}. The tariff object reflects the cancellation of the tariff subscription while the (optional) CashDoUpdateCmd contains the early exit fee information that needs to be booked to the respective broker's cash account
    * @throws TariffEarlyExitException is thrown if the tariff contract cancellation fails.
    */
-  public Tariff processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
+  public List processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
 
   /**
    * Returns a list of all currently active (i.e. subscribeable) tariffs (which might be empty)
