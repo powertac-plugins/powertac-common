@@ -172,7 +172,7 @@ class Tariff implements Serializable {
     parent(nullable: true)
     tariffState(nullable: false)
     isDynamic(nullable: false)
-    isNegotiable(nullablee: false)
+    isNegotiable(nullable: false)
     dateCreated(nullable: false)
     latest(nullable: false)
     signupFee(nullable: true, scale: Constants.DECIMALS)
