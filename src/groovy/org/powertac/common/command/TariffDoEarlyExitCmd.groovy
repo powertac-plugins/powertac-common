@@ -16,8 +16,11 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.Constants
 import org.powertac.common.Customer
 import org.powertac.common.Tariff
+import org.powertac.common.enumerations.TariffState
 
 /**
  * Command object that represents a customer's request to exit
@@ -26,7 +29,17 @@ import org.powertac.common.Tariff
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-class TariffDoEarlyExitCmd implements Serializable {
+@Validateable class TariffDoEarlyExitCmd implements Serializable {
   Customer customer
   Tariff tariff
+
+  static constraints = {
+    customer(nullable: false)
+    tariff(nullable: false, validator: {val, obj ->
+      if (val?.tariffState != TariffState.Subscribed) return [Constants.TARIFF_INVALID_STATE]
+      if (val?.customer?.id != obj?.customer?.id) return [Constants.TARIFF_WRONG_CUSTOMER]
+      return true
+    })
+  }
+
 }
