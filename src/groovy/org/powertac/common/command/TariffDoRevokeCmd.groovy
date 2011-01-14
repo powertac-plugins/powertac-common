@@ -37,10 +37,14 @@ import org.powertac.common.Tariff
   Tariff tariff
 
   static constraints = {
-    broker (nullable: false)
-    tariff (nullable: false, validator: {val ->
-      if (val.parent) return [Constants.TARIFF_HAS_PARENT]
-      if (!val.latest) return [Constants.TARIFF_OUTDATED]
+    broker (nullable: false, validator: {val, obj ->
+      if (obj?.tariff?.broker?.id != obj?.broker?.id) return [Constants.TARIFF_WRONG_BROKER]
+      return true
+    })
+    tariff (nullable: false, validator: {val, obj ->
+      if (val?.parent) return [Constants.TARIFF_HAS_PARENT]
+      if (!val?.latest) return [Constants.TARIFF_OUTDATED]
+      if (obj?.tariff?.broker?.id != obj?.broker?.id) return [Constants.TARIFF_WRONG_BROKER]
       return true
     })
   }

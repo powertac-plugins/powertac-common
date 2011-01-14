@@ -1,8 +1,9 @@
 package org.powertac.common.command
 
 import grails.test.GrailsUnitTestCase
-import org.powertac.common.Tariff
+import org.powertac.common.Broker
 import org.powertac.common.Constants
+import org.powertac.common.Tariff
 
 class TariffDoRevokeCmdTests extends GrailsUnitTestCase {
   protected void setUp() {
@@ -35,5 +36,15 @@ class TariffDoRevokeCmdTests extends GrailsUnitTestCase {
     def tariffDoRevokeCmd = new TariffDoRevokeCmd(tariff: tariff)
     assertFalse(tariffDoRevokeCmd.validate())
     assertEquals(Constants.TARIFF_OUTDATED, tariffDoRevokeCmd.errors.getFieldError('tariff').getCode())
+  }
+
+  void testTariffWrongBrokerConstraint() {
+    def broker1 = new Broker()
+    def tariff = new Tariff(broker: broker1, latest: true)
+    def broker2 = new Broker()
+    def tariffDoRevokeCmd = new TariffDoRevokeCmd(tariff: tariff, broker: broker2)
+    assertFalse(tariffDoRevokeCmd.validate())
+    assertEquals(Constants.TARIFF_WRONG_BROKER, tariffDoRevokeCmd.errors.getFieldError('broker').getCode())
+    assertEquals(Constants.TARIFF_WRONG_BROKER, tariffDoRevokeCmd.errors.getFieldError('tariff').getCode())
   }
 }

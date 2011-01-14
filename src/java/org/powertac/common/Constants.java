@@ -40,6 +40,7 @@ public class Constants {
   public static final String TARIFF_OUTDATED = "tariff.outdated";
   public static final String TARIFF_INVALID_STATE = "tariff.tariffState.invalid";
   public static final String TARIFF_WRONG_CUSTOMER = "tariff.customer.wrong";
+  public static final String TARIFF_WRONG_BROKER = "tariff.broker.wrong";
 
   public static final String TIMESLOT_INACTIVE = "timeslot.inactive";
 
