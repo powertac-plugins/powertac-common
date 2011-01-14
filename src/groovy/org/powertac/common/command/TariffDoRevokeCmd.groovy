@@ -16,7 +16,9 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
 import org.powertac.common.Broker
+import org.powertac.common.Constants
 import org.powertac.common.Tariff
 
 /**
@@ -30,7 +32,16 @@ import org.powertac.common.Tariff
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-class TariffDoRevokeCmd implements Serializable {
+@Validateable class TariffDoRevokeCmd implements Serializable {
   Broker broker
   Tariff tariff
+
+  static constraints = {
+    broker (nullable: false)
+    tariff (nullable: false, validator: {val ->
+      if (val.parent) return [Constants.TARIFF_HAS_PARENT]
+      if (!val.latest) return [Constants.TARIFF_OUTDATED]
+      return true
+    })
+  }
 }
