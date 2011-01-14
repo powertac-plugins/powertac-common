@@ -34,7 +34,7 @@ import java.util.List;
  * metering changes.
  *
  * @author Carsten Block
- * @version 0.1 - January 2nd, 2011
+ * @version 0.2 - January 14th, 2011
  */
 public interface AccountingService {
 
@@ -90,6 +90,25 @@ public interface AccountingService {
    */
   public Tariff processTariffRevoke(TariffDoRevokeCmd tariffDoRevokeCmd) throws TariffRevokeException;
 
+
+  /**
+   * Method processes incoming {@link TariffDoSubscribeCmd}. This method implements the
+   * logic required to make a customer subscribe to a particular tariff given either
+   * (i) a published or (ii) an individually agreed tariff instance to subscribe to.
+   *
+   * @param tariffDoSubscribeCmd contains references to the subscribing customer and to the tariff instance to subscribe to
+   * @return Tariff updated tariff object that reflects the subscription of the given customer to the given tariff
+   * @throws TariffSubscriptionException is thrown if the subscription fails
+   */
+  public Tariff processTariffSubscribe (TariffDoSubscribeCmd tariffDoSubscribeCmd) throws TariffSubscriptionException;
+
+  /**
+   * Method processes incoming {@link TariffDoRevokeCmd}. The method implements the logic required to unsubscribe a customer from a tariff ahead of the originally agreed contract end.
+   * @param tariffDoEarlyExitCmd contains references to the customer who wishes to exit the tariff contract ahead of time as well as to the tariff contract that should be cancelled.
+   * @return Tariff updated tariff object that reflects the cancellation of the tariff subscription
+   * @throws TariffEarlyExitException is thrown if the tariff contract cancellation fails.
+   */
+  public Tariff processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
 
   /**
    * Returns a list of all currently active (i.e. subscribeable) tariffs (which might be empty)

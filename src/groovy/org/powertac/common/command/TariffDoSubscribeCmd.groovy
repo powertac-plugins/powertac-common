@@ -16,21 +16,17 @@
 
 package org.powertac.common.command
 
-import org.powertac.common.Broker
+import org.powertac.common.Customer
 import org.powertac.common.Tariff
 
 /**
- * Command object that represents a broker's request to revoke
- * a particular tariff so that it is no longer subscribable by new customers.
- * <p/>
- * Note: Revoking a tariff does not influence running tariff contracts. These
- * remain valid until the end of the agreed runtime or until the customer decides
- * to exit the contract ahead of time.
+ * Command object that represents a customer's request to subscribe
+ * to either a published or an individually negotiated tariff.
  *
  * @author Carsten Block
- * @version 1.0 , Date: 02.01.11
+ * @version 1.0, Date: 01.12.10
  */
-class TariffDoRevokeCmd implements Serializable {
-  Broker broker
+class TariffDoSubscribeCmd implements Serializable {
+  Customer customer
   Tariff tariff
 }
