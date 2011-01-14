@@ -16,6 +16,8 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+
  /**
  * Command object that represents a published tariff
  * which is sent out to all customers and all brokers
@@ -28,6 +30,10 @@ package org.powertac.common.command
  * @version 1.0, Date: 01.12.10
  * @see org.powertac.common.command.TariffDoReplyCmd
  */
-class TariffDoPublishCmd extends AbstractTariff implements Serializable {
+@Validateable class TariffDoPublishCmd extends GenericTariffCmd implements Serializable {
   String permittedCustomerTypes
+
+  static constraints = {
+    permittedCustomerTypes (nullable: true)
+  }
 }

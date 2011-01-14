@@ -16,6 +16,7 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
 import org.powertac.common.Customer
 
 /**
@@ -28,6 +29,11 @@ import org.powertac.common.Customer
  * @version 1.0, Date: 01.12.10
  * @see org.powertac.common.command.TariffDoPublishCmd
  */
-class TariffDoReplyCmd extends AbstractTariff implements Serializable {
+@Validateable class TariffDoReplyCmd extends GenericTariffCmd implements Serializable {
+
   Customer customer
+
+  static constraints = {
+    customer(nullable: false)
+  }
 }
