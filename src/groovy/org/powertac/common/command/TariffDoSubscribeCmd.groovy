@@ -16,6 +16,8 @@
 
 package org.powertac.common.command
 
+import org.codehaus.groovy.grails.validation.Validateable
+import org.powertac.common.Constants
 import org.powertac.common.Customer
 import org.powertac.common.Tariff
 
@@ -26,7 +28,17 @@ import org.powertac.common.Tariff
  * @author Carsten Block
  * @version 1.0, Date: 01.12.10
  */
-class TariffDoSubscribeCmd implements Serializable {
+@Validateable class TariffDoSubscribeCmd implements Serializable {
   Customer customer
   Tariff tariff
+
+  static constraints = {
+    customer(nullable: false)
+    tariff (nullable: false, validator: {val->
+      if (!val.latest) return [Constants.TARIFF_OUTDATED]
+      return true
+    })
+  }
+
+
 }
