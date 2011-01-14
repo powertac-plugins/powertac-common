@@ -252,7 +252,7 @@ class Tariff implements Serializable {
 
 
   public String toString() {
-    return tariffId
+    return id
   }
 
   public BigDecimal[] getPowerConsumptionPrices() {
