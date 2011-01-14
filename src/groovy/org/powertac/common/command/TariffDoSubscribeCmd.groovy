@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.validation.Validateable
 import org.powertac.common.Constants
 import org.powertac.common.Customer
 import org.powertac.common.Tariff
+import org.powertac.common.enumerations.TariffState
 
 /**
  * Command object that represents a customer's request to subscribe
@@ -35,7 +36,9 @@ import org.powertac.common.Tariff
   static constraints = {
     customer(nullable: false)
     tariff (nullable: false, validator: {val->
-      if (!val.latest) return [Constants.TARIFF_OUTDATED]
+      if (!val?.latest) return [Constants.TARIFF_OUTDATED]
+      if (val?.parent && val?.tariffState != TariffState.InNegotiation) return [Constants.TARIFF_INVALID_STATE]
+      if (val?.parent == null && val?.tariffState != TariffState.Published) return [Constants.TARIFF_INVALID_STATE]
       return true
     })
   }
