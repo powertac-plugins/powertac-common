@@ -110,7 +110,14 @@ public interface AccountingService {
    */
   public List processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
 
-  public Tariff processTariffUpdate(TariffDoUpdateCmd tariffDoUpdateCmd) throws TariffUpdateException;
+  /**
+   * Method processes incoming {@link TariffDoUpdateCmd}. The method implements the logic required to update the conditions of an existing tariff for all subscribed customers.
+   * @param tariffDoUpdateCmd contains the new (revised) tariff conditions
+   * @return List of {@link Tariff} objects which reflect the updated individual subscriptions for
+   * all customers subscribed to the updated tariff
+   * @throws TariffUpdateException is thrown if the tariff updating fails.
+   */
+  public List processTariffUpdate(TariffDoUpdateCmd tariffDoUpdateCmd) throws TariffUpdateException;
 
   /**
    * Returns a list of all currently active (i.e. subscribeable) tariffs (which might be empty)
