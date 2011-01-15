@@ -97,15 +97,15 @@ public interface AccountingService {
    * (i) a published or (ii) an individually agreed tariff instance to subscribe to.
    *
    * @param tariffDoSubscribeCmd contains references to the subscribing customer and to the tariff instance to subscribe to
-   * @return Tariff updated tariff object that reflects the subscription of the given customer to the given tariff
+   * @return List of objects which can include {@link CashUpdate} and {@link Tariff}. The tariff object reflects the subscription of the customer defined in the {@link TariffDoSubscribeCmd} while the (optional) {@link CashUpdate} contains the cash booking of the (optional) signupFee into the broker's cash account
    * @throws TariffSubscriptionException is thrown if the subscription fails
    */
-  public Tariff processTariffSubscribe (TariffDoSubscribeCmd tariffDoSubscribeCmd) throws TariffSubscriptionException;
+  public List processTariffSubscribe (TariffDoSubscribeCmd tariffDoSubscribeCmd) throws TariffSubscriptionException;
 
   /**
    * Method processes incoming {@link TariffDoRevokeCmd}. The method implements the logic required to unsubscribe a customer from a tariff ahead of the originally agreed contract end.
    * @param tariffDoEarlyExitCmd contains references to the customer who wishes to exit the tariff contract ahead of time as well as to the tariff contract that should be cancelled.
-   * @return List of objects which can include {@link CashDoUpdateCmd} and {@link Tariff}. The tariff object reflects the cancellation of the tariff subscription while the (optional) CashDoUpdateCmd contains the early exit fee information that needs to be booked to the respective broker's cash account
+   * @return List of objects which can include {@link CashUpdate} and {@link Tariff}. The tariff object reflects the cancellation of the tariff subscription while the (optional) {@link CashUpdate} contains the booking of the early exit fee into the broker's cash account
    * @throws TariffEarlyExitException is thrown if the tariff contract cancellation fails.
    */
   public List processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
