@@ -22,6 +22,7 @@ import org.powertac.common.Broker
 import org.powertac.common.Competition
 import org.powertac.common.Constants
 import org.powertac.common.Tariff
+import org.powertac.common.IdGenerator
 
 /**
  * Provides common tariff properties that can be shared among Tariff Command
@@ -31,7 +32,7 @@ import org.powertac.common.Tariff
  */
 @Validateable
 class GenericTariffCmd {
-  String id
+  String id = IdGenerator.createId()
   Tariff parent //this id remains identical over all db instances of the tariff (where one instance is generated for each change in the tariff, e.g. a price update)
   Competition competition
   Broker broker
