@@ -39,7 +39,7 @@ import java.util.List;
 public interface AccountingService {
 
   /**
-   * Method processes positionDoUpdateCmd objects adjusting the booked amounts
+   * Method processes {@link PositionDoUpdateCmd} objects adjusting the booked amounts
    * of a product (e.g. energy futures) for particular broker and a particular timeslot
    *
    * @param positionDoUpdateCmd the object that describes what position change to book in the database
@@ -49,7 +49,7 @@ public interface AccountingService {
   public PositionUpdate processPositionUpdate (PositionDoUpdateCmd positionDoUpdateCmd) throws PositionUpdateException;
 
   /**
-   * Method processes cashDoUpdateCmd objects adjusting the booked amounts of cash for a specific broker.
+   * Method processes {@link CashDoUpdateCmd} objects adjusting the booked amounts of cash for a specific broker.
    * @param cashDoUpdateCmd the object that describes what cash change to book in the database
    * @return CashUpdate Latest {@link CashUpdate} which contains relative change, new overall balance, origin and reason for the cash update
    * @throws org.powertac.common.exceptions.CashUpdateException is thrown if a cash update fails
@@ -57,7 +57,7 @@ public interface AccountingService {
   public CashUpdate processCashUpdate(CashDoUpdateCmd cashDoUpdateCmd) throws CashUpdateException;
 
   /**
-   * Method processes incoming tariffDoPublishCmd of a broker. The method does not
+   * Method processes incoming {@link TariffDoPublishCmd} of a broker. The method does not
    * return any results objects as tariffs are published only periodically through the
    * {@code publishTariffList()} method
    *
@@ -69,7 +69,7 @@ public interface AccountingService {
 
 
   /**
-   * Method processes incoming tariffDoReplyCmd of a broker or customer. The main task
+   * Method processes incoming {@link TariffDoReplyCmd} of a broker or customer. The main task
    * of this method is to persistently record the tariffDoReplyCmd and then to forward it
    * downstream for further processing.
    *
@@ -80,7 +80,7 @@ public interface AccountingService {
   public Tariff processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
 
   /**
-   * Method processes incoming tariffDoRevokeCmd of a broker. This method needs to
+   * Method processes incoming {@link TariffDoRevokeCmd} of a broker. This method needs to
    * implement logic that leads to the given tariff being revoked from the list of
    * published tariffs.
    *
