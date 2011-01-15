@@ -115,7 +115,7 @@ public interface AccountingService {
    *
    * @return a list of all active tariffs, which might be empty if no tariffs are published
    */
-  List<Tariff> publishTariffList();
+  public List<Tariff> publishTariffList();
 
 
   /**
@@ -123,6 +123,6 @@ public interface AccountingService {
    *
    * @return a list of all available customers, which might be empty if no customers are available
    */
-  List<Customer> publishCustomersAvailable();
+  public List<Customer> publishCustomersAvailable();
 
 }
