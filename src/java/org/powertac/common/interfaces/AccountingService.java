@@ -110,6 +110,8 @@ public interface AccountingService {
    */
   public List processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
 
+  public Tariff processTariffUpdate(TariffDoUpdateCmd tariffDoUpdateCmd) throws TariffUpdateException;
+
   /**
    * Returns a list of all currently active (i.e. subscribeable) tariffs (which might be empty)
    *
