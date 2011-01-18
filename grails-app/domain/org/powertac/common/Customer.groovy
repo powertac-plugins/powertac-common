@@ -43,7 +43,7 @@ class Customer implements Serializable {
 
   static belongsTo = [competition: Competition]
 
-  static hasMany = [meterReadings: MeterReading, tariffs: Tariff]
+  static hasMany = [meterReadings: MeterReading] //, tariffs: Tariff]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
