@@ -1,4 +1,4 @@
-package org.powertac.common.tariff
+package org.powertac.common
 
 import grails.test.*
 
