@@ -112,7 +112,7 @@ class Rate implements Serializable
    */
   boolean applies ()
   {
-    return applies(Timeslot.currentTimeslot().getStartDateTime())
+    return applies(timeService.getCurrentTime())
   }
 
   /**
@@ -148,7 +148,7 @@ class Rate implements Serializable
    */
   BigDecimal getValue ()
   {
-    return getValue(Timeslot.currentTimeslot().getStartDateTime())
+    return getValue(Timeslot.currentTimeslot())
   }
   
   /**

@@ -18,6 +18,7 @@ package org.powertac.common
 
 import org.joda.time.LocalDateTime
 import org.powertac.common.enumerations.CompetitionStatus
+import org.powertac.common.tariff.Tariff
 
 class Competition implements Serializable {
   String id = IdGenerator.createId()
