@@ -18,7 +18,7 @@ class Rate implements Serializable
   Partial weeklyEnd
   Partial dailyBegin
   Partial dailyEnd
-  BigDecimal tierThreshold = 0 // tier applicability
+  BigDecimal tierThreshold = 0.0 // tier applicability
   boolean isFixed = true // if true, minValue is fixed rate
   BigDecimal minValue // min amd max rate values
   BigDecimal maxValue
@@ -36,8 +36,8 @@ class Rate implements Serializable
     weeklyBegin(nullable:true)
     weeklyEnd(nullable:true)
     isFixed(nullable:false)
-    minValue(min:0)
-    maxValue(min:0)
+    minValue(min:0.0)
+    maxValue(min:0.0)
   }
 
   /**
@@ -138,7 +138,11 @@ class Rate implements Serializable
 
     return (appliesWeekly && appliesDaily)
   }
-  
+
+  private void setValue(BigDecimal value) {
+    //make value property read only
+  }
+
   /**
    * Returns the rate for the current time
    */

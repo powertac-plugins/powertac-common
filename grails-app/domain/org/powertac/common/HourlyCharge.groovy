@@ -9,7 +9,7 @@ class HourlyCharge implements Serializable
 	
 	static belongsTo = [Rate]
     static constraints = {
-		value(nullable:false, min:0)
+		value(nullable:false, min:0.0)
 		when(nullable:false)
     }
 }

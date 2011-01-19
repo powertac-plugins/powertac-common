@@ -41,16 +41,16 @@ class Tariff
    * One-time payment for subscribing to tariff, positive for payment
    * from customer, negative for payment to customer.
    */
-  BigDecimal signupPayment = 0
+  BigDecimal signupPayment = 0.0
   
   /**
    * Payment from customer to broker for canceling subscription before
    * minDuration has elapsed.
    */
-  BigDecimal earlyWithdrawPayment = 0
+  BigDecimal earlyWithdrawPayment = 0.0
   
   /** Flat payment per period for two-part tariffs */
-  BigDecimal periodicPayment = 0
+  BigDecimal periodicPayment = 0.0
 
   /** Returns the rate table */
   Set<Rate> rates
