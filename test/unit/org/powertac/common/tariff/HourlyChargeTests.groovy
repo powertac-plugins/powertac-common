@@ -2,6 +2,7 @@ package org.powertac.common.tariff
 
 import grails.test.*
 import org.joda.time.LocalDateTime
+import org.powertac.common.HourlyCharge
 
 class HourlyChargeTests extends GrailsUnitTestCase {
   protected void setUp() {
