@@ -1,13 +1,11 @@
-package org.powertac.common.tariff
+package org.powertac.common
 
-import org.powertac.common.Timeslot
-
-import org.joda.time.LocalDateTime
 import org.joda.time.DateTimeFieldType
 import org.joda.time.Duration
+import org.joda.time.LocalDateTime
 import org.joda.time.Partial
 
-/**
+ /**
 * Tariffs are composed of Rates, all of which are subtypes of this class.
 * Rates may be applicable on particular days of the week, particular times
 * of day, or above some usage threshold.
