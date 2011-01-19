@@ -1,10 +1,10 @@
 class PowertacCommonGrailsPlugin {
     // the plugin version
-    def version = "0.4"
+    def version = "0.5-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.6 > *"
     // the other plugins this plugin depends on
-    def dependsOn = ["jodaTime":"1.1"]
+    def dependsOn = ["jodaTime":"1.1 > *"]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
             "grails-app/views/error.gsp"
@@ -22,7 +22,7 @@ This plugin provides common domain classes and command objects for powertac comp
     def documentation = "http://powertac.org/plugin/powertac-common"
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before 
+        // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
