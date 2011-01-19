@@ -18,7 +18,7 @@ package org.powertac.common.interfaces;
 
 import org.powertac.common.CashUpdate;
 import org.powertac.common.PositionUpdate;
-import org.powertac.common.Tariff;
+import org.powertac.common.tariff.Tariff;
 import org.powertac.common.command.*;
 import org.powertac.common.exceptions.*;
 

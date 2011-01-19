@@ -1,6 +1,6 @@
 package org.powertac.common.tariff
 
-import org.powertac.common.Timeslot
+import org.powertac.common.TimeService
 
 import org.joda.time.LocalDateTime
 import org.joda.time.DateTimeFieldType
@@ -38,9 +38,12 @@ class Rate implements Serializable
     weeklyBegin(nullable:true)
     weeklyEnd(nullable:true)
     isFixed(nullable:false)
-    minValue(min:0)
-    maxValue(min:0)
+    //minValue(min:0)
+    //maxValue(min:0)
   }
+  
+  // Dependency on time service
+  def timeService
 
   /**
    * Constructor must mung the Partials for weeklyBegin, weeklyEnd,
@@ -114,7 +117,7 @@ class Rate implements Serializable
    */
   boolean applies ()
   {
-    return applies(Timeslot.currentTimeslot().getStartDateTime())
+    return applies(timeService.getCurrentTime())
   }
 
   /**
@@ -146,7 +149,7 @@ class Rate implements Serializable
    */
   BigDecimal getValue ()
   {
-    return getValue(Timeslot.currentTimeslot().getStartDateTime())
+    return getValue(timeService.getCurrentTime())
   }
   
   /**
