@@ -7,9 +7,9 @@ import org.joda.time.Partial
 import org.joda.time.ReadablePartial
 
  /**
-* Tariffs are composed of Rates, all of which are subtypes of this class.
+* Tariffs are composed of Rates.
 * Rates may be applicable on particular days of the week, particular times
-* of day, or above some usage threshold.
+* of day, or above some usage threshold. Rates may be fixed or variable. 
 * @author jcollins
 */
 class Rate implements Serializable
@@ -88,7 +88,7 @@ class Rate implements Serializable
   }
 
   /**
-   * Process dailyBegin spec to extract dayOfWeek field
+   * Process dailyBegin spec to extract hourOfDay field
    */
   void setDailyBegin (ReadablePartial begin)
   {
@@ -98,7 +98,7 @@ class Rate implements Serializable
   }
 
   /**
-   * Process dailyEnd spec to extract dayOfWeek field
+   * Process dailyEnd spec to extract hourOfDay field
    */
   void setDailyEnd (ReadablePartial end)
   {
@@ -110,7 +110,6 @@ class Rate implements Serializable
   /**
    * True just in case this Rate applies at this moment, ignoring the
    * tier.
-   * @return
    */
   boolean applies ()
   {
@@ -161,9 +160,35 @@ class Rate implements Serializable
   private void setValue(BigDecimal value) {
     //make value property read only
   }
+  
+  /**
+   * True just in case this Rate applies at this moment, for the
+   * indicated usage tier.
+   */
+  boolean applies (BigDecimal usage)
+  {
+    return applies(usage, timeService.getCurrentTime())
+  }
+  
+  /**
+   * True just in case this Rate applies at the specified
+   * time, for the indicated usage tier.
+   */
+  boolean applies (BigDecimal usage, LocalDateTime when)
+  {
+    if (usage >= tierThreshold) {
+      return applies(when)
+    }
+    else {
+      return false
+    }
+  }
 
   /**
-   * Returns the rate for the current time
+   * Returns the rate for the current time. Note that the value is returned
+   * even in case the Rate does not apply at the current time or current
+   * usage tier. For variable rates, the value returned during periods of
+   * inapplicability is meaningless, of course.
    */
   BigDecimal getValue ()
   {
@@ -172,7 +197,10 @@ class Rate implements Serializable
   }
   
   /**
-   * Returns the rate for some time in the past or future
+   * Returns the rate for some time in the past or future, regardless of
+   * whether the Rate applies at that time, and regardless of whether
+   * the requested time is beyond the notification interval of a
+   * variable rate.
    */
   BigDecimal getValue (LocalDateTime when)
   {
