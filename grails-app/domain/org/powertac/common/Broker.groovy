@@ -16,7 +16,7 @@
 
 package org.powertac.common
 
-import org.powertac.common.tariff.Tariff
+import org.powertac.common.Tariff
 
 class Broker implements Serializable {
 

@@ -4,6 +4,7 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.Duration
 import org.joda.time.LocalDateTime
 import org.joda.time.Partial
+import org.joda.time.ReadablePartial
 
  /**
 * Tariffs are composed of Rates, all of which are subtypes of this class.
@@ -14,17 +15,17 @@ import org.joda.time.Partial
 class Rate implements Serializable
 {
   Tariff tariff
-  Partial weeklyBegin // weekly and daily validity
-  Partial weeklyEnd
-  Partial dailyBegin
-  Partial dailyEnd
+  int weeklyBegin = -1// weekly and daily validity
+  int weeklyEnd = -1
+  int dailyBegin = -1
+  int dailyEnd = -1
   BigDecimal tierThreshold = 0.0 // tier applicability
   boolean isFixed = true // if true, minValue is fixed rate
   BigDecimal minValue // min amd max rate values
   BigDecimal maxValue
   Duration noticeInterval // notice interval for variable rate
   BigDecimal expectedMean // expected mean value for variable rate
-  Set<HourlyCharge> rateHistory // history of values for variable rate
+  SortedSet<HourlyCharge> rateHistory // history of values for variable rate
 
   static belongsTo = Tariff
   static hasMany = [rateHistory:HourlyCharge]
@@ -40,6 +41,11 @@ class Rate implements Serializable
     maxValue(min:0.0)
   }
 
+  // introduce dependency on TimeService
+  def timeService
+  
+  // TODO: Tier applicability, variable rate
+  
   /**
    * Constructor must mung the Partials for weeklyBegin, weeklyEnd,
    * dailyBegin, and dailyEnd
@@ -64,44 +70,40 @@ class Rate implements Serializable
   /**
    * Process weeklyBegin spec to extract dayOfWeek field
    */
-  void setWeeklyBegin (Partial begin)
+  void setWeeklyBegin (ReadablePartial begin)
   {
     if (begin != null) {
-      weeklyBegin = new Partial(DateTimeFieldType.dayOfWeek(),
-          begin.get(DateTimeFieldType.dayOfWeek()))
+      weeklyBegin = begin.get(DateTimeFieldType.dayOfWeek())
     }
   }
 
   /**
-   * Process weeklyBegin spec to extract dayOfWeek field
+   * Process weeklyEnd spec to extract dayOfWeek field
    */
-  void setWeeklyEnd (Partial end)
+  void setWeeklyEnd (ReadablePartial end)
   {
     if (end!= null) {
-      weeklyEnd= new Partial(DateTimeFieldType.dayOfWeek(),
-          end.get(DateTimeFieldType.dayOfWeek()))
+      weeklyEnd= end.get(DateTimeFieldType.dayOfWeek())
     }
   }
 
   /**
-   * Process weeklyBegin spec to extract dayOfWeek field
+   * Process dailyBegin spec to extract dayOfWeek field
    */
-  void setDailyBegin (Partial begin)
+  void setDailyBegin (ReadablePartial begin)
   {
     if (begin != null) {
-      dailyBegin = new Partial(DateTimeFieldType.hourOfDay(),
-          begin.get(DateTimeFieldType.hourOfDay()))
+      dailyBegin = begin.get(DateTimeFieldType.hourOfDay())
     }
   }
 
   /**
-   * Process weeklyBegin spec to extract dayOfWeek field
+   * Process dailyEnd spec to extract dayOfWeek field
    */
-  void setDailyEnd (Partial end)
+  void setDailyEnd (ReadablePartial end)
   {
     if (end!= null) {
-      weeklyEnd= new Partial(DateTimeFieldType.hourOfDay(),
-          end.get(DateTimeFieldType.hourOfDay()))
+      dailyEnd= end.get(DateTimeFieldType.hourOfDay())
     }
   }
 
@@ -123,18 +125,35 @@ class Rate implements Serializable
   {
     def appliesWeekly = false
     def appliesDaily = false
-    day = when.getDayOfWeek()
-    appliesWeekly = (weeklyBegin == null || 
-                     (weeklyEnd == null && day == weeklyBegin) ||
-                     (weeklyEnd != null && day >= weeklyBegin && day <= weeklyEnd))
+
+    // check weekly applicability
+    def day = when.getDayOfWeek()
+    if (weeklyBegin == -1) {
+      appliesWeekly = true
+    }
+    else if (weeklyEnd == -1) {
+      appliesWeekly = (day == weeklyBegin)
+    }
+    else if (weeklyEnd >= weeklyBegin) {
+      appliesWeekly = (day >= weeklyBegin && day <= weeklyEnd)
+    }
+    else {
+      appliesWeekly = (day >= weeklyBegin || day <= weeklyEnd)
+    }
     
-    hour = when.getHourOfDay()
-    if (dailyEnd > dailyBegin)
+    // check daily applicability
+    def hour = when.getHourOfDay()
+    if (dailyBegin == -1 || dailyEnd == -1) {
+      appliesDaily = true
+    }
+    else if (dailyEnd > dailyBegin) {
       // Interval does not span midnight
-      appliesDaily = (hour >= dailyBegin && hour < dailyEnd)
-    else
+      appliesDaily = ((hour >= dailyBegin) && (hour < dailyEnd))
+    }
+    else {
       // Interval spans midnight
-      appliesDaily =  (hour >= dailyBegin || hour < dailyEnd)
+      appliesDaily =  ((hour >= dailyBegin) || (hour < dailyEnd))
+    }
 
     return (appliesWeekly && appliesDaily)
   }
@@ -148,7 +167,8 @@ class Rate implements Serializable
    */
   BigDecimal getValue ()
   {
-    return getValue(Timeslot.currentTimeslot())
+    //return getValue(Timeslot.currentTimeslot().getStartDateTime())
+    return getValue(timeService.getCurrentTime())
   }
   
   /**
