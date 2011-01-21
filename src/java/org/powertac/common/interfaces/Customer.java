@@ -18,8 +18,8 @@ package org.powertac.common.interfaces;
 
 import org.powertac.common.MeterReading;
 import org.powertac.common.Weather;
-import org.powertac.common.command.TariffDoPublishCmd;
-import org.powertac.common.command.TariffDoReplyCmd;
+//import org.powertac.common.command.TariffDoPublishCmd;
+//import org.powertac.common.command.TariffDoReplyCmd;
 import org.powertac.common.exceptions.CustomerInfoGenerationException;
 import org.powertac.common.exceptions.MeterReadingException;
 import org.powertac.common.exceptions.TariffSubscriptionException;
@@ -40,7 +40,7 @@ public interface Customer {
    * @return A list of possible tariff replies which represent subscriptions or negotiation interactions
    * @throws org.powertac.common.exceptions.TariffSubscriptionException thrown if tariff processing by the customer fails
    */
-  public List<TariffDoReplyCmd> processTariffList(List<TariffDoPublishCmd> tariffDoPublishCmdList) throws TariffSubscriptionException;
+  //public List<TariffDoReplyCmd> processTariffList(List<TariffDoPublishCmd> tariffDoPublishCmdList) throws TariffSubscriptionException;
 
   /**
    * Called when new weather forecasts are available

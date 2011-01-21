@@ -15,27 +15,28 @@ import org.joda.time.ReadablePartial
 class Rate implements Serializable
 {
   Tariff tariff
-  int weeklyBegin = -1// weekly and daily validity
+  int weeklyBegin = -1 // weekly applicability
   int weeklyEnd = -1
-  int dailyBegin = -1
+  int dailyBegin = -1 // daily applicability
   int dailyEnd = -1
   BigDecimal tierThreshold = 0.0 // tier applicability
   boolean isFixed = true // if true, minValue is fixed rate
-  BigDecimal minValue // min amd max rate values
-  BigDecimal maxValue
-  Duration noticeInterval // notice interval for variable rate
-  BigDecimal expectedMean // expected mean value for variable rate
+  BigDecimal minValue = 0.0 // min and max rate values
+  BigDecimal maxValue = 0.0
+  int noticeInterval = 0 // notice interval for variable rate in hours
+  BigDecimal expectedMean = 0.0 // expected mean value for variable rate
   SortedSet<HourlyCharge> rateHistory // history of values for variable rate
 
   static belongsTo = Tariff
   static hasMany = [rateHistory:HourlyCharge]
+  static transients = ["value"]
 
   static constraints = {
     tariff(nullable:false)
-    dailyBegin(nullable:true)
-    dailyEnd(nullable:true)
-    weeklyBegin(nullable:true)
-    weeklyEnd(nullable:true)
+    //dailyBegin(nullable:true)
+    //dailyEnd(nullable:true)
+    //weeklyBegin(nullable:true)
+    //weeklyEnd(nullable:true)
     isFixed(nullable:false)
     minValue(min:0.0)
     maxValue(min:0.0)
@@ -54,15 +55,17 @@ class Rate implements Serializable
   {
     m?.each { k,v ->
       if (k == "weeklyBegin")
-        setWeeklyBegin(v)
+        setWeeklyBegin(v) // extract day-of-week
       else if (k == "weeklyEnd")
-        setWeeklyEnd(v)
+        setWeeklyEnd(v) // extract day-of-week
       else if (k == "dailyBegin")
-        setDailyBegin(v)
+        setDailyBegin(v) // extract hour-of-day
       else if (k == "dailyEnd")
-        setDailyEnd(v)
+        setDailyEnd(v) // extract hour-of-day
+      else if (k == "noticeInterval")
+        setNoticeInterval(v) // truncate to integer hours
       else if (k == "value")
-        minValue = v
+        setValue(v)
       else
         this."$k" = v }
   }
@@ -76,6 +79,12 @@ class Rate implements Serializable
       weeklyBegin = begin.get(DateTimeFieldType.dayOfWeek())
     }
   }
+  
+  // normal setter also, for Hibernate
+  void setWeeklyBegin (int begin)
+  {
+    weeklyBegin = begin
+  }
 
   /**
    * Process weeklyEnd spec to extract dayOfWeek field
@@ -86,9 +95,15 @@ class Rate implements Serializable
       weeklyEnd= end.get(DateTimeFieldType.dayOfWeek())
     }
   }
+  
+  // normal setter also
+  void setWeeklyEnd (int end)
+  {
+    weeklyEnd = end
+  }
 
   /**
-   * Process dailyBegin spec to extract hourOfDay field
+   * Process dailyBegin specification to extract hourOfDay field
    */
   void setDailyBegin (ReadablePartial begin)
   {
@@ -96,17 +111,44 @@ class Rate implements Serializable
       dailyBegin = begin.get(DateTimeFieldType.hourOfDay())
     }
   }
-
+  
+  // normal setter also
+  void setDailyBegin (int begin)
+  {
+    dailyBegin = begin
+  }
+  
   /**
-   * Process dailyEnd spec to extract hourOfDay field
+   * Process dailyEnd specification to extract hourOfDay field
    */
   void setDailyEnd (ReadablePartial end)
   {
-    if (end!= null) {
-      dailyEnd= end.get(DateTimeFieldType.hourOfDay())
+    if (end != null) {
+      dailyEnd = end.get(DateTimeFieldType.hourOfDay())
     }
   }
-
+  
+  // normal setter also
+  void setDailyEnd (int end)
+  {
+    dailyEnd = end
+  }
+  
+  /**
+   * Truncate noticeInterval field to integer hours
+   */
+  void setNoticeInterval (Duration interval)
+  {
+    // we assume that integer division will do the Right Thing here
+    noticeInterval = interval.getMillis() / TimeService.HOUR
+  }
+  
+  // normal setter also, for Hibernate
+  void setNoticeInterval (int interval)
+  {
+    noticeInterval = interval
+  }
+  
   /**
    * True just in case this Rate applies at this moment, ignoring the
    * tier.
@@ -151,14 +193,10 @@ class Rate implements Serializable
     }
     else {
       // Interval spans midnight
-      appliesDaily =  ((hour >= dailyBegin) || (hour < dailyEnd))
+      appliesDaily = ((hour >= dailyBegin) || (hour < dailyEnd))
     }
 
     return (appliesWeekly && appliesDaily)
-  }
-
-  private void setValue(BigDecimal value) {
-    //make value property read only
   }
   
   /**
@@ -185,6 +223,13 @@ class Rate implements Serializable
   }
 
   /**
+   * Allows Hibernate to set the value
+   */
+  void setValue(BigDecimal value) {
+    minValue = value
+  }
+
+  /**
    * Returns the rate for the current time. Note that the value is returned
    * even in case the Rate does not apply at the current time or current
    * usage tier. For variable rates, the value returned during periods of
@@ -206,8 +251,28 @@ class Rate implements Serializable
   {
     if (isFixed)
       return minValue
+    else if (rateHistory.size() == 0) {
+      println "no rate history, return default"
+      return expectedMean // default
+    }
     else {
-      return expectedMean // stub
+      // if looking beyond the notification interval, return default
+      long horizon = when.getLocalMillis() - timeService.getCurrentTime().getLocalMillis()
+      if (horizon / TimeService.HOUR > noticeInterval) {
+        println "Horizon ${horizon / TimeService.HOUR} > notice interval ${noticeInterval}"
+        return expectedMean
+      }
+      // otherwise, return the most recent price announcement for the given time
+      HourlyCharge probe = new HourlyCharge(when: when.plusMinutes(1), value: 0)
+      //println "tailSet=${rateHistory.tailSet(probe)}"
+      SortedSet<HourlyCharge> head = rateHistory.headSet(probe)
+      if (head == null || head.size() == 0) {
+        println "empty result"
+        return expectedMean // default
+      }
+      else {
+        return head.last().value
+      }
     }
   }
 }

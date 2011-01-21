@@ -38,6 +38,7 @@ class RateTests extends GrailsUnitTestCase
     assertNotNull("Rate not null", r)
     assertTrue("Rate is fixed", r.isFixed)
     assertEquals("Correct fixed rate", r.value, 0.121)
+    assertEquals("Correct notice interval", r.noticeInterval, 0)
   }
   
   // Test a rate that applies between 6:00 and 8:00

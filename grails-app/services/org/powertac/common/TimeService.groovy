@@ -6,6 +6,8 @@ class TimeService {
 
     static transactional = true
     
+    static final long HOUR = 1000l * 60 * 60
+    
     LocalDateTime currentTime
 
     def updateTime (LocalDateTime time)

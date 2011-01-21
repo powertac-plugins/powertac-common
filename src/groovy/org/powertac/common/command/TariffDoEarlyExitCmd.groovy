@@ -29,6 +29,7 @@ import org.powertac.common.enumerations.TariffState
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
+@Deprecated // does not match current Tariff design -- see #57
 @Validateable class TariffDoEarlyExitCmd implements Serializable {
   Customer customer
   Tariff tariff
