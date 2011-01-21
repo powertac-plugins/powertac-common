@@ -67,42 +67,39 @@ class TransactionLog implements Serializable {
       return true
     })
     buyer(nullable: true, validator: { val, obj ->
-      if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.buyer.null']
       if (obj.transactionType == TransactionType.QUOTE && val) return ['quote.buyer.notnull']
       return true
     })
     seller(nullable: true, validator: { val, obj ->
-      if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.seller.null']
       if (obj.transactionType == TransactionType.QUOTE && val) return ['quote.seller.notnull']
       return true
     })
     buySellIndicator(nullable: true, validator: { bsInd, obj ->
-      if (obj.transactionType == TransactionType.TRADE && !bsInd) return ['trade.buysellindicator.null']
       if (obj.transactionType == TransactionType.QUOTE && bsInd) return ['quote.buysellindicator.notnull']
       return true
     })
 
     bid(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.bid.notnull']
-      if (TransactionType.QUOTE && !val) return ['quote.bid.null']
+      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.bid.null']
       return true
     })
 
     bidSize(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.bidSize.notnull']
-      if (TransactionType.QUOTE && !val) return ['quote.bidSize.null']
+      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.bidSize.null']
       return true
     })
 
     ask(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.ask.notnull']
-      if (TransactionType.QUOTE && !val) return ['quote.ask.null']
+      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.ask.null']
       return true
     })
 
     askSize(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.askSize.notnull']
-      if (TransactionType.QUOTE && !val) return ['quote.askSize.null']
+      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.askSize.null']
       return true
     })
   }
