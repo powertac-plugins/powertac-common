@@ -65,7 +65,7 @@ public interface AccountingService {
    * @throws org.powertac.common.exceptions.TariffPublishException is thrown if the tariff publishing fails
    * @return the published tariff object
    */
-  public Tariff processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffPublishException;
+  //public Tariff processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffPublishException;
 
 
   /**
@@ -77,7 +77,7 @@ public interface AccountingService {
    * @return the latest tariff instance
    * @throws org.powertac.common.exceptions.TariffReplyException is thrown if the tariff publishing fails
    */
-  public Tariff processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
+  //public Tariff processTariffReply(TariffDoReplyCmd tariffDoReplyCmd) throws TariffReplyException;
 
   /**
    * Method processes incoming {@link TariffDoRevokeCmd} of a broker. This method needs to
@@ -117,7 +117,7 @@ public interface AccountingService {
    * all customers subscribed to the updated tariff
    * @throws TariffUpdateException is thrown if the tariff updating fails.
    */
-  public List processTariffUpdate(TariffDoUpdateCmd tariffDoUpdateCmd) throws TariffUpdateException;
+  //public List processTariffUpdate(TariffDoUpdateCmd tariffDoUpdateCmd) throws TariffUpdateException;
 
   /**
    * Returns a list of all currently active (i.e. subscribeable) tariffs (which might be empty)

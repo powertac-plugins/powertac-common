@@ -16,6 +16,8 @@
 
 package org.powertac.common
 
+import org.powertac.common.Tariff
+
 class Broker implements Serializable {
 
   String id = IdGenerator.createId()
