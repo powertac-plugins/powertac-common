@@ -6,16 +6,20 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.powertac.common.HourlyCharge
 
-class HourlyChargeTests extends GrailsUnitTestCase {
-  protected void setUp() {
+class HourlyChargeTests extends GrailsUnitTestCase 
+{
+  protected void setUp() 
+  {
     super.setUp()
   }
 
-  protected void tearDown() {
+  protected void tearDown() 
+  {
     super.tearDown()
   }
 
-  void testCreate() {
+  void testCreate() 
+  {
     def tm = new DateTime(2011, 1, 18, 12, 0, 0, 0, DateTimeZone.UTC)
     def hc = new HourlyCharge(value: 42, when: tm.toInstant())
     assertNotNull("object created", hc)
