@@ -1,7 +1,9 @@
 package org.powertac.common
 
 import grails.test.*
-import org.joda.time.LocalDateTime
+import org.joda.time.Instant
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.powertac.common.HourlyCharge
 
 class HourlyChargeTests extends GrailsUnitTestCase {
@@ -14,10 +16,10 @@ class HourlyChargeTests extends GrailsUnitTestCase {
   }
 
   void testCreate() {
-    def tm = new LocalDateTime(2011, 1, 18, 12, 0)
-    def hc = new HourlyCharge(value: 42, when: tm)
+    def tm = new DateTime(2011, 1, 18, 12, 0, 0, 0, DateTimeZone.UTC)
+    def hc = new HourlyCharge(value: 42, when: tm.toInstant())
     assertNotNull("object created", hc)
-    assertEquals("correct value", hc.getValue(), 42)
-    assertEquals("correct hour", hc.getWhen().getHourOfDay(), 12)
+    assertEquals("correct value", 42, hc.getValue())
+    assertEquals("correct hour", 12, new DateTime(hc.getWhen(), DateTimeZone.UTC).getHourOfDay())
   }
 }

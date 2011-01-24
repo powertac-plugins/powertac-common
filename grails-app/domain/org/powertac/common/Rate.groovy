@@ -1,10 +1,14 @@
 package org.powertac.common
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.DateTimeFieldType
 import org.joda.time.Duration
-import org.joda.time.LocalDateTime
+import org.joda.time.Instant
 import org.joda.time.Partial
 import org.joda.time.ReadablePartial
+import org.joda.time.base.AbstractDateTime
+import org.joda.time.base.AbstractInstant
 
  /**
 * Tariffs are composed of Rates.
@@ -73,6 +77,16 @@ class Rate implements Serializable
   /**
    * Process weeklyBegin spec to extract dayOfWeek field
    */
+  void setWeeklyBegin (AbstractDateTime begin)
+  {
+    if (begin != null) {
+      weeklyBegin = begin.getDayOfWeek()
+    }
+  }
+  
+  /**
+   * Process weeklyBegin spec to extract dayOfWeek field
+   */
   void setWeeklyBegin (ReadablePartial begin)
   {
     if (begin != null) {
@@ -89,13 +103,23 @@ class Rate implements Serializable
   /**
    * Process weeklyEnd spec to extract dayOfWeek field
    */
+  void setWeeklyEnd (AbstractDateTime end)
+  {
+    if (end!= null) {
+      weeklyEnd= end.getDayOfWeek()
+    }
+  }
+  
+  /**
+   * Process weeklyEnd spec to extract dayOfWeek field
+   */
   void setWeeklyEnd (ReadablePartial end)
   {
     if (end!= null) {
       weeklyEnd= end.get(DateTimeFieldType.dayOfWeek())
     }
   }
-  
+
   // normal setter also
   void setWeeklyEnd (int end)
   {
@@ -105,17 +129,37 @@ class Rate implements Serializable
   /**
    * Process dailyBegin specification to extract hourOfDay field
    */
+  void setDailyBegin (AbstractDateTime begin)
+  {
+    if (begin != null) {
+      dailyBegin = begin.getHourOfDay()
+    }
+  }
+  
+  /**
+   * Process dailyBegin specification to extract hourOfDay field
+   */
   void setDailyBegin (ReadablePartial begin)
   {
     if (begin != null) {
       dailyBegin = begin.get(DateTimeFieldType.hourOfDay())
     }
   }
-  
+
   // normal setter also
   void setDailyBegin (int begin)
   {
     dailyBegin = begin
+  }
+  
+  /**
+   * Process dailyEnd specification to extract hourOfDay field
+   */
+  void setDailyEnd (AbstractDateTime end)
+  {
+    if (end != null) {
+      dailyEnd = end.getHourOfDay()
+    }
   }
   
   /**
@@ -127,7 +171,7 @@ class Rate implements Serializable
       dailyEnd = end.get(DateTimeFieldType.hourOfDay())
     }
   }
-  
+
   // normal setter also
   void setDailyEnd (int end)
   {
@@ -162,13 +206,14 @@ class Rate implements Serializable
    * True just in case this Rate applies at the given DateTime, ignoring the
    * tier.
    */
-  boolean applies (LocalDateTime when)
+  boolean applies (AbstractInstant when)
   {
     def appliesWeekly = false
     def appliesDaily = false
+    DateTime time = new DateTime(when, DateTimeZone.UTC)
 
     // check weekly applicability
-    def day = when.getDayOfWeek()
+    def day = time.getDayOfWeek()
     if (weeklyBegin == -1) {
       appliesWeekly = true
     }
@@ -183,7 +228,7 @@ class Rate implements Serializable
     }
     
     // check daily applicability
-    def hour = when.getHourOfDay()
+    def hour = time.getHourOfDay()
     if (dailyBegin == -1 || dailyEnd == -1) {
       appliesDaily = true
     }
@@ -212,7 +257,7 @@ class Rate implements Serializable
    * True just in case this Rate applies at the specified
    * time, for the indicated usage tier.
    */
-  boolean applies (BigDecimal usage, LocalDateTime when)
+  boolean applies (BigDecimal usage, AbstractInstant when)
   {
     if (usage >= tierThreshold) {
       return applies(when)
@@ -247,7 +292,7 @@ class Rate implements Serializable
    * the requested time is beyond the notification interval of a
    * variable rate.
    */
-  BigDecimal getValue (LocalDateTime when)
+  BigDecimal getValue (AbstractInstant when)
   {
     if (isFixed)
       return minValue
@@ -256,18 +301,17 @@ class Rate implements Serializable
       return expectedMean // default
     }
     else {
+      Instant inst = new Instant(when)
       // if looking beyond the notification interval, return default
-      long horizon = when.getLocalMillis() - timeService.getCurrentTime().getLocalMillis()
+      long horizon = inst.getMillis() - timeService.getCurrentTime().getMillis()
       if (horizon / TimeService.HOUR > noticeInterval) {
-        println "Horizon ${horizon / TimeService.HOUR} > notice interval ${noticeInterval}"
+        //println "Horizon ${horizon / TimeService.HOUR} > notice interval ${noticeInterval}"
         return expectedMean
       }
       // otherwise, return the most recent price announcement for the given time
-      HourlyCharge probe = new HourlyCharge(when: when.plusMinutes(1), value: 0)
-      //println "tailSet=${rateHistory.tailSet(probe)}"
+      HourlyCharge probe = new HourlyCharge(when: inst.plus(1000l), value: 0)
       SortedSet<HourlyCharge> head = rateHistory.headSet(probe)
       if (head == null || head.size() == 0) {
-        println "empty result"
         return expectedMean // default
       }
       else {

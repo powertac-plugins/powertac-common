@@ -1,7 +1,7 @@
 package org.powertac.common
 
 import org.joda.time.Duration
-import org.joda.time.LocalDateTime
+import org.joda.time.Instant
 
 /**
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
@@ -26,7 +26,7 @@ class Tariff
   }
   
   /** Last date new subscriptions will be accepted */
-  LocalDateTime expiration
+  Instant expiration
   
   /** Current state of this Tariff */
   State state = State.OFFERED

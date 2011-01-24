@@ -1,17 +1,43 @@
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.joda.time.Instant
+import org.joda.time.base.AbstractDateTime
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationEvent
 
-class TimeService {
+class TimeService 
+{
+  static transactional = false
 
-    static transactional = true
-    
-    static final long HOUR = 1000l * 60 * 60
-    
-    LocalDateTime currentTime
+  def grailsApplication
 
-    def updateTime (LocalDateTime time)
-    {
-      currentTime = time
-    }
+  static final long HOUR = 1000l * 60 * 60
+  
+  long base
+  long start
+  long rate
+
+  Instant currentTime
+
+  def updateTime () 
+  {
+    systemTime = new Instant().getMillis()
+    currentTime = new Instant(base + (systemTime - start) * rate)
+  }
+  
+  void setCurrentTime (Instant time)
+  {
+    currentTime = time
+  }
+  
+  void setCurrentTime (AbstractDateTime time)
+  {
+    currentTime = new Instant(time)
+  }
+
+  void publish(ApplicationEvent event) 
+  {
+    grailsApplication.mainContext.publishEvent(event)
+  }
 }

@@ -1,11 +1,11 @@
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.joda.time.Instant
 
 class HourlyCharge implements Serializable, Comparable
 {
   BigDecimal value
-  LocalDateTime when
+  Instant when
 	
   static belongsTo = [Rate]
   static constraints = {
