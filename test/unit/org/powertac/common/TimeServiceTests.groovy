@@ -80,8 +80,9 @@ class TimeServiceTests extends GrailsUnitTestCase
     def actionCount = 0
     def interval = 15 * 60 * 1000 // one 15-minute tick
     def action = { actionCount += 1; var = 3 * actionCount }
-    def add = { ts.addAction(ts.currentTime.plus(actionCount * interval), action) }
-    ts.addAction(theBase.toInstant().plus(interval), { action(); add() })
+    def add
+    add = { ts.addAction(ts.currentTime.plus(interval), { action(); add() }) }
+    add()
     ts.updateTime() // not yet
     assertEquals("var unchanged", 0, var)
     Thread.sleep(2500) // 2.5 seconds -> 15 min sim time
@@ -95,5 +96,9 @@ class TimeServiceTests extends GrailsUnitTestCase
     ts.updateTime()
     assertEquals("var changed", 6, var)
     assertEquals("actionCount=2", 2, actionCount)
+    Thread.sleep(2500) // 2.5 seconds -> 15 min sim time
+    ts.updateTime()
+    assertEquals("var changed", 9, var)
+    assertEquals("actionCount=3", 3, actionCount)
   }
 }

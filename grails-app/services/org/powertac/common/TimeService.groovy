@@ -60,41 +60,62 @@ class TimeService
 
   static final long HOUR = 1000l * 60 * 60
   
+  // simulation clock parameters
   long base
   long start
-  long rate = 720
-  long modulo = 15*60*1000
+  long rate = 720l
+  long modulo = 15*60*1000l
+
+  // simulation action queue
   SortedSet<SimulationAction> actions
 
+  // the current time
   Instant currentTime
 
+  /**
+   * Updates simulation time when called as specified by clock
+   * parameters, then runs any actions that may be due.
+   */
   def updateTime () 
   {
     long systemTime = new Instant().getMillis()
     long raw = base + (systemTime - start) * rate
     long cooked = raw - raw % modulo
     currentTime = new Instant(cooked)
-    runEvents()
+    //println "updateTime: sys=${systemTime}, raw=${raw}, cooked=${cooked} => ${currentTime}"
+    runActions()
   }
   
-  void setCurrentTime (Instant time)
+  /**
+   * Sets current time to a specific value. Intended for testing purposes only.
+   */
+  protected void setCurrentTime (Instant time)
   {
     currentTime = time
   }
   
-  void setCurrentTime (AbstractDateTime time)
+  /**
+   * Sets current time to a specific value. Intended for testing purposes only.
+   */
+  protected void setCurrentTime (AbstractDateTime time)
   {
     currentTime = new Instant(time)
   }
-  
-  void addAction (Instant inst, act)
+
+  /**
+   * Adds an action to the simulation queue, to be triggered at the specified time.
+   */
+  void addAction (Instant time, act)
   {
     if (actions == null)
       actions = new TreeSet<SimulationAction>()
-    actions.add(new SimulationAction(when:inst, action:act))
+    actions.add(new SimulationAction(when:time, action:act))
   }
   
-  void runEvents ()
+  /**
+   * Runs any actions that are due at the current simulated time.
+   */
+  void runActions ()
   {
     if (actions == null)
       return
