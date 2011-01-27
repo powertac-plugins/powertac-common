@@ -81,25 +81,21 @@ class TransactionLog implements Serializable {
 
     bid(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.bid.notnull']
-      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.bid.null']
       return true
     })
 
     bidSize(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.bidSize.notnull']
-      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.bidSize.null']
       return true
     })
 
     ask(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.ask.notnull']
-      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.ask.null']
       return true
     })
 
     askSize(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && val) return ['trade.askSize.notnull']
-      if (obj.transactionType == TransactionType.QUOTE && !val) return ['quote.askSize.null']
       return true
     })
   }

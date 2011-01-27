@@ -56,10 +56,6 @@ class TransactionLogTests extends GrailsUnitTestCase {
     assertEquals('quote.buyer.notnull', transactionLog.errors.getFieldError('buyer').getCode())
     assertEquals('quote.seller.notnull', transactionLog.errors.getFieldError('seller').getCode())
     assertEquals('quote.buysellindicator.notnull', transactionLog.errors.getFieldError('buySellIndicator').getCode())
-    assertEquals('quote.bid.null', transactionLog.errors.getFieldError('bid').getCode())
-    assertEquals('quote.bidSize.null', transactionLog.errors.getFieldError('bidSize').getCode())
-    assertEquals('quote.ask.null', transactionLog.errors.getFieldError('ask').getCode())
-    assertEquals('quote.askSize.null', transactionLog.errors.getFieldError('askSize').getCode())
   }
 
   void testTradeValidationLogic() {
