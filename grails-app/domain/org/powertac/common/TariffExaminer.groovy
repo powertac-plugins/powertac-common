@@ -1,5 +1,7 @@
 package org.powertac.common
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
 import org.joda.time.Partial
@@ -28,7 +30,7 @@ class TariffExaminer
   Duration maxHorizon
   
   /** True if the maps are keyed by hour-in-week rather than hour-in-day */
-  boolean weeklyMap = false
+  boolean isWeekly = false
   
   // map needs to be an array, indexed by tier-threshold and hour-in-day/week
   def tierIndexMap = [:]
@@ -71,8 +73,45 @@ class TariffExaminer
    */
   double getUsageCharge (Instant when, double kwh = 1.0, double cumulativeUsage = 0.0)
   {
-     if (!analyzed)
-       analyzeTariff()
+    if (!analyzed)
+      analyzeTariff()
+
+    // first, get the time index
+    DateTime dt = new DateTime(when, DateTimeZone.UTC)
+    int di = dt.getHourOfDay()
+    if (isWeekly)
+      di += 24 * (dt.getDayOfWeek() - 1)
+
+    // Then work out the tier index. Keep in mind that the kwh value could
+    // cross a tier boundary
+    if (tierIndexMap.size() == 1) {
+      return kwh * rateMap[0][di].getValue(when)
+    }
+    else {
+      double remainingAmount = kwh
+      double accumulatedAmount = cumulativeUsage
+      double result = 0.0
+      int ti = 0 // tier index
+      while (remainingAmount > 0.0) {
+        if (tierMap.size() > ti + 1) {
+          // still tiers remaining
+          if (accumulatedAmount >= tierMap[ti+1]) {
+            ti += 1
+          }
+          else if (remainingAmount + accumulatedAmount > tierMap[ti+1]) {
+            double amt = remainingAmount + accumulatedAmount - tierMap[ti+1]
+            result += amt * rateMap[0][ti++].getValue(when)
+            remainingAmount -= amt
+            accumulatedAmount += amt
+          }
+        }
+        else {
+          // last tier
+          result += remainingAmount * rateMap[0][ti].getValue(when)
+        }
+      }
+      return result
+    }
   }
   
   /**
@@ -91,7 +130,7 @@ class TariffExaminer
   void analyzeTariff ()
   {
     // Start by computing tier indices, and array width
-    boolean isWeekly = false
+    //boolean isWeekly = false
     def tiers = [] as SortedSet<BigDecimal>
     tariff.rates.each { rate ->
       if (rate.weeklyBegin >= 0)
