@@ -12,7 +12,7 @@ class TariffSubscription {
   Broker broker
   Customer customer
   Tariff tariff
-  BigDecimal customerShareCommitted = 1.0
+  BigDecimal customerShareCommitted = 1.0 //describes how much percentage demand /supply of a multi-contracting customer is committed to this tariff subscription
   DateTime tariffStartDateTime = timeService?.currentTime?.toDateTime()
   DateTime tariffEndDateTime = timeService?.currentTime ? timeService.currentTime.toDateTime() + Duration.standardDays(1) : null
 
