@@ -72,6 +72,9 @@ class Rate implements Serializable
         setValue(v)
       else
         this."$k" = v }
+    if (weeklyBegin >= 0 && weeklyEnd == -1) {
+      weeklyEnd = weeklyBegin
+    }
   }
 
   /**
