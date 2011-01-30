@@ -43,6 +43,8 @@ public class Constants {
   public static final String TARIFF_WRONG_CUSTOMER = "tariff.customer.wrong";
   public static final String TARIFF_WRONG_BROKER = "tariff.broker.wrong";
 
+  public static final String TARIFF_SUBSCRIPTION_START_AFTER_END = "tariffsubscription.start.after.end";
+
   public static final String TIMESLOT_INACTIVE = "timeslot.inactive";
 
   public static final String SHOUT_DELETED = "shout.deleted";
