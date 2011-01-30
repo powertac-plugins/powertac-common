@@ -49,3 +49,13 @@ grails.project.dependency.distribution = {
     authentication username: repositoryUserName, password: repositoryPassword
   }
 }
+
+coverage {
+  xml = true
+  nopost = true
+
+  exclusions = [
+      'org/grails/**',
+      '**BuildConfig**',
+      'org/powertac/common/exceptions/**']
+}
