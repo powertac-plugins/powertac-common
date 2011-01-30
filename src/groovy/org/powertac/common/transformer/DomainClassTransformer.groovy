@@ -2,6 +2,7 @@ package org.powertac.common.transformer
 
 import grails.converters.XML
 import groovy.util.slurpersupport.GPathResult
+import org.apache.commons.lang.StringUtils
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.web.converters.ConverterUtil
@@ -69,7 +70,8 @@ class DomainClassTransformer {
     try {
       GPathResult xml = new XmlSlurper().parseText(xmlString);
       if (!xml) throw new ConverterException("Failed to unmarshall xml: XML parsing result from '$xmlString' was null.")
-      String domainClassName = ConverterUtil.getDomainClassNames().find {it.toLowerCase().contains(xml.name().toLowerCase())}
+      xml.name()
+      String domainClassName = ConverterUtil.getDomainClassNames().find{it.endsWith(StringUtils.capitalize(xml.name()))}
       if (!domainClassName) throw new ConverterException("Failed to unmarshall xml: '${xml.name()}' not found in the set of powertac domain classes.")
       def domainClass = ApplicationHolder.application.getClassForName(domainClassName)
       if (!domainClass) throw new ConverterException("Failed to unmarshall xml: ${domainClassName} could not be resolved as domain class.")
