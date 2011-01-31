@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2011, John E. Collins
+* Copyright (c) 2011 by the original author
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -59,6 +59,8 @@ class TimeService
   static transactional = false
 
   static final long HOUR = 1000l * 60 * 60
+  static final long DAY = HOUR * 24
+  static final long WEEK = DAY * 7
   
   // simulation clock parameters
   long base

@@ -1,1 +1,3 @@
-PowerTAC (powertac.org) plugin that bundles common domain classes, enumerations, constants and helper classes used across many different PowerTAC plugins as well as within the PowerTAC core server itself.
+PowerTAC (powertac.org) plugin that bundles common domain classes, 
+enumerations, constants and helper classes used across many different 
+PowerTAC plugins as well as within the PowerTAC core server itself.

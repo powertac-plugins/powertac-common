@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2011 by the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.powertac.common
 
 import org.joda.time.DateTime
@@ -10,6 +25,9 @@ import org.joda.time.Partial
  * Server-side wrapper for Tariffs that supports Tariff evaluation and billing.
  * Tariffs are composed of Rates, which may be applicable for limited daily
  * and/or weekly times, and within particular usage tiers.
+ * <p>
+ * <strong>NOTE:</strong> When creating one of these, for the first time, you must
+ * call the init() method to initialize the publication date.
  * @author jcollins
  */
 class TariffExaminer 
@@ -17,7 +35,6 @@ class TariffExaminer
   /** The Tariff itself */
   Tariff tariff
   boolean analyzed = false
-  //boolean allFixed = true
   
   /** Tracks the realized price for variable-rate tariffs. */
   double totalCost = 0.0
@@ -33,7 +50,7 @@ class TariffExaminer
   boolean isWeekly = false
   
   // map needs to be an array, indexed by tier-threshold and hour-in-day/week
-  def tierIndexMap = [:]
+  def tiers = []
   def rateMap = []
   
   static transients = ["realizedPrice", "usageCharge"]
@@ -43,6 +60,14 @@ class TariffExaminer
   
   // link the Time Service
   def timeService
+  
+  /**
+   * 
+   */
+  void init ()
+  {
+    offerDate = timeService.currentTime
+  }
   
   /** Returns the actual realized price, or 0.0 if information unavailable */
   double getRealizedPrice ()
@@ -58,10 +83,18 @@ class TariffExaminer
    * defaults to 1.0, in which case you get the per-kwh value. If you supply
    * the cumulativeUsage parameter, then the charge may be affected by the
    * rate tier structure.
+   * <p>
+   * If the recordUsage parameter is true, then the usage and price will be
+   * recorded to update the realizedPrice.</p>
    */
-  double getUsageCharge (kwh = 1.0, cumulativeUsage = 0.0)
+  double getUsageCharge (double kwh = 1.0, double cumulativeUsage = 0.0, boolean recordUsage = false)
   {
-    getUsageCharge(timeService.currentTime, kwh, cumulativeUsage)
+    double amt = getUsageCharge(timeService.currentTime, kwh, cumulativeUsage)
+    if (recordUsage) {
+      totalUsage += kwh
+      totalCost += amt
+    }
+    return amt
   }
   
   /** 
@@ -84,7 +117,7 @@ class TariffExaminer
 
     // Then work out the tier index. Keep in mind that the kwh value could
     // cross a tier boundary
-    if (tierIndexMap.size() == 1) {
+    if (tiers.size() == 1) {
       return kwh * rateMap[0][di].getValue(when)
     }
     else {
@@ -93,21 +126,31 @@ class TariffExaminer
       double result = 0.0
       int ti = 0 // tier index
       while (remainingAmount > 0.0) {
-        if (tierMap.size() > ti + 1) {
+        if (tiers.size() > ti + 1) {
           // still tiers remaining
-          if (accumulatedAmount >= tierMap[ti+1]) {
+          if (accumulatedAmount >= tiers[ti+1]) {
+            println "accumulatedAmount ${accumulatedAmount} above threshold ${ti+1}: ${tiers[ti+1]}"
             ti += 1
           }
-          else if (remainingAmount + accumulatedAmount > tierMap[ti+1]) {
-            double amt = remainingAmount + accumulatedAmount - tierMap[ti+1]
-            result += amt * rateMap[0][ti++].getValue(when)
+          else if (remainingAmount + accumulatedAmount > tiers[ti+1]) {
+            double amt = tiers[ti+1] - accumulatedAmount
+            println "split off ${amt} below ${tiers[ti+1]}"
+            result += amt * rateMap[ti++][di].getValue(when)
             remainingAmount -= amt
             accumulatedAmount += amt
+          }
+          else {
+            // it all fits in the current tier
+            println "amount ${remainingAmount} fits in tier ${ti}"
+            result += remainingAmount * rateMap[ti][di].getValue(when)
+            remainingAmount = 0.0
           }
         }
         else {
           // last tier
-          result += remainingAmount * rateMap[0][ti].getValue(when)
+          println "remainder ${remainingAmount} fits in top tier"
+          result += remainingAmount * rateMap[ti][di].getValue(when)
+          remainingAmount = 0.0
         }
       }
       return result
@@ -130,26 +173,27 @@ class TariffExaminer
   void analyzeTariff ()
   {
     // Start by computing tier indices, and array width
-    //boolean isWeekly = false
-    def tiers = [] as SortedSet<BigDecimal>
+    def tierIndexMap = [:]
+    tiers.add 0.0
     tariff.rates.each { rate ->
       if (rate.weeklyBegin >= 0)
         isWeekly = true
       if (rate.tierThreshold > 0.0)
         tiers.add rate.tierThreshold
     }
+    tiers = tiers.sort()
+    println "${tiers}"
     
     // Next, fill in the tierIndexMap, which maps tier thresholds to
     // array indices. Remember that there's always a 0.0 tier.
-    ti = 0
-    tierIndexMap[0.0] = ti++
+    int tidx = 0
     tiers.each { threshold ->
-      tierIndexMap[threshold] = ti++
+      tierIndexMap[(threshold)] = tidx++
     }
     
     // Now we can compute the sort keys. Note that the lowest-priority
     // rates will sort first.
-    def annotatedRates = [:] as SortedMap<Integer, Rate>
+    def annotatedRates = [:] as TreeMap
     tariff.rates.each { rate ->
       int value = 0
       if (rate.dailyBegin >= 0) {
@@ -162,7 +206,8 @@ class TariffExaminer
       if (rate.tierThreshold > 0.0) {
         value += tierIndexMap[rate.tierThreshold] * 7 * 24
       }
-      annotatedRates[value] = rate
+      println "inserting ${value}, ${rate}"
+      annotatedRates[(value)] = rate
     }
 
     // Next, we create the rateMap
@@ -192,14 +237,15 @@ class TariffExaminer
         hr1 = rate.dailyBegin
         hrn = rate.dailyEnd
       }
+      println "day1=${day1}, dayn=${dayn}, hr1=${hr1}, hrn=${hrn}"
       // now we can fill in the array
-      for (day in day1..(Math.max(dayn, 6))) {
+      for (day in day1..(Math.max(dayn, isWeekly? 6 : 0))) {
         for (hour in hr1..(Math.max(hrn, 23))) {
-          rateMap[ti][hour + day * 24] = rate
+          rateMap[ti][hour + (day * 24)] = rate
         }
         // handle daily wrap-arounds
         if (hrn < hr1) {
-          for (hour in 0..hrn) {
+          for (hour in 0..(hrn - 1)) {
             rateMap[ti][hour + day * 24] = rate
           }
         }
@@ -212,7 +258,7 @@ class TariffExaminer
           }
           // handle daily wrap-arounds
           if (hrn < hr1) {
-            for (hour in 0..hrn) {
+            for (hour in 0..(hrn - 1)) {
               rateMap[ti][hour + day * 24] = rate
             }
           }
