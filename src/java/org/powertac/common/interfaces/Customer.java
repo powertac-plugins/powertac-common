@@ -17,15 +17,18 @@
 package org.powertac.common.interfaces;
 
 import org.powertac.common.MeterReading;
+import org.powertac.common.Tariff;
+import org.powertac.common.TariffSubscription;
 import org.powertac.common.Weather;
-//import org.powertac.common.command.TariffDoPublishCmd;
-//import org.powertac.common.command.TariffDoReplyCmd;
 import org.powertac.common.exceptions.CustomerInfoGenerationException;
 import org.powertac.common.exceptions.MeterReadingException;
 import org.powertac.common.exceptions.TariffSubscriptionException;
 import org.powertac.common.exceptions.WeatherProcessingException;
 
 import java.util.List;
+
+//import org.powertac.common.command.TariffDoPublishCmd;
+//import org.powertac.common.command.TariffDoReplyCmd;
 
 /**
  * Interface that specifies common methods a Customer module needs to implement.
@@ -36,11 +39,14 @@ import java.util.List;
 public interface Customer {
 
   /**
-   * @param tariffDoPublishCmdList list of published tariffs
-   * @return A list of possible tariff replies which represent subscriptions or negotiation interactions
+   * @param tariffList list of published tariffs
+   * @return A list of tariff subscriptions (possibly empty). For customer models with
+   * multi-contracting capabilities, this list can contain several objects, each
+   * representing a subscription of a certain share of the overall customer load / generation
+   * capacity to a particular tariff
    * @throws org.powertac.common.exceptions.TariffSubscriptionException thrown if tariff processing by the customer fails
    */
-  //public List<TariffDoReplyCmd> processTariffList(List<TariffDoPublishCmd> tariffDoPublishCmdList) throws TariffSubscriptionException;
+  public List<TariffSubscription> processTariffList(List<Tariff> tariffList) throws TariffSubscriptionException;
 
   /**
    * Called when new weather forecasts are available
