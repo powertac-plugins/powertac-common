@@ -1,7 +1,5 @@
 package org.powertac.common
 
-import groovy.util.GroovyTestCase;
-
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
@@ -11,11 +9,17 @@ class VariableRateTests extends GroovyTestCase
 {
   // get ref to TimeService
   def timeService
-  
+  def competition
+  def broker
+
   protected void setUp()
   {
     super.setUp()
     timeService.setCurrentTime(new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC))
+    competition = new Competition(name: "test")
+    assert(competition.validate() && competition.save())
+    broker = new Broker(competition: competition, userName: 'testUser', apiKey: 'This is a very long api key that exceeds 32 characters.')
+    assert (broker.validate() && broker.save())
   }
   
   protected void tearDown()
@@ -26,7 +30,7 @@ class VariableRateTests extends GroovyTestCase
   void testFixedRate ()
   {
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
-    Tariff t1 = new Tariff(expiration: new Instant(exp),
+    Tariff t1 = new Tariff(broker: broker, expiration: new Instant(exp),
                            minDuration: new Duration(1000l*60*60*25*30))
     Rate r1 = new Rate(value: 0.121)
     t1.addToRates(r1)
@@ -44,7 +48,7 @@ class VariableRateTests extends GroovyTestCase
   //variable rates, minimal setup  
   void testVariableRate ()
   {
-    Tariff t1 = new Tariff(expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+    Tariff t1 = new Tariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                            minDuration: new Duration(1000l*60*60*25*30))
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -69,7 +73,7 @@ class VariableRateTests extends GroovyTestCase
   void testVariableRateGap ()
   {
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
-    Tariff t1 = new Tariff(expiration: new Instant(exp),
+    Tariff t1 = new Tariff(broker: broker, expiration: new Instant(exp),
                            minDuration: new Duration(1000l*60*60*25*30))
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -96,7 +100,7 @@ class VariableRateTests extends GroovyTestCase
   // variable rates with 3-hour notification interval
   void testVariableRateN3 ()
   {
-    Tariff t1 = new Tariff(expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+    Tariff t1 = new Tariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                            minDuration: new Duration(1000l*60*60*25*30))
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 3, expectedMean: 0.10)
