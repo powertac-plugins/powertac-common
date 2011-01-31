@@ -2,12 +2,14 @@ package org.powertac.common.transformer
 
 import grails.converters.XML
 import groovy.util.slurpersupport.GPathResult
+import org.apache.commons.lang.StringUtils
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.web.converters.ConverterUtil
 import org.codehaus.groovy.grails.web.converters.XMLParsingParameterCreationListener
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
-import org.joda.time.LocalDateTime
+import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.*
 
 /**
  * Provides two simple transformer methods for domain
@@ -19,6 +21,28 @@ import org.joda.time.LocalDateTime
  * @version 1.0 , Date: 23.01.11
  */
 class DomainClassTransformer {
+
+  final dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
+
+  DomainClassTransformer() {
+    //marshallers *should* be registered by JodaTime plugin automatically...
+    //But if we do not register them here it won't work... Probably a bug...
+    XML.registerObjectMarshaller(DateTime, 1) {
+      it?.toString(dateTimeFormatter.withZone(it?.zone))
+    }
+    XML.registerObjectMarshaller(LocalDate, 2) {
+      it?.toString("yyyy-MM-dd")
+    }
+    XML.registerObjectMarshaller(LocalTime, 3) {
+      it?.toString("HH:mm:ss")
+    }
+    XML.registerObjectMarshaller(LocalDateTime, 4) {
+      it?.toString("yyyy-MM-dd'T'HH:mm:ss")  //Use ISO Time Format for cross platform compatibility
+    }
+    XML.registerObjectMarshaller(DateTimeZone, 5) {
+      it?.ID
+    }
+  }
 
   static final LOG = LogFactory.getLog(XMLParsingParameterCreationListener)
 
@@ -32,10 +56,6 @@ class DomainClassTransformer {
     if (!o) return null
     StringWriter writer = new StringWriter()
     def xml = new XML(o)
-    //marshaller *should* be registered by JodaTime plugin automatically... Probably a bug...
-    XML.registerObjectMarshaller(LocalDateTime, 1) {
-      it?.toString("yyyy-MM-dd'T'HH:mm:ss")  //Use ISO Time Format for cross platform compatibility
-    }
     xml.render(writer)
     return writer.toString()
   }
@@ -50,7 +70,8 @@ class DomainClassTransformer {
     try {
       GPathResult xml = new XmlSlurper().parseText(xmlString);
       if (!xml) throw new ConverterException("Failed to unmarshall xml: XML parsing result from '$xmlString' was null.")
-      String domainClassName = ConverterUtil.getDomainClassNames().find {it.toLowerCase().contains(xml.name().toLowerCase())}
+      xml.name()
+      String domainClassName = ConverterUtil.getDomainClassNames().find{it.endsWith(StringUtils.capitalize(xml.name()))}
       if (!domainClassName) throw new ConverterException("Failed to unmarshall xml: '${xml.name()}' not found in the set of powertac domain classes.")
       def domainClass = ApplicationHolder.application.getClassForName(domainClassName)
       if (!domainClass) throw new ConverterException("Failed to unmarshall xml: ${domainClassName} could not be resolved as domain class.")

@@ -6,12 +6,13 @@ import org.powertac.common.enumerations.OrderType
 import org.powertac.common.enumerations.ProductType
 import org.powertac.common.*
 
-class ShoutDoDeleteCommandTests extends GroovyTestCase {
+class ShoutDoDeleteCmdTests extends GroovyTestCase {
 
   Competition competition
   Product product
   Timeslot timeslot
   Broker broker
+  Broker broker2
   Shout shout
   String userName
   String apiKey
@@ -24,6 +25,8 @@ class ShoutDoDeleteCommandTests extends GroovyTestCase {
     assert (competition.validate() && competition.save())
     broker = new Broker(competition: competition, userName: userName, apiKey: apiKey)
     assert (broker.validate() && broker.save())
+    broker2 = new Broker(competition: competition, userName: userName+'2', apiKey: apiKey+'2')
+    assert (broker2.validate() && broker2.save())
     product = new Product(competition: competition, productType: ProductType.Future)
     assert (product.validate() && product.save())
     timeslot = new Timeslot(competition: competition, serialNumber: 0)
@@ -38,16 +41,12 @@ class ShoutDoDeleteCommandTests extends GroovyTestCase {
 
   void testNullableValidationLogic() {
     ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd()
+    cmd.id = null
     assertFalse(cmd.validate())
+    assertEquals('nullable', cmd.errors.getFieldError('id').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('shoutId').getCode())
-  }
-
-  void testBlankValidationLogic() {
-    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(shoutId: '')
-    assertFalse(cmd.validate())
-    assertEquals('blank', cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('shout').getCode())
   }
 
   void testInactiveCompetition() {
@@ -58,30 +57,40 @@ class ShoutDoDeleteCommandTests extends GroovyTestCase {
     assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
-  void testInvalidShoutId() {
-    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(shoutId: 'invalidShoutId')
-    assertFalse(cmd.validate())
-    assertEquals(Constants.SHOUT_NOT_FOUND, cmd.errors.getFieldError('shoutId').getCode())
-  }
-
   void testDeletedShout() {
     shout.modReasonCode = ModReasonCode.DELETIONBYSYSTEM
-    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shoutId: shout.shoutId, broker: broker)
+    shout.save()
+    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shout: shout, broker: broker)
     assertFalse(cmd.validate())
-    assertEquals(Constants.SHOUT_DELETED, cmd.errors.getFieldError('shoutId').getCode())
-
+    assertEquals(Constants.SHOUT_DELETED, cmd.errors.getFieldError('shout').getCode())
 
     shout.modReasonCode = ModReasonCode.DELETIONBYUSER
-    ShoutDoDeleteCmd cmd1 = new ShoutDoDeleteCmd(competition: competition, shoutId: shout.shoutId, broker: broker)
+    shout.save()
+    ShoutDoDeleteCmd cmd1 = new ShoutDoDeleteCmd(competition: competition, shout: shout, broker: broker)
     assertFalse(cmd1.validate())
-    assertEquals(Constants.SHOUT_DELETED, cmd1.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_DELETED, cmd1.errors.getFieldError('shout').getCode())
   }
 
   void testExecutedShout() {
     shout.modReasonCode = ModReasonCode.EXECUTION
-    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shoutId: shout.shoutId, broker: broker)
+    shout.save()
+    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shout: shout, broker: broker)
     assertFalse(cmd.validate())
-    assertEquals(Constants.SHOUT_EXECUTED, cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_EXECUTED, cmd.errors.getFieldError('shout').getCode())
+  }
+
+  void testShoutOutdated(){
+    shout.latest = false
+    shout.save()
+    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shout: shout, broker: broker)
+    assertFalse(cmd.validate())
+    assertEquals(Constants.SHOUT_OUTDATED, cmd.errors.getFieldError('shout').getCode())
+  }
+
+  void testInvalidBroker(){
+    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shout: shout, broker: broker2)
+    assertFalse(cmd.validate())
+    assertEquals(Constants.SHOUT_WRONG_BROKER, cmd.errors.getFieldError('broker').getCode())
   }
 
   void testValidShoutDoDeleteCmd() {
@@ -89,7 +98,7 @@ class ShoutDoDeleteCommandTests extends GroovyTestCase {
     competition.save()
     shout.modReasonCode = ModReasonCode.INSERT
     shout.save()
-    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shoutId: shout.shoutId, broker: broker)
+    ShoutDoDeleteCmd cmd = new ShoutDoDeleteCmd(competition: competition, shout: shout, broker: broker)
     assertTrue(cmd.validate())
   }
 }

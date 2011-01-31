@@ -24,7 +24,10 @@ class Tariff
   {
     OFFERED, ACTIVE, LEGACY
   }
-  
+
+  /** The broker who offers the tariff */
+  Broker broker
+
   /** Last date new subscriptions will be accepted */
   Instant expiration
   
@@ -59,6 +62,7 @@ class Tariff
   Set<Tariff> supersedes
   Tariff isSupersededBy
 
+  static belongsTo = [broker:Broker]
   static hasMany = [rates:Rate, supersedes:String]
   static constraints = {
     expiration(nullable: false)

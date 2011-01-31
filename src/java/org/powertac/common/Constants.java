@@ -43,11 +43,14 @@ public class Constants {
   public static final String TARIFF_WRONG_CUSTOMER = "tariff.customer.wrong";
   public static final String TARIFF_WRONG_BROKER = "tariff.broker.wrong";
 
+  public static final String TARIFF_SUBSCRIPTION_START_AFTER_END = "tariffsubscription.start.after.end";
+
   public static final String TIMESLOT_INACTIVE = "timeslot.inactive";
 
   public static final String SHOUT_DELETED = "shout.deleted";
-  public static final String SHOUT_NOT_FOUND = "shout.not.found";
+  public static final String SHOUT_OUTDATED = "shout.outdated";
   public static final String SHOUT_EXECUTED = "shout.executed";
+  public static final String SHOUT_WRONG_BROKER = "tariff.broker.wrong";
   public static final String SHOUT_LIMITORDER_NULL_LIMIT = "shout.limitorder.limit.null";
   public static final String SHOUT_MARKETORDER_WITH_LIMIT = "shout.marketorder.limit.not.null";
   public static final String SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY = "shout.update.limit.and.quantity.null";

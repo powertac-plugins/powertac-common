@@ -50,7 +50,9 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
 
   void testNullableValidationLogic() {
     ShoutDoCreateCmd cmd= new ShoutDoCreateCmd()
+    cmd.id = null
     assertFalse (cmd.validate())
+    assertEquals('nullable', cmd.errors.getFieldError('id').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('product').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('timeslot').getCode())
@@ -76,6 +78,8 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
   }
 
   void testInactiveTimeslot() {
+    competition.current = true
+    competition.save()
     timeslot.enabled = false
     timeslot.save()
     ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(timeslot: timeslot)

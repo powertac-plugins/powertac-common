@@ -16,32 +16,39 @@
 
 package org.powertac.common.command
 
-import org.codehaus.groovy.grails.validation.Validateable
-import org.powertac.common.Constants
-import org.powertac.common.Customer
-import org.powertac.common.Tariff
-import org.powertac.common.enumerations.TariffState
+import org.joda.time.DateTime
+import org.powertac.common.*
 
-/**
+ /**
  * Command object that represents a customer's request to subscribe
  * to either a published or an individually negotiated tariff.
  *
  * @author Carsten Block
- * @version 1.0, Date: 01.12.10
+ * @version 1.0 , Date: 01.12.10
  */
-@Validateable class TariffDoSubscribeCmd implements Serializable {
+class TariffDoSubscribeCmd implements Serializable {
+  String id = IdGenerator.createId()
+  Competition competition
   Customer customer
   Tariff tariff
+  DateTime dateCreated = new DateTime()
+
+  static belongsTo = [competition: Competition, customer: Customer, tariff: Tariff]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
+    competition(nullable: false, validator: {val ->
+      if (!val.current)  return [Constants.COMPETITION_INACTIVE]
+      else return true
+    })
     customer(nullable: false)
-    tariff (nullable: false, validator: {val->
-      if (!val?.latest) return [Constants.TARIFF_OUTDATED]
-      if (val?.parent && val?.tariffState != TariffState.InNegotiation) return [Constants.TARIFF_INVALID_STATE]
-      if (val?.parent == null && val?.tariffState != TariffState.Published) return [Constants.TARIFF_INVALID_STATE]
-      return true
+    tariff (nullable: false, validator: {val, obj ->
+      if (val.state == Tariff.State.LEGACY) return [Constants.TARIFF_OUTDATED]
+      else return true
     })
   }
 
-
+  static mapping = {
+    id (generator: 'assigned')
+  }
 }

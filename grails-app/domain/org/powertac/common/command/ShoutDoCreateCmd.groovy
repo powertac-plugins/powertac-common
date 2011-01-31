@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.codehaus.groovy.grails.validation.Validateable
+import org.joda.time.DateTime
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.*
@@ -28,7 +28,8 @@ import org.powertac.common.*
  * @author Carsten Block
  * @version 1.0, Date: 01.12.10
  */
-@Validateable class ShoutDoCreateCmd implements Serializable {
+class ShoutDoCreateCmd implements Serializable {
+  String id = IdGenerator.createId()
   Competition competition
   Broker broker
   Product product
@@ -37,8 +38,12 @@ import org.powertac.common.*
   BigDecimal quantity
   BigDecimal limitPrice
   OrderType orderType
+  DateTime dateCreated = new DateTime()
+
+  static belongsTo = [competition: Competition, broker: Broker, product: Product, timeslot: Timeslot]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
     competition(nullable: false, validator: {val ->
       if (!val?.current){
         return [Constants.COMPETITION_INACTIVE]
@@ -49,7 +54,7 @@ import org.powertac.common.*
     broker(nullable: false)
     product (nullable: false)
     timeslot(nullable: false, validator: {val ->
-      if (!val?.enabled){
+      if (!val.enabled) {
         return [Constants.TIMESLOT_INACTIVE]
       } else {
         return true
@@ -63,5 +68,9 @@ import org.powertac.common.*
       return true
     })
     orderType(nullable: false)
+  }
+
+  static mapping = {
+    id (generator: 'assigned')
   }
 }
