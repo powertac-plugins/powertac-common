@@ -24,11 +24,19 @@ import org.joda.time.Partial
 /**
  * Server-side wrapper for Tariffs that supports Tariff evaluation and billing.
  * Tariffs are composed of Rates, which may be applicable for limited daily
- * and/or weekly times, and within particular usage tiers.
+ * and/or weekly times, and within particular usage tiers. The TariffExaminer
+ * transforms the list of Rates into an array, indexed first by tier and
+ * second by hour, making it easy to find the correct Rate that applies for
+ * a particular accounting event. This will also make it easy to estimate the
+ * cost of a multi-Rate Tariff given an expected load/production profile.
+ * <p>
+ * Tariff users can retrieve a TariffExaminer from its Tariff by calling the
+ * getTariffExaminer() method on the Tariff. A new one will be created if it
+ * does not already exist.</p>
  * <p>
  * <strong>NOTE:</strong> When creating one of these, for the first time, you must
- * call the init() method to initialize the publication date.
- * @author jcollins
+ * call the init() method to initialize the publication date.</p>
+ * @author John Collins
  */
 class TariffExaminer 
 {
@@ -53,13 +61,13 @@ class TariffExaminer
   def tiers = []
   def rateMap = []
   
-  static transients = ["realizedPrice", "usageCharge"]
+  // link the Time Service
+  def timeService
+
+  static transients = ["realizedPrice", "usageCharge", "timeService"]
   
   static constraints = {
   }
-  
-  // link the Time Service
-  def timeService
   
   /**
    * 

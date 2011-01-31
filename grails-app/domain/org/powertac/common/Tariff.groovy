@@ -40,16 +40,12 @@ class Tariff
   /** Type of power covered by this tariff */
   PowerType powerType = PowerType.CONSUMPTION
   
-  /**
-   * One-time payment for subscribing to tariff, positive for payment
-   * from customer, negative for payment to customer.
-   */
+  /** One-time payment for subscribing to tariff, positive for payment
+   *  from customer, negative for payment to customer. */
   BigDecimal signupPayment = 0.0
   
-  /**
-   * Payment from customer to broker for canceling subscription before
-   * minDuration has elapsed.
-   */
+  /** Payment from customer to broker for canceling subscription before
+   *  minDuration has elapsed. */
   BigDecimal earlyWithdrawPayment = 0.0
   
   /** Flat payment per period for two-part tariffs */
@@ -57,6 +53,9 @@ class Tariff
 
   /** Returns the rate table */
   Set<Rate> rates
+  
+  /** The TariffExaminer associated with this Tariff */
+  TariffExaminer examiner
   
   /** IDs of tariffs superseded by this Tariff */
   Set<Tariff> supersedes
@@ -69,5 +68,15 @@ class Tariff
     state(nullable: false)
     powerType(nullable: false)
     rates(nullable: false)
+    examiner(nullable: true)
+  }
+  
+  /** Returns the TariffExaminer associated with this Tariff */
+  TariffExaminer getTariffExaminer ()
+  {
+    if (examiner == null) {
+      examiner = new TariffExaminer(tariff: this)
+    }
+    return examiner
   }
 }

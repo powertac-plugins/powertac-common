@@ -260,7 +260,7 @@ class TariffExaminerTests extends GrailsUnitTestCase
     r2.setTariff(tariff)
     r3.setTariff(tariff)
     r4.setTariff(tariff)
-    TariffExaminer te = new TariffExaminer(tariff: tariff)
+    TariffExaminer te = tariff.tariffExaminer
     te.init()
     assertEquals("first tier", 0.14, te.getUsageCharge(2.0, 2.0, true), 1e-6)
     assertEquals("first-second tier", 0.41, te.getUsageCharge(5.0, 2.0, true), 1e-6)
@@ -286,7 +286,7 @@ class TariffExaminerTests extends GrailsUnitTestCase
     r1.addToRateHistory(new HourlyCharge(value: 0.11, when: new DateTime(2011, 1, 1, 13, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     r1.addToRateHistory(new HourlyCharge(value: 0.13, when: new DateTime(2011, 1, 1, 14, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     r1.addToRateHistory(new HourlyCharge(value: 0.14, when: new DateTime(2011, 1, 1, 15, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    TariffExaminer te = new TariffExaminer(tariff: tariff)
+    TariffExaminer te = tariff.tariffExaminer
     te.init()
     assertEquals("current charge, noon Sunday", 0.9, te.getUsageCharge(10.0), 1e-6)
     assertEquals("13:00 charge, noon Sunday", 1.1,
