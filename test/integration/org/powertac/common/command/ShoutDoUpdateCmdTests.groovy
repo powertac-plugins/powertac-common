@@ -28,6 +28,7 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
   Product product
   Timeslot timeslot
   Broker broker
+  Broker broker2
   Shout shout
   String userName
   String apiKey
@@ -40,6 +41,8 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     assert (competition.validate() && competition.save())
     broker = new Broker(competition: competition, userName: userName, apiKey: apiKey)
     assert (broker.validate() && broker.save())
+    broker2 = new Broker(competition: competition, userName: userName+'2', apiKey: apiKey+'2')
+    assert (broker2.validate() && broker2.save())
     product = new Product(competition: competition, productType: ProductType.Future)
     assert (product.validate() && product.save())
     timeslot = new Timeslot(competition: competition, serialNumber: 0)
@@ -57,13 +60,7 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     assertFalse(cmd.validate())
     assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('shoutId').getCode())
-  }
-
-  void testBlankValidationLogic() {
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: '')
-    assertFalse(cmd.validate())
-    assertEquals('blank', cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('shout').getCode())
   }
 
   void testMinValidationLogic() {
@@ -103,32 +100,40 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
-  void testInvalidShoutId() {
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: 'invalidShoutId')
+  void testShoutOutdated() {
+    shout.latest = false
+    shout.save()
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shout: shout)
     assertFalse(cmd.validate())
-    assertEquals(Constants.SHOUT_NOT_FOUND, cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_OUTDATED, cmd.errors.getFieldError('shout').getCode())
   }
 
   void testShoutExecuted() {
     shout.modReasonCode = ModReasonCode.EXECUTION;
     shout.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: shout.shoutId)
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shout: shout)
     assertFalse(cmd.validate())
-    assertEquals(Constants.SHOUT_EXECUTED, cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_EXECUTED, cmd.errors.getFieldError('shout').getCode())
   }
 
   void testShoutDeleted() {
     shout.modReasonCode = ModReasonCode.DELETIONBYUSER;
     shout.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shoutId: shout.shoutId)
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shout: shout)
     assertFalse(cmd.validate())
-    assertEquals(Constants.SHOUT_DELETED, cmd.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_DELETED, cmd.errors.getFieldError('shout').getCode())
 
     shout.modReasonCode = ModReasonCode.DELETIONBYSYSTEM;
     shout.save()
-    ShoutDoUpdateCmd cmd1 = new ShoutDoUpdateCmd(shoutId: shout.shoutId)
+    ShoutDoUpdateCmd cmd1 = new ShoutDoUpdateCmd(shout: shout)
     assertFalse(cmd1.validate())
-    assertEquals(Constants.SHOUT_DELETED, cmd1.errors.getFieldError('shoutId').getCode())
+    assertEquals(Constants.SHOUT_DELETED, cmd1.errors.getFieldError('shout').getCode())
+  }
+
+  void testInvalidBroker(){
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition, shout: shout, broker: broker2)
+    assertFalse(cmd.validate())
+    assertEquals(Constants.SHOUT_WRONG_BROKER, cmd.errors.getFieldError('broker').getCode())
   }
 
   void testValidShoutDoUpdateCmd() {
@@ -136,7 +141,7 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     competition.save()
     shout.modReasonCode = ModReasonCode.INSERT
     shout.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition, shoutId: shout.shoutId, broker: broker, quantity: 9.99, limitPrice: 99.99)
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition, shout: shout, broker: broker, quantity: 9.99, limitPrice: 99.99)
     assertTrue(cmd.validate())
   }
 }

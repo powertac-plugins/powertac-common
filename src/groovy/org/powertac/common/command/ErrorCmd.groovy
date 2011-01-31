@@ -1,5 +1,7 @@
 package org.powertac.common.command
 
+import org.joda.time.DateTime
+
 /**
  * Command object that can be used to report a server error to a client (i.e. broker.
  *
@@ -11,6 +13,7 @@ class ErrorCmd implements Serializable {
   String message
   String cause
   String stackTrace
+  DateTime dateCreated = new DateTime()
 
   public static ErrorCmd fromException (Exception ex) {
     if (!ex) return null

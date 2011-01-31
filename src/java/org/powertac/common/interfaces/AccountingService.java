@@ -108,7 +108,7 @@ public interface AccountingService {
    * @return List of objects which can include {@link CashUpdate} and {@link Tariff}. The tariff object reflects the cancellation of the tariff subscription while the (optional) {@link CashUpdate} contains the booking of the early exit fee into the broker's cash account
    * @throws TariffEarlyExitException is thrown if the tariff contract cancellation fails.
    */
-  public List processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
+  //public List processTariffEarlyExit(TariffDoEarlyExitCmd tariffDoEarlyExitCmd) throws TariffEarlyExitException;
 
   /**
    * Method processes incoming {@link TariffDoUpdateCmd}. The method implements the logic required to update the conditions of an existing tariff for all subscribed customers.

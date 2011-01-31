@@ -16,12 +16,10 @@
 
 package org.powertac.common.command
 
-import org.codehaus.groovy.grails.validation.Validateable
-import org.powertac.common.Broker
-import org.powertac.common.Constants
-import org.powertac.common.Tariff
+import org.joda.time.DateTime
+import org.powertac.common.*
 
-/**
+ /**
  * Command object that represents a broker's request to revoke
  * a particular tariff so that it is no longer subscribable by new customers.
  * <p/>
@@ -32,20 +30,32 @@ import org.powertac.common.Tariff
  * @author Carsten Block
  * @version 1.0 , Date: 02.01.11
  */
-@Validateable class TariffDoRevokeCmd implements Serializable {
+class TariffDoRevokeCmd implements Serializable {
+  String id = IdGenerator.createId()
+  Competition competition
   Broker broker
   Tariff tariff
+  DateTime dateCreated = new DateTime()
+
+  static belongsTo = [competition: Competition, broker: Broker, tariff: Tariff]
 
   static constraints = {
+    id (nullable: false, blank: false, unique: true)
+    competition (nullable: false, validator: {val ->
+      if (!val.current) return [Constants.COMPETITION_INACTIVE]
+      else return true
+    })
     broker (nullable: false, validator: {val, obj ->
       if (obj?.tariff?.broker?.id != obj?.broker?.id) return [Constants.TARIFF_WRONG_BROKER]
       return true
     })
     tariff (nullable: false, validator: {val, obj ->
-      if (val?.parent) return [Constants.TARIFF_HAS_PARENT]
-      if (!val?.latest) return [Constants.TARIFF_OUTDATED]
-      if (obj?.tariff?.broker?.id != obj?.broker?.id) return [Constants.TARIFF_WRONG_BROKER]
-      return true
+      if (val.state == Tariff.State.LEGACY) return [Constants.TARIFF_OUTDATED]
+      else return true
     })
+  }
+
+  static mapping = {
+    id (generator: 'assigned')
   }
 }

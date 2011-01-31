@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2011 the original author or authors.
+ * Copyright 2009-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,46 @@
 
 package org.powertac.common.command
 
-import org.codehaus.groovy.grails.validation.Validateable
-import org.powertac.common.*
+import org.joda.time.DateTime
+import org.powertac.common.Broker
+import org.powertac.common.Competition
+import org.powertac.common.Constants
+import org.powertac.common.IdGenerator
 
 /**
- * Command Object that is used to send a position update request to the
- * accounting service, which - subsequently - processes this request
- * updates its internal bookkeeping and then sends out a change notification
- * to the respective broker
+ * Command object that represents an cash transaction
+ * (add / deduce money) that should be executed on a
+ * specific broker cash account for a given reason.
  *
  * @author Carsten Block
- * @version 1.0 , Date: 02.01.11
+ * @version 1.0 , Date: 02.12.10
  */
-@Validateable class PositionDoUpdateCmd implements Serializable {
+class CashDoUpdateCmd implements Serializable {
+  String id = IdGenerator.createId()
   Competition competition
-  Product product
-  Timeslot timeslot
   Broker broker
   BigDecimal relativeChange
   String transactionId
   String reason
   String origin
+  DateTime dateCreated = new DateTime()
+
+  static belongsTo = [competition: Competition, broker: Broker]
 
   static constraints = {
-    competition(nullable: false)
-    product (nullable: false)
-    timeslot (nullable: false)
+    id (nullable: false, blank: false, unique: true)
+    competition(nullable: false, validator: {val ->
+      if (!val.current) return [Constants.COMPETITION_INACTIVE]
+      else return true
+    })
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
     transactionId(nullable: true)
     reason(nullable: true)
     origin(nullable: true)
+  }
+
+  static mapping = {
+    id (generator: 'assigned')
   }
 }

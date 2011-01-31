@@ -16,12 +16,9 @@
 
 package org.powertac.common.command
 
-import org.codehaus.groovy.grails.validation.Validateable
-import org.powertac.common.Broker
-import org.powertac.common.Competition
-import org.powertac.common.Constants
-import org.powertac.common.Shout
+import org.joda.time.DateTime
 import org.powertac.common.enumerations.ModReasonCode
+import org.powertac.common.*
 
 /**
  * Command object that can be used by
@@ -31,26 +28,28 @@ import org.powertac.common.enumerations.ModReasonCode
  * @author Carsten Block
  * @version 1.0 , Date: 01.12.10
  */
-@Validateable class ShoutDoDeleteCmd implements Serializable {
+class ShoutDoDeleteCmd implements Serializable {
+  String id = IdGenerator.createId()
   Competition competition
   Broker broker
-  String shoutId
+  Shout shout
+  DateTime dateCreated = new DateTime()
+
+  static belongsTo = [competition: Competition, broker: Broker, shout: Shout]
 
   static constraints = {
+    id(nullable: false, blank: false, unique: true)
     competition(nullable: false, validator: {val ->
-      if (!val) {
-        return [Constants.COMPETITION_NOT_FOUND]
-      } else if (!val.current) {
-        return [Constants.COMPETITION_INACTIVE]
-      } else {
-        return true
-      }
+      if (!val.current) return [Constants.COMPETITION_INACTIVE]
+      else return true
     })
-    broker(nullable: false)
-    shoutId(nullable: false, blank: false, validator: {val ->
-      def shout = Shout.findByShoutIdAndLatest(val,true)
-      if (!shout) {
-        return [Constants.SHOUT_NOT_FOUND]
+    broker (nullable: false, validator: {val, obj ->
+      if (obj?.shout?.broker?.id != obj?.broker?.id) return [Constants.SHOUT_WRONG_BROKER]
+      return true
+    })
+    shout(nullable: false, validator: {shout ->
+      if (!shout.latest) {
+        return [Constants.SHOUT_OUTDATED]
       } else if (shout.modReasonCode == ModReasonCode.DELETIONBYUSER || shout.modReasonCode == ModReasonCode.DELETIONBYSYSTEM) {
         return [Constants.SHOUT_DELETED]
       } else if (shout.modReasonCode == ModReasonCode.EXECUTION) {
@@ -61,4 +60,7 @@ import org.powertac.common.enumerations.ModReasonCode
     })
   }
 
+  static mapping = {
+    id(generator: 'assigned')
+  }
 }
