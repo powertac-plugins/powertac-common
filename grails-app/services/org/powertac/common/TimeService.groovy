@@ -78,14 +78,22 @@ class TimeService
    * Updates simulation time when called as specified by clock
    * parameters, then runs any actions that may be due.
    */
-  def updateTime () 
+  void updateTime () 
   {
     long systemTime = new Instant().getMillis()
     long raw = base + (systemTime - start) * rate
-    long cooked = raw - raw % modulo
-    currentTime = new Instant(cooked)
+    currentTime = new Instant(raw - raw % modulo)
     //println "updateTime: sys=${systemTime}, raw=${raw}, cooked=${cooked} => ${currentTime}"
     runActions()
+  }
+  
+  /**
+   * Returns the most recent Instant at which time % modulo was zero 
+   */
+  Instant truncateInstant (Instant time, long mod)
+  {
+    long ms = time.millis
+    return new Instant(ms - ms % mod)
   }
   
   /**

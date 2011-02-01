@@ -47,7 +47,7 @@ class VariableRateTests extends GroovyTestCase
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
 
     Tariff t1 = new Tariff(broker: broker, expiration: new Instant(exp),
-                           minDuration: new Duration(TimeService.WEEK * 4))
+                           minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(value: 0.121)
     t1.addToRates(r1)
     if (!t1.save()) {
@@ -65,7 +65,7 @@ class VariableRateTests extends GroovyTestCase
   void testVariableRate ()
   {
     Tariff t1 = new Tariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
-                           minDuration: new Duration(1000l*60*60*25*30))
+                           minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
     t1.addToRates(r1)
@@ -90,7 +90,7 @@ class VariableRateTests extends GroovyTestCase
   {
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
     Tariff t1 = new Tariff(broker: broker, expiration: new Instant(exp),
-                           minDuration: new Duration(1000l*60*60*25*30))
+                           minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
     t1.addToRates(r1)
@@ -117,7 +117,7 @@ class VariableRateTests extends GroovyTestCase
   void testVariableRateN3 ()
   {
     Tariff t1 = new Tariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
-                           minDuration: new Duration(1000l*60*60*25*30))
+                           minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 3, expectedMean: 0.10)
     t1.addToRates(r1)

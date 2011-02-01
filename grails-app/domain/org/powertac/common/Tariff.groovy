@@ -25,6 +25,8 @@ class Tariff
     OFFERED, ACTIVE, LEGACY
   }
 
+  def timeService // connection to simulation time service
+  
   /** The broker who offers the tariff */
   Broker broker
 
@@ -34,8 +36,8 @@ class Tariff
   /** Current state of this Tariff */
   State state = State.OFFERED
   
-  /** Minimum contract duration */
-  Duration minDuration
+  /** Minimum contract duration (in milliseconds) */
+  long minDuration = 0
   
   /** Type of power covered by this tariff */
   PowerType powerType = PowerType.CONSUMPTION
@@ -52,31 +54,78 @@ class Tariff
   BigDecimal periodicPayment = 0.0
 
   /** Returns the rate table */
-  Set<Rate> rates
+  //def rates = []
   
   /** The TariffExaminer associated with this Tariff */
   TariffExaminer examiner
   
+  /** Subscriptions to this Tariff, indexed by Customer ID */
+  //def subscriptions = []
+  
   /** IDs of tariffs superseded by this Tariff */
-  Set<Tariff> supersedes
+  //def supersedes = []
   Tariff isSupersededBy
 
-  static belongsTo = [broker:Broker]
-  static hasMany = [rates:Rate, supersedes:String]
+  //static belongsTo = [broker:Broker]
+  static hasMany = [rates:Rate, subscriptions:TariffSubscription]
   static constraints = {
-    expiration(nullable: false)
+    broker(nullable:false)
+    //minDuration(nullable:true)
+    expiration(nullable: true)
     state(nullable: false)
     powerType(nullable: false)
     rates(nullable: false)
     examiner(nullable: true)
+    isSupersededBy(nullable: true)
   }
   
-  /** Returns the TariffExaminer associated with this Tariff */
+  static transients = ['timeService', 'expired']
+
+  /**
+   * Returns the TariffExaminer associated with this Tariff.
+   */
   TariffExaminer getTariffExaminer ()
   {
     if (examiner == null) {
       examiner = new TariffExaminer(tariff: this)
+      examiner.init()
     }
     return examiner
+  }
+  
+  // GORM wants a setter
+  void setTariffExaminer (TariffExaminer ex)
+  {
+    examiner = ex
+  }
+  
+  /**
+   * Subscribes a block of Customers from a single Customer model to
+   * this Tariff, as long as this Tariff has not expired. If the
+   * subscription succeeds, then the TariffSubscription instance is
+   * return, otherwise null.
+   */
+  TariffSubscription subscribe (Customer customer, int customerCount)
+  {
+    if (isExpired())
+      return null
+    
+    TariffSubscription sub = subscriptions?.findByCustomer(customer)
+    if (sub == null) {
+      sub = new TariffSubscription(customer: customer,
+                                   tariff: this,
+                                   tariffExaminer: this.getTariffExaminer())
+    }
+    sub.subscribe(customerCount)
+    return sub
+  }
+  
+  /**
+   * True just in case the current time is past the expiration date
+   * of this Tariff.
+   */
+  boolean isExpired ()
+  {
+    return timeService.currentTime.millis > expiration.millis
   }
 }
