@@ -20,6 +20,10 @@ import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
 
+/** 
+ * Primarily tests Rate applicability logic.
+ * @author John Collins 
+ */
 class VariableRateTests extends GroovyTestCase
 {
   // get ref to TimeService
@@ -34,7 +38,7 @@ class VariableRateTests extends GroovyTestCase
     competition = new Competition(name: "test")
     assert(competition.validate() && competition.save())
     broker = new Broker(competition: competition, userName: 'testUser', apiKey: 'This is a very long api key that exceeds 32 characters.')
-    assert (broker.validate() && broker.save())
+    assert(broker.validate() && broker.save())
   }
   
   protected void tearDown()

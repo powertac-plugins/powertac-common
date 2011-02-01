@@ -17,22 +17,14 @@
 package org.powertac.common.enumerations;
 
 /**
- * Created by IntelliJ IDEA.
- * User: cblock
- * Date: 01.12.10
- * Time: 15:55
- * To change this template use File | Settings | File Templates.
+ * Types of customer. 
+ * See PowerType to see the types of power a Customer can produce or consume.
+ * @author cblock
  */
 public enum CustomerType {
-  ConsumerHousehold,
-  ConsumerOffice,
-  ConsumerFactory,
-  ConsumerElectricVehicle,
-  ConsumerOther,
-  ProducerSolar,
-  ProducerWind,
-  ProducerRunOfRiver,
-  ProducerPumpedStorage,
-  ProducerCHP,
-  ProducerFossil;
+  CustomerHousehold,
+  CustomerOffice,
+  CustomerFactory,
+  CustomerElectricVehicle,
+  CustomerOther
 }

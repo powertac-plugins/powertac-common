@@ -1,5 +1,21 @@
+/*
+ * Copyright (c) 2011 by the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.powertac.common
 
+import org.powertac.common.enumerations.PowerType
 import org.joda.time.Duration
 import org.joda.time.Instant
 
@@ -9,16 +25,11 @@ import org.joda.time.Instant
  * payments and basic constraints. This class is simply a serializable,
  * immutable data structure. You need a TariffBuilder to create one, and a
  * TariffExaminer to make serious use of one.
+ * @author John Collins
  */
 class Tariff 
 {
-  // ----------- Power-type and State enumerations --------------
-  enum PowerType
-  {
-    CONSUMPTION, INTERRUPTIBLE_CONSUMPTION,
-    PRODUCTION, SOLAR_PRODUCTION, WIND_PRODUCTION,
-    BATTERY_STORAGE, THERMAL_STORAGE
-  }
+  // ----------- State enumeration --------------
   
   enum State
   {
@@ -52,25 +63,17 @@ class Tariff
   
   /** Flat payment per period for two-part tariffs */
   BigDecimal periodicPayment = 0.0
-
-  /** Returns the rate table */
-  //def rates = []
   
   /** The TariffExaminer associated with this Tariff */
   TariffExaminer examiner
   
-  /** Subscriptions to this Tariff, indexed by Customer ID */
-  //def subscriptions = []
-  
   /** IDs of tariffs superseded by this Tariff */
-  //def supersedes = []
   Tariff isSupersededBy
 
   //static belongsTo = [broker:Broker]
   static hasMany = [rates:Rate, subscriptions:TariffSubscription]
   static constraints = {
     broker(nullable:false)
-    //minDuration(nullable:true)
     expiration(nullable: true)
     state(nullable: false)
     powerType(nullable: false)
