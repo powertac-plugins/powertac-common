@@ -18,7 +18,6 @@ import org.joda.time.*
  * or domain class object representations from xml strings [method toXML()]
  *
  * @author Carsten Block
- * @version 1.0 , Date: 23.01.11
  */
 class DomainClassTransformer {
 

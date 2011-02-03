@@ -21,7 +21,7 @@ import org.joda.time.Instant
 
 
 /**
- * A TariffSubscription represents an association between a Customer
+ * A TariffSubscription is an entity representing an association between a Customer
  * and a TariffExaminer, which in turn wraps a Tariff. You get one by
  * calling the subscribe() method on TariffExaminer. If there is no
  * current subscription for that Customer (which in most cases is actually
@@ -110,5 +110,12 @@ class TariffSubscription {
       }
     }
     // Compute signup bonus here?
+  }
+  
+  void withdraw (int customerCount)
+  {
+    // start by updating the customer count
+    customersCommitted -= customerCount
+    // Compute early-withdrawal penalties here?
   }
 }
