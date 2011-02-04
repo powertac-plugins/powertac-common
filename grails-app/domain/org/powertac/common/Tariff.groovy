@@ -44,7 +44,7 @@ class Tariff
   }
 
   /** Explicit tariff ID - Must be the same in Broker and Server */
-  String id = IdGenerator.createId()
+  String id
   
   /** The Tariff spec*/
   TariffSpecification tariffSpec
@@ -69,13 +69,13 @@ class Tariff
   Instant offerDate
   
   /** Maximum future interval over which price can be known */
-  Duration maxHorizon
+  Duration maxHorizon // TODO lazy instantiation
   
   /** True if the maps are keyed by hour-in-week rather than hour-in-day */
   boolean isWeekly = false
   boolean analyzed = false
   
-  // map needs to be an array, indexed by tier-threshold and hour-in-day/week
+  // map is an array, indexed by tier-threshold and hour-in-day/week
   def tiers = []
   def rateMap = []
   
@@ -91,15 +91,30 @@ class Tariff
     expiration(nullable: true)
     state(nullable: false)
     isSupersededBy(nullable: true)
+    maxHorizon(nullable:true)
   }
   
   /**
-   * 
+   * Standard constructor, takes a TariffSpecification
    */
-  void init ()
+  Tariff (TariffSpecification spec)
   {
+    tariffSpec = spec
+    id = spec.id
     offerDate = timeService.currentTime
+    broker = Broker.findById(tariffSpec.brokerId)
+    expiration = spec.expiration
+    spec.supersedes.each {
+      Tariff.findById(it).isSupersededBy = this 
+    }
+    analyzeTariff()
   }
+  
+  // Default constructor, needed by Grails
+  Tariff () {}
+  
+  // hide the Map constructor
+  private Tariff(Map args) {}
   
   /** Returns the actual realized price, or 0.0 if information unavailable */
   double getRealizedPrice ()
@@ -138,9 +153,6 @@ class Tariff
    */
   double getUsageCharge (Instant when, double kwh = 1.0, double cumulativeUsage = 0.0)
   {
-    if (!analyzed)
-      analyzeTariff()
-
     // first, get the time index
     DateTime dt = new DateTime(when, DateTimeZone.UTC)
     int di = dt.getHourOfDay()

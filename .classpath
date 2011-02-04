@@ -12,21 +12,7 @@
 	<classpathentry kind="src" path="test/unit"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.springsource.sts.grails.core.CLASSPATH_CONTAINER"/>
-	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path="maven-publisher-0.7.4-grails-app-conf">
-		<attributes>
-			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="maven-publisher-0.7.4-src-java">
-		<attributes>
-			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="maven-publisher-0.7.4-src-groovy">
-		<attributes>
-			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="/home/jcollins/.grails/1.3.6/projects/powertac-common-master/plugins/quartz-0.4.2/lib/quartz-1.7.3.jar"/>
 	<classpathentry kind="src" path="joda-time-1.1-grails-app-taglib">
 		<attributes>
 			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
@@ -47,11 +33,50 @@
 			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path="maven-publisher-0.7.4-grails-app-conf">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="maven-publisher-0.7.4-src-java">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="maven-publisher-0.7.4-src-groovy">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="tomcat-1.3.6-src-groovy">
 		<attributes>
 			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/jcollins/.grails/1.3.6/projects/powertac-common-master/plugins/quartz-0.4.2/lib/quartz-1.7.3.jar"/>
+	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path="quartz-0.4.2-grails-app-conf">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="quartz-0.4.2-grails-app-services">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="quartz-0.4.2-grails-app-i18n">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="quartz-0.4.2-src-java">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="quartz-0.4.2-src-groovy">
+		<attributes>
+			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="web-app/WEB-INF/classes"/>
 </classpath>

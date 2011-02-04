@@ -25,8 +25,11 @@ import org.joda.time.Instant
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
  * prices for energy in various circumstances, along with upfront and periodic
  * payments and basic constraints. This class is a value type -- a 
- * serializable, immutable data structure. You need to attach it to a 
- * Tariff to make serious use of it.
+ * serializable, immutable data structure. You need to initialize a 
+ * Tariff from it to make serious use of it.
+ * <p>
+ * <strong>Note:</strong> Must be serialized "deep" to gather up the Rates and
+ * associated HourlyCharge instances.</p>
  * @author John Collins
  */
 class TariffSpecification 
@@ -34,7 +37,7 @@ class TariffSpecification
   String id = IdGenerator.createId()
   
   /** ID of the specified Tariff */
-  String tariffId
+  //String tariffId // same as TariffSpecification id?
   
   /** ID of the Broker who offers this Tariff */
   String brokerId
@@ -59,7 +62,7 @@ class TariffSpecification
   /** Flat payment per period for two-part tariffs */
   BigDecimal periodicPayment = 0.0
 
-  static hasMany = [rates:Rate]
+  static hasMany = [rates:Rate, supersedes:String]
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)

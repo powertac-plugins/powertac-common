@@ -33,7 +33,6 @@ import org.joda.time.base.AbstractInstant
 */
 class Rate implements Serializable
 {
-  Tariff tariff
   int weeklyBegin = -1 // weekly applicability
   int weeklyEnd = -1
   int dailyBegin = -1 // daily applicability
@@ -44,7 +43,7 @@ class Rate implements Serializable
   BigDecimal maxValue = 0.0
   int noticeInterval = 0 // notice interval for variable rate in hours
   BigDecimal expectedMean = 0.0 // expected mean value for variable rate
-  SortedSet<HourlyCharge> rateHistory // history of values for variable rate
+  TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
   static belongsTo = Tariff
   static hasMany = [rateHistory:HourlyCharge]
@@ -63,8 +62,6 @@ class Rate implements Serializable
 
   // introduce dependency on TimeService
   def timeService
-  
-  // TODO: Tier applicability, variable rate
   
   /**
    * Constructor must mung the Partials for weeklyBegin, weeklyEnd,

@@ -30,10 +30,10 @@ class TariffDoSubscribeCmd implements Serializable {
   String id = IdGenerator.createId()
   Competition competition
   Customer customer
-  OldTariff tariff
+  String tariffId
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, customer: Customer, tariff: OldTariff]
+  static belongsTo = [competition: Competition, customer: Customer]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
@@ -42,8 +42,8 @@ class TariffDoSubscribeCmd implements Serializable {
       else return true
     })
     customer(nullable: false)
-    tariff (nullable: false, validator: {val, obj ->
-      if (val.state == Tariff.State.LEGACY) return [Constants.TARIFF_OUTDATED]
+    tariffId (nullable: false, validator: {val, obj ->
+      if (Tariff.findById(val).state == Tariff.State.LEGACY) return [Constants.TARIFF_OUTDATED]
       else return true
     })
   }
