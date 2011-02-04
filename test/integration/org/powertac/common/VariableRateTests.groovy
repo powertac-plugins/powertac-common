@@ -50,7 +50,7 @@ class VariableRateTests extends GroovyTestCase
   {
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
 
-    Tariff t1 = new Tariff(broker: broker, expiration: new Instant(exp),
+    OldTariff t1 = new OldTariff(broker: broker, expiration: new Instant(exp),
                            minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(value: 0.121)
     t1.addToRates(r1)
@@ -68,7 +68,7 @@ class VariableRateTests extends GroovyTestCase
   //variable rates, minimal setup  
   void testVariableRate ()
   {
-    Tariff t1 = new Tariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+    OldTariff t1 = new OldTariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                            minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -93,7 +93,7 @@ class VariableRateTests extends GroovyTestCase
   void testVariableRateGap ()
   {
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
-    Tariff t1 = new Tariff(broker: broker, expiration: new Instant(exp),
+    OldTariff t1 = new OldTariff(broker: broker, expiration: new Instant(exp),
                            minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -120,7 +120,7 @@ class VariableRateTests extends GroovyTestCase
   // variable rates with 3-hour notification interval
   void testVariableRateN3 ()
   {
-    Tariff t1 = new Tariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+    OldTariff t1 = new OldTariff(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                            minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 3, expectedMean: 0.10)

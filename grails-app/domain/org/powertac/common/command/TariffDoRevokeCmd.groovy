@@ -34,10 +34,10 @@ class TariffDoRevokeCmd implements Serializable {
   String id = IdGenerator.createId()
   Competition competition
   Broker broker
-  Tariff tariff
+  OldTariff tariff
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, broker: Broker, tariff: Tariff]
+  static belongsTo = [competition: Competition, broker: Broker, tariff: OldTariff]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

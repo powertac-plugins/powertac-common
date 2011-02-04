@@ -58,7 +58,7 @@ class TariffDoRevokeCmdTests extends GroovyTestCase {
   void testInvalidBroker() {
     competition.current = true
     competition.save()
-    Tariff tariff = new Tariff(broker: broker)
+    OldTariff tariff = new OldTariff(broker: broker)
     TariffDoRevokeCmd cmd = new TariffDoRevokeCmd(broker: broker2, tariff: tariff)
     assertFalse(cmd.validate())
     assertEquals(Constants.TARIFF_WRONG_BROKER, cmd.errors.getFieldError('broker').getCode())
@@ -67,7 +67,7 @@ class TariffDoRevokeCmdTests extends GroovyTestCase {
   void testTariffIsLegacy() {
     competition.current = true
     competition.save()
-    Tariff tariff = new Tariff(broker: broker, state: Tariff.State.LEGACY)
+    OldTariff tariff = new OldTariff(broker: broker, state: Tariff.State.LEGACY)
     TariffDoRevokeCmd cmd = new TariffDoRevokeCmd(broker: broker2, tariff: tariff)
     assertFalse(cmd.validate())
     assertEquals(Constants.TARIFF_OUTDATED, cmd.errors.getFieldError('tariff').getCode())

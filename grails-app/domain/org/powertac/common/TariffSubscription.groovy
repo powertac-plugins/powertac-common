@@ -22,11 +22,11 @@ import org.joda.time.Instant
 
 /**
  * A TariffSubscription is an entity representing an association between a Customer
- * and a TariffExaminer, which in turn wraps a Tariff. You get one by
- * calling the subscribe() method on TariffExaminer. If there is no
+ * and a Tariff, which in turn wraps a Tariff. You get one by
+ * calling the subscribe() method on Tariff. If there is no
  * current subscription for that Customer (which in most cases is actually
  * a population model), then a new TariffSubscription is created and
- * returned from the TariffExaminer. 
+ * returned from the Tariff. 
  * <p>
  * 
  * @author Carsten Block, John Collins
@@ -39,8 +39,8 @@ class TariffSubscription {
   Competition competition
   // Broker broker // redundant data
   Customer customer
-  Tariff tariff
-  //TariffExaminer examiner
+  OldTariff tariff
+  //Tariff examiner
   
   /** Total number of customers within a customer model that are committed 
    * to this tariff subscription. This needs to be a count, otherwise tiered 

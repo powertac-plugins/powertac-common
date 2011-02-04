@@ -30,10 +30,10 @@ class TariffDoSubscribeCmd implements Serializable {
   String id = IdGenerator.createId()
   Competition competition
   Customer customer
-  Tariff tariff
+  OldTariff tariff
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, customer: Customer, tariff: Tariff]
+  static belongsTo = [competition: Competition, customer: Customer, tariff: OldTariff]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

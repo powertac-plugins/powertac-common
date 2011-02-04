@@ -9,14 +9,14 @@ class TariffSubscriptionTests extends GroovyTestCase {
 
   def timeService
   
-  Tariff tariff
+  OldTariff tariff
   Customer customer
 
   protected void setUp() {
     super.setUp()
     timeService.currentTime = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
     DateTime exp = new DateTime(2011, 3, 10, 0, 0, 0, 0, DateTimeZone.UTC)
-    tariff = new Tariff(expiration: exp.toInstant(),
+    tariff = new OldTariff(expiration: exp.toInstant(),
                         minDuration: TimeService.WEEK * 8)
     tariff.addToRates(new Rate(value: 0.121))
     customer = new Customer(name:"Charley")

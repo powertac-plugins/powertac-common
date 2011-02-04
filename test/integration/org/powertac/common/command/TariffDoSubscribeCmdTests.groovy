@@ -58,7 +58,7 @@ class TariffDoSubscribeCmdTests extends GroovyTestCase {
   void testTariffIsLegacy() {
     competition.current = true
     competition.save()
-    Tariff tariff = new Tariff(broker: broker, state: Tariff.State.LEGACY)
+    OldTariff tariff = new OldTariff(broker: broker, state: Tariff.State.LEGACY)
     TariffDoSubscribeCmd cmd = new TariffDoSubscribeCmd(tariff: tariff)
     assertFalse(cmd.validate())
     assertEquals(Constants.TARIFF_OUTDATED, cmd.errors.getFieldError('tariff').getCode())
