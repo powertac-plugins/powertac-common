@@ -16,22 +16,54 @@
 
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.joda.time.DateTime
 
+/**
+ * A {@code CashUpdate} domain instance represents a single cash transaction
+ * in a broker's cash account. Each update thus carries a {@code relativeChange}
+ * that describes the concrete addition or subtraction of money as part of the
+ * respective cash transaction as well as an {@code overallBalance}, which represents
+ * the running total of the broker's cash account.
+ *
+ * @author Carsten Block, KIT
+ * @version 1.0 - 04/Feb/2011
+ */
 class CashUpdate implements Serializable {
 
+  def timeService
+
   String id = IdGenerator.createId()
+
+  /** A transactionId is e.g. generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction. */
   String transactionId
-  Competition competition
+
+  /** The competition this cash update belongs to */
+  Competition competition = Competition.currentCompetition()
+
+  /** The broker who owns the cash account in which this cash update takes place */
   Broker broker
+
+  /** The amount added to or deduced from the broker's cash account */
   BigDecimal relativeChange
+
+  /** The new running total for the broker's cash account */
   BigDecimal overallBalance
+
+  /** The reason why this cash transaction took place */
   String reason
+
+  /** The originator of this cash transaction, e.g. pda market, tax authority, or distribution utility */
   String origin
+
+  /** flag that marks the latest cash transaction for a particular broker in a particular competition and that is used to speed up db queries */
   Boolean latest
-  LocalDateTime dateCreated = new LocalDateTime()
+
+  /** creation date of this cash update in local competition time */
+  DateTime dateCreated = timeService.currentTime.toDateTime()
 
   static belongsTo = [broker: Broker, competition: Competition]
+
+  static transients = ['timeService']
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
