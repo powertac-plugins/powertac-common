@@ -16,13 +16,31 @@
 
 package org.powertac.common
 
+/**
+ *  A {@code MeterReading} instance represents the amount of energy consumed
+ * ({@code amount < 0}) or produced {@code amount > 0} by a specific customer
+ * in a specific timeslot of a specific competition
+ *
+ * @author Carsten Block, KIT
+ * @version 1.0 - 04/Feb/2011
+ */
 class MeterReading implements Serializable {
 
   String id = IdGenerator.createId()
-  Competition competition
+
+  /** The competition in which this meter reading was generated */
+  Competition competition = Competition.currentCompetition()
+
+  /** The customer or more precisely his meter that is being read */
   Customer customer
+
+  /** The timeslot for which this meter reading is generated */
   Timeslot timeslot
+
+  /** The amount of energy consumer (> 0) or produced (<0) as metered */
   BigDecimal amount
+
+  /** flag that marks the latest meter reading for a particular broker in a particular competition and timeslot; used to speed up db queries */
   Boolean latest
 
   static belongsTo = [competition: Competition, customer: Customer, timeslot: Timeslot]
