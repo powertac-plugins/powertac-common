@@ -16,13 +16,22 @@
 
 package org.powertac.common
 
-import org.powertac.common.Tariff
-
+/**
+ * A broker domain instance represents a competition participants, or more
+ * precisely the competition participant's agent. Every incoming request
+ * from a broker agent is authenticated against the credentials stored in this class.
+ *
+ * @author Carsten Block, KIT
+ * @version 1.0 - 04/Feb/2011
+ */
 class Broker implements Serializable {
 
   String id = IdGenerator.createId()
-  Competition competition
+  /** The competition this broker is running in */
+  Competition competition = Competition.currentCompetition()
+  /** the broker's login or user name */
   String userName
+  /** the broker's identifier token */
   String apiKey = IdGenerator.createId()
 
   static belongsTo = [competition: Competition]
