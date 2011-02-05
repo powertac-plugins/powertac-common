@@ -23,8 +23,9 @@ import org.joda.time.Instant
 
 class TariffTests extends GrailsUnitTestCase 
 {
-  def timeService
-  def tariffSpec
+  def timeService // dependency injection
+  
+  TariffSpecification tariffSpec // instance var
 
   Instant start
   
@@ -38,7 +39,7 @@ class TariffTests extends GrailsUnitTestCase
                                          minDuration: new Duration(TimeService.WEEK * 8))
   }
 
-  protected void tearDown () 
+  protected void tearDown ()
   {
     super.tearDown()
   }
@@ -48,12 +49,15 @@ class TariffTests extends GrailsUnitTestCase
   {
     Rate r1 = new Rate(value: 0.121)
     tariffSpec.addToRates(r1)
-    Tariff te = new Tariff(tariffSpec)
+    tariffSpec.save()
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.save()
     assertNotNull("non-null result", te)
-    assertEquals("correct publication time", start, te.offerDate)
-    assertEquals("correct Tariff", tariffSpec, te.tariff)
+    assertEquals("correct Tariff", tariffSpec, te.tariffSpec)
     assertEquals("correct initial realized price", 0.0, te.realizedPrice)
     assertFalse("not yet analyzed", te.analyzed)
+    te.init()
+    assertEquals("correct publication time", start, te.offerDate)
   }
   
   // check the realized price calculation
@@ -61,7 +65,8 @@ class TariffTests extends GrailsUnitTestCase
   {
     Rate r1 = new Rate(value: 0.121)
     tariffSpec.addToRates(r1)
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     te.setTotalUsage 501.2
     te.setTotalCost 99.8
     assertEquals("Correct realized price", 99.8/501.2, te.getRealizedPrice(), 1.0e-6)
@@ -73,7 +78,8 @@ class TariffTests extends GrailsUnitTestCase
     Rate r1 = new Rate(value: 0.121)
     tariffSpec.addToRates(r1)
     Instant now = timeService.currentTime
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     assertEquals("correct charge, default case", 0.121, te.getUsageCharge())
     assertEquals("correct charge, today", 1.21, te.getUsageCharge(10.0))
     assertEquals("correct charge yesterday", 2.42, te.getUsageCharge(now - TimeService.DAY, 20.0))
@@ -90,7 +96,8 @@ class TariffTests extends GrailsUnitTestCase
     Rate r1 = new Rate(value: 0.131)
     tariffSpec.addToRates(r1)
     Instant now = timeService.currentTime
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     te.getUsageCharge(20.0, 200.0, true)
     assertEquals("realized price 1", 0.131, te.realizedPrice)
     te.getUsageCharge(10.0, 1000.0, true)
@@ -106,7 +113,8 @@ class TariffTests extends GrailsUnitTestCase
     Rate r2 = new Rate(value: 0.08, dailyBegin: 18, dailyEnd: 7)
     tariffSpec.addToRates(r1)
     tariffSpec.addToRates(r2)
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     assertEquals("noon price", 3.0, te.getUsageCharge(20.0, 200.0, true))
     assertEquals("realized price", 0.15, te.realizedPrice, 1e-6)
     timeService.currentTime = new DateTime(2011, 1, 1, 18, 0, 0, 0, DateTimeZone.UTC).toInstant()
@@ -131,7 +139,8 @@ class TariffTests extends GrailsUnitTestCase
     tariffSpec.addToRates(r1)
     tariffSpec.addToRates(r2)
     tariffSpec.addToRates(r3)
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     assertEquals("noon price Sat", 1.2, te.getUsageCharge(20.0, 200.0, true))
     assertEquals("realized price", 0.06, te.realizedPrice, 1e-6)
     assertTrue("weekly map", te.isWeekly)
@@ -180,7 +189,8 @@ class TariffTests extends GrailsUnitTestCase
     tariffSpec.addToRates(r1)
     tariffSpec.addToRates(r2)
     tariffSpec.addToRates(r3)
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     timeService.currentTime = new DateTime(2011, 1, 1, 23, 50, 0, 0, DateTimeZone.UTC).toInstant()
     assertEquals("23:50 Sat", 0.8, te.getUsageCharge(10.0, 220.0, true))
     timeService.currentTime = new DateTime(2011, 1, 2, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
@@ -210,7 +220,8 @@ class TariffTests extends GrailsUnitTestCase
     tariffSpec.addToRates(r1)
     tariffSpec.addToRates(r2)
     tariffSpec.addToRates(r3)
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     assertEquals("noon price, below", 1.5, te.getUsageCharge(10.0, 5.0, true), 1e-6)
     assertEquals("noon price, above", 2.0, te.getUsageCharge(10.0, 25.0, true), 1e-6)
     assertEquals("noon price, split", 1.75, te.getUsageCharge(10.0, 15.0, true), 1e-6)
@@ -231,7 +242,8 @@ class TariffTests extends GrailsUnitTestCase
     tariffSpec.addToRates(r2)
     tariffSpec.addToRates(r3)
     tariffSpec.addToRates(r4)
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     assertEquals("first tier", 0.14, te.getUsageCharge(2.0, 2.0, true), 1e-6)
     assertEquals("first-second tier", 0.41, te.getUsageCharge(5.0, 2.0, true), 1e-6)
     assertEquals("second tier", 0.2, te.getUsageCharge(2.0, 6.0, true), 1e-6)
@@ -254,7 +266,8 @@ class TariffTests extends GrailsUnitTestCase
     r1.addToRateHistory(new HourlyCharge(value: 0.11, when: new DateTime(2011, 1, 1, 13, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     r1.addToRateHistory(new HourlyCharge(value: 0.13, when: new DateTime(2011, 1, 1, 14, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     r1.addToRateHistory(new HourlyCharge(value: 0.14, when: new DateTime(2011, 1, 1, 15, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    Tariff te = new Tariff(tariffSpec)
+    Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     assertEquals("current charge, noon Sunday", 0.9, te.getUsageCharge(10.0), 1e-6)
     assertEquals("13:00 charge, noon Sunday", 1.1,
       te.getUsageCharge(new DateTime(2011, 1, 1, 13, 0, 0, 0, DateTimeZone.UTC).toInstant(), 10.0), 1e-6)

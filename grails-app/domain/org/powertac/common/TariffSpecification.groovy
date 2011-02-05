@@ -61,16 +61,23 @@ class TariffSpecification
   
   /** Flat payment per period for two-part tariffs */
   BigDecimal periodicPayment = 0.0
+  
+  //def rates
+  //def supersedes
 
-  static hasMany = [rates:Rate, supersedes:String]
+  static hasMany = [rates: Rate, supersedes: String]
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    tariffId(nullable: false, blank: false)
+    //tariffId(nullable: false, blank: false)
     brokerId(nullable: false, blank: false)
     expiration(nullable: true)
     minDuration(min: 24*60*60*1000l) // one day
     powerType(nullable: false)
     rates(nullable: false, minSize: 1)
+  }
+
+  static mapping = {
+    id (generator: 'assigned')
   }
 }

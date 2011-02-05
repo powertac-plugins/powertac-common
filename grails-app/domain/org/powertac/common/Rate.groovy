@@ -45,17 +45,11 @@ class Rate implements Serializable
   BigDecimal expectedMean = 0.0 // expected mean value for variable rate
   TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
-  static belongsTo = Tariff
+  static belongsTo = TariffSpecification
   static hasMany = [rateHistory:HourlyCharge]
   static transients = ["value"]
 
   static constraints = {
-    tariff(nullable:false)
-    //dailyBegin(nullable:true)
-    //dailyEnd(nullable:true)
-    //weeklyBegin(nullable:true)
-    //weeklyEnd(nullable:true)
-    isFixed(nullable:false)
     minValue(min:0.0)
     maxValue(min:0.0)
   }

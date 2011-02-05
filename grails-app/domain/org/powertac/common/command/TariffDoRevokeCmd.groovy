@@ -37,7 +37,7 @@ class TariffDoRevokeCmd implements Serializable {
   String tariffId
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, broker: Broker, tariff: Tariff]
+  //static belongsTo = [competition: Competition, broker: Broker, tariff: Tariff]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

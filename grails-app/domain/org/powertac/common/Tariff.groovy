@@ -37,7 +37,11 @@ import org.joda.time.Partial
  */
 class Tariff 
 {
-  // ----------- State enumeration --------------  
+  
+  // link the Time Service
+  def timeService
+
+    // ----------- State enumeration --------------  
   enum State
   {
     OFFERED, ACTIVE, LEGACY
@@ -69,7 +73,7 @@ class Tariff
   Instant offerDate
   
   /** Maximum future interval over which price can be known */
-  Duration maxHorizon // TODO lazy instantiation
+  Duration maxHorizon // TODO lazy instantiation?
   
   /** True if the maps are keyed by hour-in-week rather than hour-in-day */
   boolean isWeekly = false
@@ -78,9 +82,6 @@ class Tariff
   // map is an array, indexed by tier-threshold and hour-in-day/week
   def tiers = []
   def rateMap = []
-  
-  // link the Time Service
-  def timeService
 
   static transients = ["realizedPrice", "usageCharge", "expired", "timeService"]
   static hasMany = [subscriptions:TariffSubscription]
@@ -94,27 +95,42 @@ class Tariff
     maxHorizon(nullable:true)
   }
   
-  /**
-   * Standard constructor, takes a TariffSpecification
-   */
-  Tariff (TariffSpecification spec)
+  static mapping = {
+    id (generator: 'assigned')
+  }
+
+  // Default constructor, needed by Grails
+  //Tariff () {}
+
+  void init ()
   {
-    tariffSpec = spec
-    id = spec.id
-    offerDate = timeService.currentTime
-    broker = Broker.findById(tariffSpec.brokerId)
-    expiration = spec.expiration
-    spec.supersedes.each {
-      Tariff.findById(it).isSupersededBy = this 
-    }
-    analyzeTariff()
+    if (timeService)
+      offerDate = timeService.getCurrentTime()
+    else
+      println "timeService not available"
+    if (tariffSpec)
+      analyze()
+    else
+      println "no tariff specification available"
   }
   
-  // Default constructor, needed by Grails
-  Tariff () {}
-  
-  // hide the Map constructor
-  private Tariff(Map args) {}
+  // Map constructor
+  Tariff(Map args = null) 
+  {
+    args?.each { key, val ->
+      if (key == "tariffSpec") {
+        tariffSpec = val
+        id = spec.id
+        broker = Broker.findById(tariffSpec.brokerId)
+        expiration = spec.expiration
+        spec.supersedes.each {
+          Tariff.findById(it).isSupersededBy = this 
+        }
+      }
+      else
+        this."$key" = val
+    }
+  }
   
   /** Returns the actual realized price, or 0.0 if information unavailable */
   double getRealizedPrice ()
@@ -243,7 +259,7 @@ class Tariff
    * [number of tiers][number of hours] where number of hours is either 24 or
    * 168 depending on whether there are any weekly constraints. 
    */
-  void analyzeTariff ()
+  void analyze ()
   {
     // Start by computing tier indices, and array width
     def tierIndexMap = [:]
