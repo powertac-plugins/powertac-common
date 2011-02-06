@@ -32,7 +32,7 @@ import org.joda.time.Instant
  * associated HourlyCharge instances.</p>
  * @author John Collins
  */
-class TariffSpecification 
+class TariffSpecification implements Serializable
 {
   String id = IdGenerator.createId()
   

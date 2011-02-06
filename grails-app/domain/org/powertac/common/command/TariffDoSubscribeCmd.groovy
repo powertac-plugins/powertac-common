@@ -30,6 +30,7 @@ class TariffDoSubscribeCmd implements Serializable {
   String id = IdGenerator.createId()
   Competition competition
   Customer customer
+  int customerCount = 1
   String tariffId
   DateTime dateCreated = new DateTime()
 
@@ -42,8 +43,9 @@ class TariffDoSubscribeCmd implements Serializable {
       else return true
     })
     customer(nullable: false)
+    customerCount(min: 1)
     tariffId (nullable: false, validator: {val, obj ->
-      if (Tariff.findById(val).state == Tariff.State.LEGACY) return [Constants.TARIFF_OUTDATED]
+      if (Tariff.get(val).state == Tariff.State.WITHDRAWN) return [Constants.TARIFF_OUTDATED]
       else return true
     })
   }

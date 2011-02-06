@@ -50,7 +50,9 @@ class TariffDoRevokeCmd implements Serializable {
 //      return true
 //    })
     tariffId (nullable: false, validator: {val, obj ->
-      if (Tariff.findById(val).state == Tariff.State.LEGACY) return [Constants.TARIFF_OUTDATED]
+      Tariff tf = Tariff.get(val)
+      if (tf == null) return [Constants.NOT_FOUND]
+      else if (tf.state == Tariff.State.WITHDRAWN) return [Constants.TARIFF_OUTDATED]
       else return true
     })
   }

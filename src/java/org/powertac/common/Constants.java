@@ -36,6 +36,7 @@ public class Constants {
   public static final String COMPETITION_INACTIVE = "competition.inactive";
   public static final String COMPETITION_NOT_FOUND = "competition.not.found";
 
+  public static final String NOT_FOUND = "not.found";
   public static final String TARIFF_HAS_PARENT = "tariff.has.parent";
   public static final String TARIFF_OUTDATED = "tariff.outdated";
   public static final String TARIFF_INVALID_STATE = "tariff.tariffState.invalid";

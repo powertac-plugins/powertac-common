@@ -15,11 +15,14 @@
  */
 package org.powertac.common
 
+import java.math.BigDecimal;
+
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
 import org.joda.time.Partial
+import org.powertac.common.enumerations.PowerType;
 
 /**
  * Entity wrapper for TariffSpecification that supports Tariff evaluation 
@@ -31,8 +34,9 @@ import org.joda.time.Partial
  * a particular accounting event. This will also make it easy to estimate the
  * cost of a multi-Rate Tariff given an expected load/production profile.
  * <p>
- * <strong>NOTE:</strong> When creating one of these, for the first time, you must
- * call the init() method to initialize the publication date.</p>
+ * <strong>NOTE:</strong> When creating one of these for the first time, you must
+ * call the init() method to initialize the publication date. It does not work
+ * to call it inside the constructor for some reason.</p>
  * @author John Collins
  */
 class Tariff 
@@ -44,7 +48,7 @@ class Tariff
     // ----------- State enumeration --------------  
   enum State
   {
-    OFFERED, ACTIVE, LEGACY
+    OFFERED, ACTIVE, WITHDRAWN, INACTIVE
   }
 
   /** Explicit tariff ID - Must be the same in Broker and Server */
@@ -83,7 +87,10 @@ class Tariff
   def tiers = []
   def rateMap = []
 
-  static transients = ["realizedPrice", "usageCharge", "expired", "timeService"]
+  static transients = ["realizedPrice", "usageCharge", "expired", "timeService",
+                       "minDuration", "powerType", "signupPayment", 
+                       "earlyWithdrawPayment", "periodicPayment"]
+  
   static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
@@ -99,39 +106,22 @@ class Tariff
     id (generator: 'assigned')
   }
 
-  // Default constructor, needed by Grails
-  //Tariff () {}
-
+  /**
+   * Initializes the Tariff, setting the publication date and running
+   * the internal analyzer to build the rate map.  
+   */
   void init ()
   {
-    if (timeService)
-      offerDate = timeService.getCurrentTime()
-    else
-      println "timeService not available"
-    if (tariffSpec)
-      analyze()
-    else
-      println "no tariff specification available"
-  }
-  
-  // Map constructor
-  Tariff(Map args = null) 
-  {
-    args?.each { key, val ->
-      if (key == "tariffSpec") {
-        tariffSpec = val
-        id = spec.id
-        broker = Broker.findById(tariffSpec.brokerId)
-        expiration = spec.expiration
-        spec.supersedes.each {
-          Tariff.findById(it).isSupersededBy = this 
-        }
-      }
-      else
-        this."$key" = val
+    id = tariffSpec.id
+    broker = Broker.findById(tariffSpec.getBrokerId())
+    expiration = tariffSpec.getExpiration()
+    tariffSpec.getSupersedes().each {
+      Tariff.findById(it).isSupersededBy = this
     }
+    offerDate = timeService.getCurrentTime()
+    analyze()
   }
-  
+
   /** Returns the actual realized price, or 0.0 if information unavailable */
   double getRealizedPrice ()
   {
@@ -141,6 +131,38 @@ class Tariff
       return totalCost / totalUsage
   }
   
+  /** Pass-through for TariffSpecification.minDuration */
+  long getMinDuration ()
+  {
+    tariffSpec.minDuration
+  }
+  
+  /** Type of power covered by this tariff */
+  PowerType getPowerType ()
+  {
+    tariffSpec.powerType
+  }
+  
+  /** One-time payment for subscribing to tariff, positive for payment
+   *  from customer, negative for payment to customer. */
+  BigDecimal getSignupPayment ()
+  {
+    tariffSpec.signupPayment
+  }
+  
+  /** Payment from customer to broker for canceling subscription before
+   *  minDuration has elapsed. */
+  BigDecimal getEarlyWithdrawPayment ()
+  {
+    tariffSpec.earlyWithdrawPayment
+  }
+  
+  /** Flat payment per period for two-part tariffs */
+  BigDecimal getPeriodicPayment ()
+  {
+    tariffSpec.periodicPayment
+  }
+
   /** 
    * Returns the usage charge for the current timeslot. The kwh parameter
    * defaults to 1.0, in which case you get the per-kwh value. If you supply
@@ -243,7 +265,7 @@ class Tariff
    */
   boolean isExpired ()
   {
-    return timeService.currentTime.millis > expiration.millis
+    return timeService.getCurrentTime().millis > expiration.millis
   }
 
   /**

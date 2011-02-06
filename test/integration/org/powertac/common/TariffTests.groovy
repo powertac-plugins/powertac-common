@@ -28,15 +28,16 @@ class TariffTests extends GrailsUnitTestCase
   TariffSpecification tariffSpec // instance var
 
   Instant start
+  Instant exp
   
   protected void setUp () 
   {
     super.setUp()
     start = new DateTime(2011, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     timeService.setCurrentTime(start)
-    DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
-    tariffSpec = new TariffSpecification(brokerId: "123", expiration: new Instant(exp),
-                                         minDuration: new Duration(TimeService.WEEK * 8))
+    exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
+    tariffSpec = new TariffSpecification(brokerId: "123", expiration: exp,
+                                         minDuration: TimeService.WEEK * 8)
   }
 
   protected void tearDown ()
@@ -51,13 +52,15 @@ class TariffTests extends GrailsUnitTestCase
     tariffSpec.addToRates(r1)
     tariffSpec.save()
     Tariff te = new Tariff(tariffSpec: tariffSpec)
+    te.init()
     te.save()
     assertNotNull("non-null result", te)
-    assertEquals("correct Tariff", tariffSpec, te.tariffSpec)
+    assertEquals("correct TariffSpec", tariffSpec, te.tariffSpec)
     assertEquals("correct initial realized price", 0.0, te.realizedPrice)
-    assertFalse("not yet analyzed", te.analyzed)
-    te.init()
+    assertEquals("correct expiration in spec", exp, te.tariffSpec.getExpiration())
+    assertEquals("correct expiration", exp, te.getExpiration())
     assertEquals("correct publication time", start, te.offerDate)
+    assertFalse("not expired", te.isExpired())
   }
   
   // check the realized price calculation

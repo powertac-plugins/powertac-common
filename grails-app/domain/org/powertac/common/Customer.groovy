@@ -24,14 +24,14 @@ class Customer implements Serializable {
   Competition competition
   String name
   CustomerType customerType //gives a "rough" classification what type of customer to expect based on an enumeration, i.e. a fixed set of customer types
-  Boolean multiContracting // describes whether or not this customer engages in multiple contracts at the same time
-  Boolean canNegotiate // describes whether or not this customer negotiates over contracts
-  BigDecimal upperPowerCap // >0: max power consumption (think consumer with fuse limit); <0: min power production (think nuclear power plant with min output)
-  BigDecimal lowerPowerCap // >0: min power consumption (think refrigerator); <0: max power production (think power plant with max capacity)
-  BigDecimal carbonEmissionRate // >=0 - gram CO2 per kW/h
-  BigDecimal windToPowerConversion // measures how wind changes translate into load / generation changes of the customer
-  BigDecimal tempToPowerConversion // measures how temperature changes translate into load / generation changes of the customer
-  BigDecimal sunToPowerConversion // measures how sun intensity changes translate into load /generation changes of the customer
+  Boolean multiContracting = false // describes whether or not this customer engages in multiple contracts at the same time
+  Boolean canNegotiate =false // describes whether or not this customer negotiates over contracts
+  BigDecimal upperPowerCap = 10.0 // >0: max power consumption (think consumer with fuse limit); <0: min power production (think nuclear power plant with min output)
+  BigDecimal lowerPowerCap = 0.0 // >0: min power consumption (think refrigerator); <0: max power production (think power plant with max capacity)
+  BigDecimal carbonEmissionRate = 0.0 // >=0 - gram CO2 per kW/h
+  BigDecimal windToPowerConversion = 0.0 // measures how wind changes translate into load / generation changes of the customer
+  BigDecimal tempToPowerConversion = 0.0 // measures how temperature changes translate into load / generation changes of the customer
+  BigDecimal sunToPowerConversion = 0.0 // measures how sun intensity changes translate into load /generation changes of the customer
 
   //TODO: Possibly add parameters as the ones below that provide descriptive statistical information on historic power consumption / production of the customer
   /*

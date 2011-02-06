@@ -16,8 +16,6 @@
 
 package org.powertac.common
 
-import org.powertac.common.Tariff
-
 class Broker implements Serializable {
 
   String id = IdGenerator.createId()
@@ -31,7 +29,7 @@ class Broker implements Serializable {
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    userName(nullable: false, blank: false, unique: 'competition', minSize: 5, matches: /([a-zA-Z0-9])*/)
+    userName(nullable: false, blank: false, unique: 'competition', minSize: 2, matches: /([a-zA-Z0-9])*/)
     apiKey(nullable: false, blank: false, unique: true, minSize: 32)
   }
 
