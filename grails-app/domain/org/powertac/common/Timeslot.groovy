@@ -16,19 +16,42 @@
 
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.joda.time.DateTime
 
+ /**
+ * A timeslot instance describes a duration in time (slot). Time slots are used (i) to
+ * correlate tradeable products (energy futures) and trades in the market with a future time
+ * interval where settlement (i.e. delivery / consumption) has to take place, (ii) to
+ * correlate meter readings with a duration in time, (iii) to  allow tariffs to define
+ * different consumption / production prices for different times of a day
+ *
+ * @author Carsten Block
+ * @version 1.0 - Feb,6,2011
+ */
 class Timeslot implements Serializable {
 
   String id = IdGenerator.createId()
-  Long serialNumber
-  Competition competition
-  Boolean enabled = false
-  Boolean current = false
-  LocalDateTime startDateTime = new LocalDateTime()
-  LocalDateTime endDateTime = new LocalDateTime()
 
-  SortedSet orderbooks
+  /**
+   * used to find succeeding / preceding timeslot instances
+   * @see {@code Timeslot.next()} {@code Timeslot.previous()}
+   */
+  Long serialNumber
+
+  /** competition for which this timeslot is valid */
+  Competition competition = Competition.currentCompetition()
+
+  /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
+  Boolean enabled = false
+
+  /** indicates that this timeslot is the present / now() timeslot in the competition */
+  Boolean current = false
+
+  /** start date and time of the timeslot */
+  DateTime startDateTime
+
+  /** end date and time of the timeslot */
+  DateTime endDateTime
 
   static belongsTo = [competition: Competition]
 
