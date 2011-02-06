@@ -80,9 +80,9 @@ class Competition implements Serializable {
  *     this will not work correctly unless the calls to updateTime() are made at
  *     modulo/rate intervals. Also note that the reported time is computed as
  *     rawTime - rawTime % modulo, which means it will never be ahead of the raw
- *     simulation time.
+ *     simulation time (default: 1800000).
  */
-  Long simulationModulo
+  Long simulationModulo = 1800000
 
   /** the (real-world) date time this competition instance was initially created  */
   DateTime dateCreated = new DateTime()
