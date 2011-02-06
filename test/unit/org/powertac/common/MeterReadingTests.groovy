@@ -20,10 +20,14 @@ import grails.test.GrailsUnitTestCase
 
 class MeterReadingTests extends GrailsUnitTestCase {
 
+  Competition competition
   MeterReading meterReading
 
   protected void setUp() {
     super.setUp()
+    competition = new Competition(name: 'testCompetition')
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     meterReading = new MeterReading()
     mockForConstraintsTests(MeterReading)
   }
@@ -33,7 +37,7 @@ class MeterReadingTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    MeterReading meterReading1 = new MeterReading(id: null)
+    MeterReading meterReading1 = new MeterReading(id: null, competition: null)
     assertNull(meterReading1.id)
     assertFalse(meterReading1.validate())
     assertEquals('nullable', meterReading1.errors.getFieldError('id').getCode())
