@@ -19,17 +19,23 @@ package org.powertac.common
 import grails.test.GrailsUnitTestCase
 
 class PositionUpdateTests extends GrailsUnitTestCase {
+
+  Competition competition
+
   protected void setUp() {
     super.setUp()
-    mockForConstraintsTests(PositionUpdate)
+    competition = new Competition(name: 'testCompetition')
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
   }
 
   protected void tearDown() {
     super.tearDown()
   }
 
-   void testNullableValidationLogic() {
-    PositionUpdate positionUpdate = new PositionUpdate(id: null, dateCreated: null)
+  void testNullableValidationLogic() {
+    PositionUpdate positionUpdate = new PositionUpdate(id: null, dateCreated: null, competition: null)
+    mockForConstraintsTests(PositionUpdate, [positionUpdate])
     assertFalse(positionUpdate.validate())
     assertEquals('nullable', positionUpdate.errors.getFieldError('id').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('competition').getCode())
@@ -38,8 +44,8 @@ class PositionUpdateTests extends GrailsUnitTestCase {
     assertEquals('nullable', positionUpdate.errors.getFieldError('broker').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('relativeChange').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('overallBalance').getCode())
-     assertEquals('nullable', positionUpdate.errors.getFieldError('dateCreated').getCode())
-     assertEquals('nullable', positionUpdate.errors.getFieldError('transactionId').getCode())
-     assertEquals('nullable', positionUpdate.errors.getFieldError('latest').getCode())
-   }
+    assertEquals('nullable', positionUpdate.errors.getFieldError('dateCreated').getCode())
+    assertEquals('nullable', positionUpdate.errors.getFieldError('transactionId').getCode())
+    assertEquals('nullable', positionUpdate.errors.getFieldError('latest').getCode())
+  }
 }
