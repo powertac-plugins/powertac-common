@@ -42,7 +42,7 @@ class Orderbook implements Serializable {
   /** the competition this orderbook instance belongs to  */
   Competition competition = Competition.currentCompetition()
 
-  DateTime dateExecuted = timeService.currentTime.toDateTime()
+  DateTime dateExecuted = timeService?.currentTime?.toDateTime()
 
   /** the transactionId is generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction. Like this the orderbookInstance with transactionId=1 can be correlated to shout instances with transactionId=1 in ex-post analysis  */
   String transactionId
