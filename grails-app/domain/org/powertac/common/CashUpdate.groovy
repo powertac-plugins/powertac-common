@@ -25,6 +25,11 @@ import org.joda.time.DateTime
  * respective cash transaction as well as an {@code overallBalance}, which represents
  * the running total of the broker's cash account.
  *
+ * To determine the total amount of cash a certain broker currently owns in a certain
+ * competition, one simply searches for the instance marked as {@code
+ * latest=true} discriminating by competition and broker (this is an
+ * indexed search and thus fast).
+ *
  * @author Carsten Block, KIT
  * @version 1.0 - 04/Feb/2011
  */
