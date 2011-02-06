@@ -21,6 +21,11 @@ import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
 
+/**
+ * A shout domain instance represents an order in the PowerTAC wholesale market.
+ * The word "shout" was chosen to avoid db level incompatibilities due to the word
+ * "order" being a reserved word in most SQL dialects.^
+ */
 class Shout implements Serializable {
 
   String id = IdGenerator.createId()
