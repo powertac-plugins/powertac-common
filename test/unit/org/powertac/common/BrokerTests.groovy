@@ -29,8 +29,8 @@ class BrokerTests extends GrailsUnitTestCase {
   protected void setUp() {
     super.setUp()
     competition = new Competition(name: 'testCompetition')
-    mockForConstraintsTests(Competition, [competition])
-
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     broker = new Broker(competition: competition, userName: userName)
     mockForConstraintsTests(Broker, [broker])
   }
