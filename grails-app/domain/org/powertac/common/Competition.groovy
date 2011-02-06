@@ -17,10 +17,9 @@
 package org.powertac.common
 
 import org.joda.time.DateTime
-import org.joda.time.LocalDateTime
 import org.powertac.common.enumerations.CompetitionStatus
 
-/**
+ /**
  * A competition instance represents a single PowerTAC competition and
  * at the same time serves as the place for all competition properties that can be
  * adjusted during competition setup (i.e. during server runtime but before competition start).
@@ -40,9 +39,6 @@ class Competition implements Serializable {
 
   /** The function {@code Competition.currentCompetition ( )} returns the first competition instance that has set current flag to true - make sure only one competition per server is market current=true    */
   Boolean current = false
-
-  /** The competition's current (simulation) time    */
-  LocalDateTime currentCompetitionTime
 
   /** Lifecycle state of the competition    */
   CompetitionStatus competitionStatus = CompetitionStatus.Created
@@ -139,7 +135,6 @@ class Competition implements Serializable {
     name(unique: true, blank: false)
     enabled(nullable: false)
     current(nullable: false)
-    currentCompetitionTime(nullable: true)
     competitionStatus(nullable: false)
     description(nullable: true)
     initialDuration(nullable: false, min: 1l)
