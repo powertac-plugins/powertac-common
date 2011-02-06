@@ -17,11 +17,20 @@
 package org.powertac.common
 
 import grails.test.GrailsUnitTestCase
+import org.joda.time.DateTime
 
 class CashUpdateTests extends GrailsUnitTestCase {
+
+  def timeService
+  Competition competition
+
   protected void setUp() {
     super.setUp()
-    mockForConstraintsTests(CashUpdate)
+    timeService = new TimeService()
+    timeService.setCurrentTime(new DateTime())
+    competition = new Competition(name: 'testCompetition')
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
   }
 
   protected void tearDown() {
@@ -29,7 +38,8 @@ class CashUpdateTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    CashUpdate cashUpdate = new CashUpdate(dateCreated: null)
+    CashUpdate cashUpdate = new CashUpdate(competition: null, dateCreated: null, timeService: timeService)
+    mockForConstraintsTests(CashUpdate, [cashUpdate])
     assertFalse(cashUpdate.validate())
     //assertEquals('nullable', cashUpdate.errors.getFieldError('id').getCode()) TODO: check nullable validation logic on cashUpdate id field
     assertEquals('nullable', cashUpdate.errors.getFieldError('transactionId').getCode())
@@ -42,9 +52,10 @@ class CashUpdateTests extends GrailsUnitTestCase {
   }
 
   void testBlankValidationLogic() {
-    CashUpdate cmd = new CashUpdate(id: '', transactionId: '')
-    assertFalse(cmd.validate())
-    assertEquals('blank', cmd.errors.getFieldError('id').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('transactionId').getCode())
+    CashUpdate cashUpdate = new CashUpdate(id: '', transactionId: '', timeService: timeService)
+    mockForConstraintsTests(CashUpdate, [cashUpdate])
+    assertFalse(cashUpdate.validate())
+    assertEquals('blank', cashUpdate.errors.getFieldError('id').getCode())
+    assertEquals('blank', cashUpdate.errors.getFieldError('transactionId').getCode())
   }
 }

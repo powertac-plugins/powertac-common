@@ -64,7 +64,7 @@ class CashUpdate implements Serializable {
   Boolean latest
 
   /** creation date of this cash update in local competition time */
-  DateTime dateCreated = timeService.currentTime.toDateTime()
+  DateTime dateCreated = timeService?.getCurrentTime()?.toDateTime()
 
   static belongsTo = [broker: Broker, competition: Competition]
 
