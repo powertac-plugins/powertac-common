@@ -56,7 +56,7 @@ class TransactionLog implements Serializable {
   TransactionType transactionType
 
   /** the simulation date and time this trade or quote was generated */
-  DateTime dateCreated = timeService.currentTime.toDateTime()
+  DateTime dateCreated = timeService?.currentTime?.toDateTime()
 
   /** A transactionId is e.g. generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this single transaction. Later on this id allows for correlation of the different domain class instances during ex post analysis*/
   String transactionId
