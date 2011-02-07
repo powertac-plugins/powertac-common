@@ -10,15 +10,27 @@ class TariffSubscriptionTests extends GroovyTestCase {
   def timeService
   
   Tariff tariff
+  Broker broker
+  Competition competition
   Customer customer
 
   protected void setUp() {
     super.setUp()
+    competition = new Competition(name: "test", current: true)
+    competition.save()
+    broker = new Broker(competition: competition, userName: "Joe")
+    broker.save()
     timeService.currentTime = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
     DateTime exp = new DateTime(2011, 3, 10, 0, 0, 0, 0, DateTimeZone.UTC)
-    tariff = new Tariff(expiration: exp.toInstant(),
-                        minDuration: TimeService.WEEK * 8)
-    tariff.addToRates(new Rate(value: 0.121))
+    TariffSpecification tariffSpec = 
+        new TariffSpecification(brokerId: broker.getId(),
+                                expiration: exp.toInstant(),
+                                minDuration: TimeService.WEEK * 8)
+    tariffSpec.addToRates(new Rate(value: 0.121))
+    tariffSpec.save()
+    tariff = new Tariff(tariffSpec: tariffSpec)
+    tariff.init()
+    tariff.save()
     customer = new Customer(name:"Charley")
   }
 

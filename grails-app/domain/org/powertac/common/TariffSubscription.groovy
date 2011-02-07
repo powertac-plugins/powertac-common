@@ -20,13 +20,11 @@ import org.joda.time.Instant
 
 /**
  * A TariffSubscription is an entity representing an association between a Customer
- * and a TariffExaminer, which in turn wraps a Tariff. You get one by
- * calling the subscribe() method on TariffExaminer. If there is no
+ * and a Tariff. You get one by
+ * calling the subscribe() method on Tariff. If there is no
  * current subscription for that Customer (which in most cases is actually
  * a population model), then a new TariffSubscription is created and
- * returned from the TariffExaminer. 
- * <p>
- * 
+ * returned from the Tariff.  
  * @author Carsten Block, John Collins
  */
 class TariffSubscription {
@@ -44,10 +42,8 @@ class TariffSubscription {
 
   String id = IdGenerator.createId()
   Competition competition
-  // Broker broker // redundant data
   Customer customer
   Tariff tariff
-  //TariffExaminer examiner
   
   /** Total number of customers within a customer model that are committed 
    * to this tariff subscription. This needs to be a count, otherwise tiered 
@@ -61,10 +57,6 @@ class TariffSubscription {
    *  holds the oldest subscriptions - the ones that can be unsubscribed soonest
    *  without penalty. */
   List expirations = []
-  
-  // JEC - not sure what these are for
-  //DateTime tariffStartDateTime = timeService?.currentTime?.toDateTime()
-  //DateTime tariffEndDateTime = timeService?.currentTime ? timeService.currentTime.toDateTime() + Duration.standardDays(1) : null
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
@@ -72,12 +64,6 @@ class TariffSubscription {
     customer(nullable: false)
     tariff(nullable: false)
     customersCommitted(min: 0)
-    //tariffStartDateTime(nullable: false, validator: {val, obj ->
-    //  return obj.tariffStartDateTime < obj.tariffEndDateTime ? true : [Constants.TARIFF_SUBSCRIPTION_START_AFTER_END]
-    //})
-    //tariffEndDateTime(nullable: false, validator: {val, obj ->
-    //  return obj.tariffStartDateTime < obj.tariffEndDateTime ? true : [Constants.TARIFF_SUBSCRIPTION_START_AFTER_END]
-    //})
     expirations(nullable: true)
   }
   static mapping = {
@@ -101,17 +87,18 @@ class TariffSubscription {
     // if the Tariff has a minDuration, then we have to record the expiration date.
     // we do this by adding an entry to end of list, or updating the entry at the end.
     // An entry is a pair [Instant, count]
-    if (tariff.minDuration != null) {
+    long minDuration = tariff.minDuration
+    if (minDuration > 0) {
       // Compute the 00:00 Instant for the current time
       Instant start = timeService.truncateInstant(timeService.currentTime, TimeService.DAY)
       if (expirations.size() > 0 &&
-          expirations[expirations.size() - 1][0].millis == start) {
+          expirations[expirations.size() - 1][0].millis == start + minDuration) {
         // update existing entry
         expirations[expirations.size() - 1][1] += customerCount
       }
       else {
         // need a new entry
-        expirations.add([start, customerCount])
+        expirations.add([start + minDuration, customerCount])
       }
     }
     // Compute signup bonus here?

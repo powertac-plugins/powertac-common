@@ -18,6 +18,7 @@ package org.powertac.common.interfaces;
 
 import org.powertac.common.CashUpdate;
 import org.powertac.common.PositionUpdate;
+import org.powertac.common.TariffSpecification;
 import org.powertac.common.Tariff;
 import org.powertac.common.command.*;
 import org.powertac.common.exceptions.*;
@@ -39,7 +40,7 @@ import java.util.List;
 public interface AccountingService {
 
   /**
-   * Method processes {@link PositionDoUpdateCmd} objects adjusting the booked amounts
+   * Processes {@link PositionDoUpdateCmd} objects adjusting the booked amounts
    * of a product (e.g. energy futures) for particular broker and a particular timeslot
    *
    * @param positionDoUpdateCmd the object that describes what position change to book in the database
@@ -49,7 +50,7 @@ public interface AccountingService {
   public PositionUpdate processPositionUpdate (PositionDoUpdateCmd positionDoUpdateCmd) throws PositionUpdateException;
 
   /**
-   * Method processes {@link CashDoUpdateCmd} objects adjusting the booked amounts of cash for a specific broker.
+   * Processes {@link CashDoUpdateCmd} objects adjusting the booked amounts of cash for a specific broker.
    * @param cashDoUpdateCmd the object that describes what cash change to book in the database
    * @return CashUpdate Latest {@link CashUpdate} which contains relative change, new overall balance, origin and reason for the cash update
    * @throws org.powertac.common.exceptions.CashUpdateException is thrown if a cash update fails
@@ -57,15 +58,13 @@ public interface AccountingService {
   public CashUpdate processCashUpdate(CashDoUpdateCmd cashDoUpdateCmd) throws CashUpdateException;
 
   /**
-   * Method processes incoming {@link TariffDoPublishCmd} of a broker. The method does not
-   * return any results objects as tariffs are published only periodically through the
-   * {@code publishTariffList()} method
+   * Processes incoming {@link TariffSpecification} of a broker, and turns it into a Tariff instance.
    *
    * @param tariffDoPublishCmd command object that contains the tariff detais to be published
    * @throws org.powertac.common.exceptions.TariffPublishException is thrown if the tariff publishing fails
    * @return the published tariff object
    */
-  //public Tariff processTariffPublished(TariffDoPublishCmd tariffDoPublishCmd) throws TariffPublishException;
+  public Tariff processTariffPublished(TariffSpecification tariffDoPublishCmd) throws TariffPublishException;
 
 
   /**

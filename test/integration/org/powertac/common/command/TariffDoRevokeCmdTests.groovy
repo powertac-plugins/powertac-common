@@ -1,37 +1,32 @@
 package org.powertac.common.command
 
 import org.joda.time.DateTime
-import org.powertac.common.enumerations.BuySellIndicator
-import org.powertac.common.enumerations.OrderType
-import org.powertac.common.enumerations.ProductType
+import org.joda.time.DateTimeZone
+import org.joda.time.Instant
 import org.powertac.common.*
 
-class TariffDoRevokeCmdTests extends GroovyTestCase {
+class TariffDoRevokeCmdTests extends GroovyTestCase
+{
+  // get ref to TimeService
+  def timeService
+
   Competition competition
-  Product product
-  Timeslot timeslot
   Broker broker
-  Broker broker2
-  Shout shout
-  String userName
-  String apiKey
+  TariffSpecification tariffSpec
 
   protected void setUp() {
     super.setUp()
-    userName = 'testBroker'
-    apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
+    timeService.setCurrentTime(new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC))
     competition = new Competition(name: "test", current: true)
     assert (competition.validate() && competition.save())
-    broker = new Broker(competition: competition, userName: userName, apiKey: apiKey)
+    broker = new Broker(competition: competition, userName: "Bob")
     assert (broker.validate() && broker.save())
-    broker2 = new Broker(competition: competition, userName: userName + '2', apiKey: apiKey + '2')
-    assert (broker2.validate() && broker2.save())
-    product = new Product(competition: competition, productType: ProductType.Future)
-    assert (product.validate() && product.save())
-    timeslot = new Timeslot(competition: competition, serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
-    assert (timeslot.validate() && timeslot.save())
-    shout = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
-    assert (shout.validate() && shout.save())
+    Instant exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
+    tariffSpec = new TariffSpecification(brokerId: broker.id, expiration: exp,
+                                         minDuration: TimeService.WEEK * 8)
+    Rate r1 = new Rate(value: 0.121)
+    tariffSpec.addToRates(r1)
+    assert (tariffSpec.validate() && tariffSpec.save())
   }
 
   protected void tearDown() {
@@ -44,8 +39,7 @@ class TariffDoRevokeCmdTests extends GroovyTestCase {
     assertFalse(cmd.validate())
     assertEquals('nullable', cmd.errors.getFieldError('id').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('tariff').getCode())
+    assertEquals('nullable', cmd.errors.getFieldError('tariffId').getCode())
   }
 
   void testInactiveCompetition() {
@@ -56,21 +50,18 @@ class TariffDoRevokeCmdTests extends GroovyTestCase {
     assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
   }
 
-  void testInvalidBroker() {
-    competition.current = true
-    competition.save()
-    Tariff tariff = new Tariff(broker: broker)
-    TariffDoRevokeCmd cmd = new TariffDoRevokeCmd(broker: broker2, tariff: tariff)
-    assertFalse(cmd.validate())
-    assertEquals(Constants.TARIFF_WRONG_BROKER, cmd.errors.getFieldError('broker').getCode())
-  }
-
   void testTariffIsLegacy() {
     competition.current = true
     competition.save()
-    Tariff tariff = new Tariff(broker: broker, state: Tariff.State.LEGACY)
-    TariffDoRevokeCmd cmd = new TariffDoRevokeCmd(broker: broker2, tariff: tariff)
+    Tariff tariff = new Tariff(tariffSpec: tariffSpec, state: Tariff.State.WITHDRAWN)
+    tariff.init()
+    if (!tariff.validate()) {
+      tariff.errors.each { println it }
+      fail("could not validate tariff")
+    }
+    assert(tariff.save())
+    TariffDoRevokeCmd cmd = new TariffDoRevokeCmd(competition: competition, tariffId: tariff.id)
     assertFalse(cmd.validate())
-    assertEquals(Constants.TARIFF_OUTDATED, cmd.errors.getFieldError('tariff').getCode())
+    assertEquals(Constants.TARIFF_OUTDATED, cmd.errors.getFieldError('tariffId').getCode())
   }
 }

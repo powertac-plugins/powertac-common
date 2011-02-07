@@ -44,14 +44,14 @@ class CustomerTests extends GrailsUnitTestCase {
     assertEquals('nullable', customer.errors.getFieldError('competition').getCode())
     assertEquals('nullable', customer.errors.getFieldError('name').getCode())
     assertEquals('nullable', customer.errors.getFieldError('customerType').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('multiContracting').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('canNegotiate').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('upperPowerCap').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('lowerPowerCap').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('carbonEmissionRate').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('windToPowerConversion').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('tempToPowerConversion').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('sunToPowerConversion').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('multiContracting').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('canNegotiate').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('upperPowerCap').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('lowerPowerCap').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('carbonEmissionRate').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('windToPowerConversion').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('tempToPowerConversion').getCode())
+    //assertEquals('nullable', customer.errors.getFieldError('sunToPowerConversion').getCode())
   }
 
   void testBlankValidationLogic() {
