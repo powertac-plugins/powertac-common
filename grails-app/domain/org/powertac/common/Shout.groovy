@@ -76,10 +76,10 @@ class Shout implements Serializable {
   OrderType orderType = OrderType.MARKET
 
   /** the simulation time when the original shout instance was first created */
-  DateTime dateCreated = timeService.currentTime.toDateTime()
+  DateTime dateCreated = timeService?.currentTime?.toDateTime()
 
   /** the latest modification time of the shout */
-  DateTime dateMod = timeService.currentTime.toDateTime()
+  DateTime dateMod = this.dateCreated
 
   /** the reason for the latest modifcation to the shout instance */
   ModReasonCode modReasonCode = ModReasonCode.INSERT
