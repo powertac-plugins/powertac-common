@@ -15,14 +15,12 @@
  */
 package org.powertac.common
 
-import java.math.BigDecimal;
-
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
-import org.joda.time.Partial
-import org.powertac.common.enumerations.PowerType;
+import org.powertac.common.enumerations.PowerType
 
 /**
  * Entity wrapper for TariffSpecification that supports Tariff evaluation 
@@ -58,7 +56,9 @@ class Tariff
   private getTimeService() {
     ApplicationHolder.application.mainContext.timeService
   }
-  
+
+  String id
+
   /** The Tariff spec*/
   TariffSpecification tariffSpec
   
