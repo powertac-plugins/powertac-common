@@ -35,6 +35,8 @@ class TransactionLogTests extends GrailsUnitTestCase {
     registerMetaClass(Competition)
     Competition.metaClass.'static'.currentCompetition = {-> return competition }
     broker = new Broker (userName: 'testBroker')
+    registerMetaClass(TransactionLog)
+    TransactionLog.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() {
@@ -42,7 +44,7 @@ class TransactionLogTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    TransactionLog transactionLog = new TransactionLog(id: null, competition: null, dateCreated: null, timeService: timeService)
+    TransactionLog transactionLog = new TransactionLog(id: null, competition: null, dateCreated: null)
     assertNull(transactionLog.id)
     mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse(transactionLog.validate())
@@ -57,7 +59,7 @@ class TransactionLogTests extends GrailsUnitTestCase {
   }
 
   void testQuoteValidationLogic() {
-    TransactionLog transactionLog = new TransactionLog(transactionType: TransactionType.QUOTE, price: 1.0, quantity: 10.0, buyer: broker, seller: broker, buySellIndicator: BuySellIndicator.BUY, timeService: timeService)
+    TransactionLog transactionLog = new TransactionLog(transactionType: TransactionType.QUOTE, price: 1.0, quantity: 10.0, buyer: broker, seller: broker, buySellIndicator: BuySellIndicator.BUY)
     mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse (transactionLog.validate())
     assertEquals('quote.price.notnull', transactionLog.errors.getFieldError('price').getCode())
@@ -68,7 +70,7 @@ class TransactionLogTests extends GrailsUnitTestCase {
   }
 
   void testTradeValidationLogic() {
-    TransactionLog transactionLog = new TransactionLog(transactionType: TransactionType.TRADE, bid: 1.0, bidSize: 10.0, ask: 1.0, askSize: 10.0, timeService: timeService)
+    TransactionLog transactionLog = new TransactionLog(transactionType: TransactionType.TRADE, bid: 1.0, bidSize: 10.0, ask: 1.0, askSize: 10.0)
     mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse (transactionLog.validate())
     assertEquals('trade.price.null', transactionLog.errors.getFieldError('price').getCode())
