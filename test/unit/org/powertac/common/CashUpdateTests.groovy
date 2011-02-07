@@ -31,6 +31,8 @@ class CashUpdateTests extends GrailsUnitTestCase {
     competition = new Competition(name: 'testCompetition')
     registerMetaClass(Competition)
     Competition.metaClass.'static'.currentCompetition = {-> return competition }
+    registerMetaClass(CashUpdate)
+    CashUpdate.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() {
@@ -38,7 +40,7 @@ class CashUpdateTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    CashUpdate cashUpdate = new CashUpdate(competition: null, dateCreated: null, timeService: timeService)
+    CashUpdate cashUpdate = new CashUpdate(competition: null, dateCreated: null)
     mockForConstraintsTests(CashUpdate, [cashUpdate])
     assertFalse(cashUpdate.validate())
     //assertEquals('nullable', cashUpdate.errors.getFieldError('id').getCode()) TODO: check nullable validation logic on cashUpdate id field
@@ -52,7 +54,7 @@ class CashUpdateTests extends GrailsUnitTestCase {
   }
 
   void testBlankValidationLogic() {
-    CashUpdate cashUpdate = new CashUpdate(id: '', transactionId: '', timeService: timeService)
+    CashUpdate cashUpdate = new CashUpdate(id: '', transactionId: '')
     mockForConstraintsTests(CashUpdate, [cashUpdate])
     assertFalse(cashUpdate.validate())
     assertEquals('blank', cashUpdate.errors.getFieldError('id').getCode())
