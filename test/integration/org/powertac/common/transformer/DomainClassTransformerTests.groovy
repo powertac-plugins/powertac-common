@@ -47,8 +47,6 @@ class DomainClassTransformerTests extends GroovyTestCase {
     assertEquals(competition.name, returnValue.name)
     assertEquals(competition.current, returnValue.current)
     assertEquals(competition.enabled, returnValue.enabled)
-    assertEquals(competition.currentCompetitionTime, returnValue.currentCompetitionTime)
-    assertEquals(competition.currentCompetitionTime, returnValue.currentCompetitionTime)
     assertEquals(competition.competitionStatus, returnValue.competitionStatus)
     assertEquals(competition.competitionStatus, returnValue.competitionStatus)
     assertEquals(competition.description, returnValue.description)
