@@ -27,6 +27,8 @@ class PositionUpdateTests extends GrailsUnitTestCase {
     competition = new Competition(name: 'testCompetition')
     registerMetaClass(Competition)
     Competition.metaClass.'static'.currentCompetition = {-> return competition }
+    registerMetaClass(PositionUpdate)
+    PositionUpdate.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() {
