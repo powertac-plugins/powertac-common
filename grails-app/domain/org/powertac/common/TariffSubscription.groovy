@@ -20,8 +20,8 @@ import org.joda.time.Instant
 
 /**
  * A TariffSubscription is an entity representing an association between a Customer
- * and a Tariff. You get one by
- * calling the subscribe() method on Tariff. If there is no
+ * and a Tariff. Instances of this class are not intended to be serialized.
+ * You get one by calling the subscribe() method on Tariff. If there is no
  * current subscription for that Customer (which in most cases is actually
  * a population model), then a new TariffSubscription is created and
  * returned from the Tariff.  
@@ -29,16 +29,7 @@ import org.joda.time.Instant
  */
 class TariffSubscription {
 
-  //def timeService
-  /**
-   * Retrieves the timeService (Singleton) reference from the main application context
-   * This is necessary as DI by name (i.e. def timeService) stops working if a class
-   * instance is deserialized rather than constructed.
-   * Note: In the code below you can can still user timeService.xyzMethod()
-   */
-  private getTimeService() {
-    ApplicationHolder.application.mainContext.timeService
-  }
+  def timeService
 
   String id = IdGenerator.createId()
   Competition competition

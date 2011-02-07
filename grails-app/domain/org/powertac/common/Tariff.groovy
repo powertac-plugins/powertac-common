@@ -24,7 +24,7 @@ import org.powertac.common.enumerations.PowerType
 
 /**
  * Entity wrapper for TariffSpecification that supports Tariff evaluation 
- * and billing.
+ * and billing. Instances of this class are not intended to be serialized.
  * Tariffs are composed of Rates, which may be applicable for limited daily
  * and/or weekly times, and within particular usage tiers. The Tariff
  * transforms the list of Rates into an array, indexed first by tier and
@@ -46,16 +46,7 @@ class Tariff
     OFFERED, ACTIVE, WITHDRAWN, INACTIVE
   }
 
-  //def timeService
-  /**
-   * Retrieves the timeService (Singleton) reference from the main application context
-   * This is necessary as DI by name (i.e. def timeService) stops working if a class
-   * instance is deserialized rather than constructed.
-   * Note: In the code below you can can still user timeService.xyzMethod()
-   */
-  private getTimeService() {
-    ApplicationHolder.application.mainContext.timeService
-  }
+  def timeService
 
   String id
 
