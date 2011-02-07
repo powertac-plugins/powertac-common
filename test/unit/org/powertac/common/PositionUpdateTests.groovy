@@ -17,13 +17,17 @@
 package org.powertac.common
 
 import grails.test.GrailsUnitTestCase
+import org.joda.time.DateTime
 
 class PositionUpdateTests extends GrailsUnitTestCase {
 
+  def timeService
   Competition competition
 
   protected void setUp() {
     super.setUp()
+    timeService = new TimeService()
+    timeService.setCurrentTime(new DateTime())
     competition = new Competition(name: 'testCompetition')
     registerMetaClass(Competition)
     Competition.metaClass.'static'.currentCompetition = {-> return competition }

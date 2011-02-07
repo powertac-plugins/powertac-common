@@ -80,7 +80,7 @@ class PositionUpdate implements Serializable {
   String origin
 
   /** creation date of this cash update in local competition time */
-  DateTime dateCreated = timeService?.currentTime?.toDateTime()
+  DateTime dateCreated = timeService?.getCurrentTime()?.toDateTime()
 
   /** A transactionId is e.g. generated during the execution of a trade in the market and marks all domain instances in all domain classes that were created or changed during this transaction. For example the execution of a shout lead to an addition of 100 units of product 1 to broker X portfolio. Then the shout instance that was matched is marked with the same transactionId as this positionUpdate so that both domain instances can be correlated during ex-post analysis */
   String transactionId
