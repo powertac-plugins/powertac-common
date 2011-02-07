@@ -15,10 +15,8 @@
  */
 package org.powertac.common
 
-import org.joda.time.DateTime
-import org.joda.time.Duration
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
-
 
 /**
  * A TariffSubscription is an entity representing an association between a Customer
@@ -33,7 +31,16 @@ import org.joda.time.Instant
  */
 class TariffSubscription {
 
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
   Competition competition
@@ -58,8 +65,6 @@ class TariffSubscription {
   // JEC - not sure what these are for
   //DateTime tariffStartDateTime = timeService?.currentTime?.toDateTime()
   //DateTime tariffEndDateTime = timeService?.currentTime ? timeService.currentTime.toDateTime() + Duration.standardDays(1) : null
-
-  static transients = ['timeService']
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)

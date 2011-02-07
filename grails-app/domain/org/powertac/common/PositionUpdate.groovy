@@ -18,6 +18,7 @@
 
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 
 /**
@@ -39,7 +40,16 @@ import org.joda.time.DateTime
 
 class PositionUpdate implements Serializable {
 
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
 
@@ -77,9 +87,6 @@ class PositionUpdate implements Serializable {
 
   /** flag that marks the latest position update for the specified product, timeslot and broker in the specified competition and that is used to speed up db queries */
   Boolean latest
-
-
-  static transients = ['timeService']
 
   static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot, competition: Competition]
 

@@ -16,6 +16,7 @@
 
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 
 /**
@@ -35,7 +36,16 @@ import org.joda.time.DateTime
  */
 class Orderbook implements Serializable {
 
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
 

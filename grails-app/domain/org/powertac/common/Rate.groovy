@@ -15,17 +15,12 @@
  */
 package org.powertac.common
 
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.DateTimeFieldType
-import org.joda.time.Duration
-import org.joda.time.Instant
-import org.joda.time.Partial
-import org.joda.time.ReadablePartial
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.base.AbstractDateTime
 import org.joda.time.base.AbstractInstant
+import org.joda.time.*
 
- /**
+/**
 * Tariffs are composed of Rates.
 * Rates may be applicable on particular days of the week, particular times
 * of day, or above some usage threshold. Rates may be fixed or variable. 
@@ -62,7 +57,16 @@ class Rate implements Serializable
   }
 
   // introduce dependency on TimeService
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
   
   // TODO: Tier applicability, variable rate
   

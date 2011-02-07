@@ -16,6 +16,7 @@
 
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 
 /**
@@ -35,43 +36,50 @@ import org.joda.time.DateTime
  */
 class CashUpdate implements Serializable {
 
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
 
-  /** A transactionId is e.g. generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction. */
+  /** A transactionId is e.g. generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction.  */
   String transactionId
 
-  /** The competition this cash update belongs to */
+  /** The competition this cash update belongs to  */
   Competition competition = Competition.currentCompetition()
 
-  /** The broker who owns the cash account in which this cash update takes place */
+  /** The broker who owns the cash account in which this cash update takes place  */
   Broker broker
 
-  /** The amount added to or deduced from the broker's cash account */
+  /** The amount added to or deduced from the broker's cash account  */
   BigDecimal relativeChange
 
-  /** The new running total for the broker's cash account */
+  /** The new running total for the broker's cash account  */
   BigDecimal overallBalance
 
-  /** The reason why this cash transaction took place */
+  /** The reason why this cash transaction took place  */
   String reason
 
-  /** The originator of this cash transaction, e.g. pda market, tax authority, or distribution utility */
+  /** The originator of this cash transaction, e.g. pda market, tax authority, or distribution utility  */
   String origin
 
-  /** flag that marks the latest cash transaction for a particular broker in a particular competition and that is used to speed up db queries */
+  /** flag that marks the latest cash transaction for a particular broker in a particular competition and that is used to speed up db queries  */
   Boolean latest
 
-  /** creation date of this cash update in local competition time */
+  /** creation date of this cash update in local competition time  */
   DateTime dateCreated = timeService?.getCurrentTime()?.toDateTime()
 
   static belongsTo = [broker: Broker, competition: Competition]
 
-  static transients = ['timeService']
-
   static constraints = {
-    id (nullable: false, blank: false, unique: true)
+    id(nullable: false, blank: false, unique: true)
     competition(nullable: false)
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
@@ -80,14 +88,14 @@ class CashUpdate implements Serializable {
     origin(nullable: true)
     dateCreated(nullable: false)
     transactionId(nullable: false, blank: false)
-    latest (nullable: false)
+    latest(nullable: false)
   }
 
   static mapping = {
-    id (generator: 'assigned')
-    competition(index:'cu_competition_broker_latest_idx')
-    broker(index:'cu_competition_broker_latest_idx')
-    latest(index:'cu_competition_broker_latest_idx')
+    id(generator: 'assigned')
+    competition(index: 'cu_competition_broker_latest_idx')
+    broker(index: 'cu_competition_broker_latest_idx')
+    latest(index: 'cu_competition_broker_latest_idx')
   }
 
   public String toString() {

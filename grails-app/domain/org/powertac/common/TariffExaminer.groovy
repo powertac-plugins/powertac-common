@@ -15,11 +15,11 @@
  */
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
-import org.joda.time.Partial
 
 /**
  * Server-side wrapper for Tariffs that supports Tariff evaluation and billing.
@@ -61,8 +61,16 @@ class TariffExaminer
   def tiers = []
   def rateMap = []
   
-  // link the Time Service
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   static transients = ["realizedPrice", "usageCharge", "timeService"]
   

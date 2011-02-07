@@ -16,11 +16,12 @@
 
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.TransactionType
 
- /**
+/**
  * A TransactionLog instance represents data commonly
  * referred to as trade and quote data (TAQ) in financial markets (stock exchanges).
  * One domain instance can (i) represent a trade that happened on the market
@@ -39,7 +40,16 @@ import org.powertac.common.enumerations.TransactionType
  */
 class TransactionLog implements Serializable {
 
-  def timeService
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
 
@@ -93,9 +103,6 @@ class TransactionLog implements Serializable {
 
 
   static belongsTo = [competition: Competition, product: Product, timeslot: Timeslot]
-
-
-  static transients = ['timeService']
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

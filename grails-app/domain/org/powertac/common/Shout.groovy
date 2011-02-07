@@ -16,12 +16,13 @@
 
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
 
- /**
+/**
  * A shout domain instance represents a market or a limit order in the PowerTAC wholesale
  * market. More precisely it represents a single state of this specific order. Each time a
  * change occurs, the shout object is cloned, the {@code latest} property is set to false
@@ -41,7 +42,10 @@ import org.powertac.common.enumerations.OrderType
  */
 class Shout implements Serializable {
 
-  def timeService
+  //def timeService
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
 
@@ -76,7 +80,7 @@ class Shout implements Serializable {
   OrderType orderType = OrderType.MARKET
 
   /** the simulation time when the original shout instance was first created */
-  DateTime dateCreated = timeService?.currentTime?.toDateTime()
+  DateTime dateCreated = timeService.getCurrentTime().toDateTime()
 
   /** the latest modification time of the shout */
   DateTime dateMod = this.dateCreated

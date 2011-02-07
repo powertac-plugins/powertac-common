@@ -15,9 +15,9 @@
  */
 package org.powertac.common
 
-import org.powertac.common.enumerations.PowerType
-import org.joda.time.Duration
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
+import org.powertac.common.enumerations.PowerType
 
 /**
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
@@ -36,7 +36,16 @@ class Tariff
     OFFERED, ACTIVE, LEGACY
   }
 
-  def timeService // connection to simulation time service
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
   
   /** The broker who offers the tariff */
   Broker broker
