@@ -31,6 +31,8 @@ class OrderbookTests extends GrailsUnitTestCase {
     competition = new Competition(name: 'testCompetition')
     registerMetaClass(Competition)
     Competition.metaClass.'static'.currentCompetition = {-> return competition }
+    registerMetaClass(Orderbook)
+    Orderbook.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() {
@@ -38,7 +40,7 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Orderbook orderbook = new Orderbook(id: null, competition: null, bidSize0: null, bidSize1: null, bidSize2: null, bidSize3: null, bidSize4: null, bidSize5: null, bidSize6: null, bidSize7: null, bidSize8: null, bidSize9: null, askSize0: null, askSize1: null, askSize2: null, askSize3: null, askSize4: null, askSize5: null, askSize6: null, askSize7: null, askSize8: null, askSize9: null, timeService: timeService)
+    Orderbook orderbook = new Orderbook(id: null, competition: null, dateExecuted: null, bidSize0: null, bidSize1: null, bidSize2: null, bidSize3: null, bidSize4: null, bidSize5: null, bidSize6: null, bidSize7: null, bidSize8: null, bidSize9: null, askSize0: null, askSize1: null, askSize2: null, askSize3: null, askSize4: null, askSize5: null, askSize6: null, askSize7: null, askSize8: null, askSize9: null)
     mockForConstraintsTests(Orderbook, [orderbook])
     assertNull(orderbook.id)
     assertFalse(orderbook.validate())
@@ -72,7 +74,7 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
   void testSetOrderbookArray() {
-    Orderbook orderbook = new Orderbook(timeService: timeService)
+    Orderbook orderbook = new Orderbook()
     BigDecimal[][][] orderbookArray = new BigDecimal[2][2][10]
     orderbookArray[0][0][0] = 1.0
     orderbookArray[0][0][1] = 2.0
@@ -166,7 +168,7 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
   void testGetOrderbookArray() {
-    Orderbook orderbook = new Orderbook(bid0: 1.0, bid1: 2.0, bid2: 3.0, bid3: 4.0, bid4: 5.0, bid5: 6.0, bid6: 7.0, bid7: 8.0, bid8: 9.0, bid9: 10.0, ask0: 100.0, ask1: 101.0, ask2: 102.0, ask3: 103.0, ask4: 104.0, ask5: 105.0, ask6: 106.0, ask7: 107.0, ask8: 108.0, ask9: 109.0, bidSize0: 1000.0, bidSize1: 1001.0, bidSize2: 1002.0, bidSize3: 1003.0, bidSize4: 1004.0, bidSize5: 1005.0, bidSize6: 1006.0, bidSize7: 1007.0, bidSize8: 1008.0, bidSize9: 1009.0, askSize0: 10000.0, askSize1: 10001.0, askSize2: 10002.0, askSize3: 10003.0, askSize4: 10004.0, askSize5: 10005.0, askSize6: 10006.0, askSize7: 10007.0, askSize8: 10008.0, askSize9: 10009.0, timeService: timeService)
+    Orderbook orderbook = new Orderbook(bid0: 1.0, bid1: 2.0, bid2: 3.0, bid3: 4.0, bid4: 5.0, bid5: 6.0, bid6: 7.0, bid7: 8.0, bid8: 9.0, bid9: 10.0, ask0: 100.0, ask1: 101.0, ask2: 102.0, ask3: 103.0, ask4: 104.0, ask5: 105.0, ask6: 106.0, ask7: 107.0, ask8: 108.0, ask9: 109.0, bidSize0: 1000.0, bidSize1: 1001.0, bidSize2: 1002.0, bidSize3: 1003.0, bidSize4: 1004.0, bidSize5: 1005.0, bidSize6: 1006.0, bidSize7: 1007.0, bidSize8: 1008.0, bidSize9: 1009.0, askSize0: 10000.0, askSize1: 10001.0, askSize2: 10002.0, askSize3: 10003.0, askSize4: 10004.0, askSize5: 10005.0, askSize6: 10006.0, askSize7: 10007.0, askSize8: 10008.0, askSize9: 10009.0)
 
     BigDecimal[][][] orderbookArray = orderbook.getOrderbookArray()
     assertEquals(1.0, orderbookArray[0][0][0])
@@ -215,7 +217,7 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
   void testSetOrderbookArrayWithNullValues() {
-    Orderbook orderbook = new Orderbook(timeService: timeService)
+    Orderbook orderbook = new Orderbook()
     BigDecimal[][][] orderbookArray = new BigDecimal[2][2][10]
     orderbook.setOrderbookArray(orderbookArray)
 
