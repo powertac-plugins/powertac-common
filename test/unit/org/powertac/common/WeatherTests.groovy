@@ -19,8 +19,14 @@ package org.powertac.common
 import grails.test.GrailsUnitTestCase
 
 class WeatherTests extends GrailsUnitTestCase {
+
+  Competition competition
+
   protected void setUp() {
     super.setUp()
+    competition = new Competition(name: 'testCompetition')
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     mockForConstraintsTests(Weather)
   }
 
@@ -29,7 +35,7 @@ class WeatherTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Weather weather = new Weather(id: null)
+    Weather weather = new Weather(id: null, competition: null)
     assertFalse(weather.validate())
     assertEquals('nullable', weather.errors.getFieldError('id').getCode())
     assertEquals('nullable', weather.errors.getFieldError('competition').getCode())

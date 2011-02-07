@@ -20,10 +20,14 @@ import grails.test.GrailsUnitTestCase
 
 class CustomerTests extends GrailsUnitTestCase {
 
+  Competition competition
   Customer customer
 
   protected void setUp() {
     super.setUp()
+    competition = new Competition(name: 'testCompetition')
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     customer = new Customer()
     mockForConstraintsTests(Customer, [customer])
   }
@@ -34,6 +38,7 @@ class CustomerTests extends GrailsUnitTestCase {
 
   void testNullableValidationLogic() {
     customer.id = null
+    customer.competition = null
     assertFalse(customer.validate())
     assertEquals('nullable', customer.errors.getFieldError('id').getCode())
     assertEquals('nullable', customer.errors.getFieldError('competition').getCode())

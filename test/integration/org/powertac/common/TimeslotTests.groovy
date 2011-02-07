@@ -1,5 +1,7 @@
 package org.powertac.common
 
+import org.joda.time.DateTime
+
 class TimeslotTests extends GroovyTestCase {
 
   Competition competition
@@ -10,6 +12,7 @@ class TimeslotTests extends GroovyTestCase {
     super.setUp()
     competition = new Competition(name: "test")
     assert (competition.save())
+
   }
 
   protected void tearDown() {
@@ -29,10 +32,11 @@ class TimeslotTests extends GroovyTestCase {
   }
 
   void testNextAndPrevious() {
-    timeslot1 = new Timeslot(competition: competition, serialNumber: 0)
+    timeslot1 = new Timeslot(competition: competition, serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    if (!timeslot1.validate()) println timeslot1.errors.allErrors
     assertTrue(timeslot1.validate() && timeslot1.save())
 
-    timeslot2 = new Timeslot(competition: competition, serialNumber: 1)
+    timeslot2 = new Timeslot(competition: competition, serialNumber: 1, startDateTime: new DateTime(), endDateTime: new DateTime())
     assertTrue(timeslot2.validate() && timeslot2.save())
 
     assertEquals(timeslot1.id, timeslot2.previous().id)
@@ -44,10 +48,10 @@ class TimeslotTests extends GroovyTestCase {
   void testCurrentTimeslot() {
     competition.current = true
     competition.save()
-    timeslot1 = new Timeslot(competition: competition, serialNumber: 0, current: false)
+    timeslot1 = new Timeslot(competition: competition, serialNumber: 0, current: false, startDateTime: new DateTime(), endDateTime: new DateTime())
     assertTrue(timeslot1.validate() && timeslot1.save())
 
-    timeslot2 = new Timeslot(competition: competition, serialNumber: 1, current: true)
+    timeslot2 = new Timeslot(competition: competition, serialNumber: 1, current: true, startDateTime: new DateTime(), endDateTime: new DateTime())
     assertTrue(timeslot2.validate() && timeslot2.save())
 
     assertEquals(timeslot2, Timeslot.currentTimeslot())

@@ -16,15 +16,36 @@
 
 package org.powertac.common
 
+/**
+ * A weather domain instance provides telemetry data for a particular timeslot, which can
+ * be either forecast ({@forecast = true}) or metered ({@forecast=false}).
+ *
+ * @author Carsten Block, KIT
+ * @version 1.0 - 04/Feb/2011
+ */
 class Weather implements Serializable {
 
   String id = IdGenerator.createId()
-  Competition competition
+
+  /** the comeptition for which this weather instance is generated */
+  Competition competition = Competition.currentCompetition()
+
+  /** the target timeslot for which this weather (forecast) is generated. If this timeslot is the same as {@code currentTimeslot} the weather instance consists of metered weather (i.e. forecast error = 0) */
   Timeslot targetTimeslot
+
+  /** the current or reference timeslot from which the weather (forecast) is generated */
   Timeslot currentTimeslot
+
+  /** the metered or forecast temperature */
   BigDecimal temperature
+
+  /** the metered or forecast wind speed */
   BigDecimal windSpeed
+
+  /** the metered or forecast sun intensity */
   BigDecimal sunIntensity
+
+  /** used to indicate of the telemetry data is forecast (i.e. error prone) or metered */
   Boolean forecast
 
   static constraints = {

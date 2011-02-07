@@ -35,7 +35,7 @@ class CompetitionTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Competition competition1 = new Competition(id: null, enabled: null, current: null, competitionStatus: null, initialDuration: null, durationBetweenShifts: null, timeslotLength: null, timeslotsOverall: null, timeslotsOpen: null, deactivateTimeslotsAhead: null, simulationStartTime: null, dateCreated: null, lastUpdated: null, balancingCostOver: null, balancingCostUnder: null, liquidityProviderEnabled: null, premium: null, fixCost: null, profileUrl: null, timeseriesName: null, profileId: null, authToken: null, regularCapacity: null, percentPriceIncrease: null, priceScaling: null)
+    Competition competition1 = new Competition(id: null, enabled: null, current: null, competitionStatus: null, initialDuration: null, durationBetweenShifts: null, timeslotLength: null, timeslotsOverall: null, timeslotsOpen: null, deactivateTimeslotsAhead: null, simulationStartTime: null, simulationBaseTime: null, simulationModulo: null, simulationRate: null, dateCreated: null, lastUpdated: null, balancingCostOver: null, balancingCostUnder: null, liquidityProviderEnabled: null, premium: null, fixCost: null, profileUrl: null, timeseriesName: null, profileId: null, authToken: null, regularCapacity: null, percentPriceIncrease: null, priceScaling: null)
     assertFalse(competition1.validate())
     assertEquals('nullable', competition1.errors.getFieldError('id').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('name').getCode())
@@ -49,6 +49,9 @@ class CompetitionTests extends GrailsUnitTestCase {
     assertEquals('nullable', competition1.errors.getFieldError('timeslotsOpen').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('deactivateTimeslotsAhead').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('simulationStartTime').getCode())
+    assertEquals('nullable', competition1.errors.getFieldError('simulationBaseTime').getCode())
+    assertEquals('nullable', competition1.errors.getFieldError('simulationRate').getCode())
+    assertEquals('nullable', competition1.errors.getFieldError('simulationModulo').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('dateCreated').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('lastUpdated').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('balancingCostOver').getCode())
