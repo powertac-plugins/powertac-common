@@ -16,12 +16,10 @@
 
 package org.powertac.common
 
-import java.util.SortedSet;
-
 import org.joda.time.Instant
 import org.joda.time.base.AbstractDateTime
 
-/**
+ /**
  * This is the simulation time-keeper and event queue. Here's how it works:
  * <ul>
  * <li>You create it with four parameters: (base, start, rate, modulo), defined as
@@ -72,7 +70,7 @@ class TimeService
   SortedSet<SimulationAction> actions
 
   // the current time
-  Instant currentTime
+  private Instant currentTime
 
   /**
    * Updates simulation time when called as specified by clock
@@ -95,7 +93,11 @@ class TimeService
     long ms = time.millis
     return new Instant(ms - ms % mod)
   }
-  
+
+  public getCurrentTime() {
+    return this.currentTime
+  }
+
   /**
    * Sets current time to a specific value. Intended for testing purposes only.
    */
