@@ -15,24 +15,25 @@
  */
 package org.powertac.common
 
-import grails.test.GrailsUnitTestCase
-import org.powertac.common.Competition
-import org.powertac.common.Rate
 //import org.powertac.common.Timeslot
-import org.powertac.common.TimeService
+
+
+import grails.test.GrailsUnitTestCase
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.joda.time.Instant
 
-class RateTests extends GrailsUnitTestCase 
+class RateTests extends GrailsUnitTestCase
 {
 
-  def timeSv
+  def timeService
 
   protected void setUp() 
   {
     super.setUp()
-    timeSv = mockFor(TimeService)
+    timeService = new TimeService()
+    timeService.setCurrentTime(new DateTime())
+    registerMetaClass(Rate)
+    Rate.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() 
@@ -42,9 +43,10 @@ class RateTests extends GrailsUnitTestCase
 
   void testFixedRate() 
   {
-    Rate r = new Rate(value: 0.121, timeService: timeSv.createMock())
-   
-    timeSv.demand.getCurrentTime { -> return new DateTime(2011,1,10,0,0,0,0,DateTimeZone.UTC) }
+    //timeSv.demand.getCurrentTime { -> return new DateTime(2011,1,10,0,0,0,0,DateTimeZone.UTC) }
+    timeService.setCurrentTime(new DateTime(2011,1,10,0,0,0,0,DateTimeZone.UTC))
+    Rate r = new Rate(value: 0.121)
+
     assertNotNull("Rate not null", r)
     assertTrue("Rate is fixed", r.isFixed)
     assertEquals("Correct fixed rate", r.value, 0.121)
@@ -54,12 +56,11 @@ class RateTests extends GrailsUnitTestCase
   // Test a rate that applies between 6:00 and 8:00
   void testDailyRate()
   {
-    Rate r = new Rate(value: 0.121, 
+    timeService.setCurrentTime(new DateTime(2011,1,10,5,0, 0, 0, DateTimeZone.UTC))
+    Rate r = new Rate(value: 0.121,
                       dailyBegin: new DateTime(2011, 1, 1, 6, 0, 0, 0, DateTimeZone.UTC),
-                      dailyEnd: new DateTime(2011, 1, 1, 8, 0, 0, 0, DateTimeZone.UTC),
-                      timeService: timeSv.createMock())
+                      dailyEnd: new DateTime(2011, 1, 1, 8, 0, 0, 0, DateTimeZone.UTC))
 
-    timeSv.demand.getCurrentTime { -> return new DateTime(2011,1,10,5,0, 0, 0, DateTimeZone.UTC) }
     assertTrue("Rate is fixed", r.isFixed)
     assertFalse("Does not apply now", r.applies())
     assertTrue("Applies at 6:00", r.applies(new DateTime(2012, 2, 2, 6, 0, 0, 0, DateTimeZone.UTC)))
@@ -71,12 +72,11 @@ class RateTests extends GrailsUnitTestCase
   // Test a rate that applies between 22:00 and 5:00
   void testDailyRateOverMidnight()
   {
+    timeService.setCurrentTime(new DateTime(2011,1,10,21,0,0,0,DateTimeZone.UTC))
     Rate r = new Rate(value: 0.121, 
                       dailyBegin: new DateTime(2011, 1, 1, 22, 0, 0, 0, DateTimeZone.UTC),
-                      dailyEnd: new DateTime(2011, 1, 2, 5, 0, 0, 0, DateTimeZone.UTC),
-                      timeService: timeSv.createMock())
+                      dailyEnd: new DateTime(2011, 1, 2, 5, 0, 0, 0, DateTimeZone.UTC))
 
-    timeSv.demand.getCurrentTime { -> return new DateTime(2011,1,10,21,0,0,0,DateTimeZone.UTC) }
     assertTrue("Rate is fixed", r.isFixed)
     assertFalse("Does not apply now", r.applies())
     assertTrue("Applies at 22:00", r.applies(new DateTime(2012, 2, 2, 22, 0, 0, 0, DateTimeZone.UTC)))
@@ -147,12 +147,11 @@ class RateTests extends GrailsUnitTestCase
   // tierThreshold = 0
   void testDailyRateT0()
   {
+    timeService.setCurrentTime(new DateTime(2011,1,10,7,0, 0, 0, DateTimeZone.UTC))
     Rate r = new Rate(value: 0.121, 
                       dailyBegin: new DateTime(2011, 1, 1, 6, 0, 0, 0, DateTimeZone.UTC),
-                      dailyEnd: new DateTime(2011, 1, 1, 8, 0, 0, 0, DateTimeZone.UTC),
-                      timeService: timeSv.createMock())
+                      dailyEnd: new DateTime(2011, 1, 1, 8, 0, 0, 0, DateTimeZone.UTC))
 
-    timeSv.demand.getCurrentTime { -> return new DateTime(2011,1,10,7,0, 0, 0, DateTimeZone.UTC) }
     assertTrue("Applies now", r.applies(200.0))
     assertTrue("Applies at 6:00", r.applies(1.0, new DateTime(2012, 2, 2, 6, 0, 0, 0, DateTimeZone.UTC)))
     assertTrue("Applies at 7:59", r.applies(2.0, new DateTime(2012, 2, 3, 7, 59, 0, 0, DateTimeZone.UTC)))
@@ -163,13 +162,12 @@ class RateTests extends GrailsUnitTestCase
   // tierThreshold = 100
   void testDailyRateT1()
   {
+    timeService.setCurrentTime(new DateTime(2011,1,10,7,0, 0, 0, DateTimeZone.UTC))
     Rate r = new Rate(value: 0.121, 
                       dailyBegin: new DateTime(2011, 1, 1, 6, 0, 0, 0, DateTimeZone.UTC),
                       dailyEnd: new DateTime(2011, 1, 1, 8, 0, 0, 0, DateTimeZone.UTC),
-                      tierThreshold: 100.0,
-                      timeService: timeSv.createMock())
+                      tierThreshold: 100.0)
 
-    timeSv.demand.getCurrentTime { -> return new DateTime(2011,1,10,7,0, 0, 0, DateTimeZone.UTC) }
     assertFalse("Does not apply at 99", r.applies(99.0))
     assertTrue("Applies at 6:00, 100", r.applies(100.0, new DateTime(2012, 2, 2, 6, 0, 0, 0, DateTimeZone.UTC)))
     assertFalse("Does not apply at 7:00, 80", r.applies(80.0, new DateTime(2012, 3, 3, 7, 0, 0, 0, DateTimeZone.UTC)))
