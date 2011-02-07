@@ -82,7 +82,7 @@ class Competition implements Serializable {
  *     rawTime - rawTime % modulo, which means it will never be ahead of the raw
  *     simulation time (default: 1800000).
  */
-  Long simulationModulo = 1800000
+  Long simulationModulo = 1800000l
 
   /** the (real-world) date time this competition instance was initially created  */
   DateTime dateCreated = new DateTime()
