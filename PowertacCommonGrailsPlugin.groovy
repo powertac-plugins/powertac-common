@@ -1,6 +1,6 @@
 class PowertacCommonGrailsPlugin {
     // the plugin version
-    def version = "0.5-SNAPSHOT"
+    def version = "0.9"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.6 > *"
     // the other plugins this plugin depends on
@@ -12,7 +12,7 @@ class PowertacCommonGrailsPlugin {
 
     // TODO Fill in these fields
     def author = "Carsten Block"
-    def authorEmail = "powertac@carstenblock.org"
+    def authorEmail = "" //"powertac@carstenblock.org"
     def title = "Common domain classes and command objects for powertac competition"
     def description = '''\\
 This plugin provides common domain classes and command objects for powertac competition.
@@ -38,7 +38,7 @@ This plugin provides common domain classes and command objects for powertac comp
     }
 
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
+        // TODO Implement code that is executed when any artifact that this plugin is
         // watching is modified and reloaded. The event contains: event.source,
         // event.application, event.manager, event.ctx, and event.plugin.
     }
