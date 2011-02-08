@@ -64,7 +64,7 @@ public interface AccountingService {
    * @throws org.powertac.common.exceptions.TariffPublishException is thrown if the tariff publishing fails
    * @return the published tariff object
    */
-  public Tariff processTariffPublished(TariffSpecification tariffDoPublishCmd) throws TariffPublishException;
+  public Tariff processTariffPublished(TariffSpecification tariffSpec) throws TariffPublishException;
 
 
   /**
