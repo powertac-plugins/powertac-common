@@ -17,6 +17,7 @@
 package org.powertac.common
 
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone;
 import org.powertac.common.enumerations.CompetitionStatus
 
  /**
@@ -65,10 +66,10 @@ class Competition implements Serializable {
   Integer deactivateTimeslotsAhead = 1
 
   /** the start time of the simulation scenario. So if we are simulating a period in the summer of 2007, base might be 2007-06-21-12:00.    */
-  DateTime simulationStartTime = new DateTime()
+  DateTime simulationStartTime = new DateTime(DateTimeZone.UTC)
 
   /** the start time of the simulation run.    */
-  DateTime simulationBaseTime = new DateTime()
+  DateTime simulationBaseTime = new DateTime(DateTimeZone.UTC)
 
   /** the time-compression ratio for the simulation. So if we are running one-hour timeslots every 5 seconds, the rate would be 720 (=default).    */
   Long simulationRate = 720l
@@ -85,10 +86,10 @@ class Competition implements Serializable {
   Long simulationModulo = 1800000l
 
   /** the (real-world) date time this competition instance was initially created  */
-  DateTime dateCreated = new DateTime()
+  DateTime dateCreated = new DateTime(DateTimeZone.UTC)
 
   /** the (real-world) date time this competition instance was last updated  */
-  DateTime lastUpdated = new DateTime()
+  DateTime lastUpdated = new DateTime(DateTimeZone.UTC)
 
   /** cost for imbalances caused by too much energy in a broker portfolio */
   BigDecimal balancingCostOver = 0
@@ -128,7 +129,7 @@ class Competition implements Serializable {
   /** scaling factor to convert between prices stored in the data store and local prices */
   BigDecimal priceScaling = 1
 
-  static hasMany = [brokers: Broker, cashUpdates: CashUpdate, customers: Customer, meterReadings: MeterReading, orderbooks: Orderbook, positionUpdates: PositionUpdate, products: Product, shouts: Shout, tariffs: Tariff, timeslots: Timeslot, transactionLogs: TransactionLog]
+  static hasMany = [brokers: Broker, cashUpdates: CashUpdate, customers: CustomerInfo, meterReadings: MeterReading, orderbooks: Orderbook, positionUpdates: PositionUpdate, products: Product, shouts: Shout, tariffs: Tariff, timeslots: Timeslot, transactionLogs: TransactionLog]
 
   static constraints = {
     id(nullable: false, unique: true, blank: false)

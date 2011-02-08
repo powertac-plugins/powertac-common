@@ -19,7 +19,7 @@ package org.powertac.common
 import org.powertac.common.enumerations.CustomerType
 
 /**
- * A {@code Customer} instance represents a customer model (i.e. a consumer or a producer)
+ * A {@code CustomerInfo} instance represents a customer model (i.e. a consumer or a producer)
  * within a specific competition. The customer data stored is published to all brokers in
  * the respective competition in order to provide them with an brief overview on what type
  * of customers participate in the specific competition.
@@ -27,7 +27,7 @@ import org.powertac.common.enumerations.CustomerType
  * @author Carsten Block, KIT
  * @version 1.0 - 04/Feb/2011
  */
-class Customer implements Serializable {
+class CustomerInfo implements Serializable {
 
   String id = IdGenerator.createId()
 

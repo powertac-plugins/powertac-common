@@ -12,7 +12,7 @@ class TariffSubscriptionTests extends GroovyTestCase {
   Tariff tariff
   Broker broker
   Competition competition
-  Customer customer
+  CustomerInfo customerInfo
 
   protected void setUp() {
     super.setUp()
@@ -31,7 +31,7 @@ class TariffSubscriptionTests extends GroovyTestCase {
     tariff = new Tariff(tariffSpec: tariffSpec)
     tariff.init()
     tariff.save()
-    customer = new Customer(name:"Charley")
+    customerInfo = new CustomerInfo(name:"Charley")
   }
 
   protected void tearDown() {
@@ -44,16 +44,16 @@ class TariffSubscriptionTests extends GroovyTestCase {
     assertFalse(tariffSubscription.validate())
     assertEquals('nullable', tariffSubscription.errors.getFieldError('id').getCode())
     assertEquals('nullable', tariffSubscription.errors.getFieldError('competition').getCode())
-    assertEquals('nullable', tariffSubscription.errors.getFieldError('customer').getCode())
+    assertEquals('nullable', tariffSubscription.errors.getFieldError('customerInfo').getCode())
     assertEquals('nullable', tariffSubscription.errors.getFieldError('tariff').getCode())
   }
 
   // create a Subscription from a Tariff
   void testSimpleSub ()
   {
-    TariffSubscription ts = tariff.subscribe(customer, 3)
+    TariffSubscription ts = tariff.subscribe(customerInfo, 3)
     assertNotNull("non-null subscription", ts)
-    assertEquals("correct customer", customer, ts.customer)
+    assertEquals("correct customer", customerInfo, ts.customerInfo)
     assertEquals("correct tariff", tariff, ts.tariff)
     assertEquals("correct customer count", 3, ts.customersCommitted)
   }  

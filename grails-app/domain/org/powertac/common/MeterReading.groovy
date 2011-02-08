@@ -18,7 +18,7 @@ package org.powertac.common
 
 /**
  *  A {@code MeterReading} instance represents the amount of energy consumed
- * ({@code amount < 0}) or produced {@code amount > 0} by a specific customer
+ * ({@code amount < 0}) or produced {@code amount > 0} by a specific customerInfo
  * in a specific timeslot of a specific competition
  *
  * @author Carsten Block, KIT
@@ -31,8 +31,8 @@ class MeterReading implements Serializable {
   /** The competition in which this meter reading was generated */
   Competition competition = Competition.currentCompetition()
 
-  /** The customer or more precisely his meter that is being read */
-  Customer customer
+  /** The customerInfo or more precisely his meter that is being read */
+  CustomerInfo customerInfo
 
   /** The timeslot for which this meter reading is generated */
   Timeslot timeslot
@@ -43,12 +43,12 @@ class MeterReading implements Serializable {
   /** flag that marks the latest meter reading for a particular broker in a particular competition and timeslot; used to speed up db queries */
   Boolean latest
 
-  static belongsTo = [competition: Competition, customer: Customer, timeslot: Timeslot]
+  static belongsTo = [competition: Competition, customer: CustomerInfo, timeslot: Timeslot]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     competition (nullable: false)
-    customer (nullable: false)
+    customerInfo (nullable: false)
     timeslot (nullable: false)
     amount (nullable: false, scale: Constants.DECIMALS)
     latest (nullable: false)
@@ -59,6 +59,6 @@ class MeterReading implements Serializable {
   }
 
   public String toString() {
-    return "$customer-$timeslot-$amount"
+    return "$customerInfo-$timeslot-$amount"
   }
 }

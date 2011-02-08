@@ -15,7 +15,7 @@
  */
 package org.powertac.common
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+//import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
@@ -241,14 +241,14 @@ class Tariff
    * subscription succeeds, then the TariffSubscription instance is
    * return, otherwise null.
    */
-  TariffSubscription subscribe (Customer customer, int customerCount)
+  TariffSubscription subscribe (CustomerInfo customer, int customerCount)
   {
     if (isExpired())
       return null
     
     TariffSubscription sub = subscriptions?.findByCustomer(customer)
     if (sub == null) {
-      sub = new TariffSubscription(customer: customer,
+      sub = new TariffSubscription(customerInfo: customer,
                                    tariff: this)
     }
     sub.subscribe(customerCount)

@@ -15,7 +15,7 @@
  */
 package org.powertac.common
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+//import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 
 /**
@@ -33,7 +33,7 @@ class TariffSubscription {
 
   String id = IdGenerator.createId()
   Competition competition
-  Customer customer
+  CustomerInfo customerInfo
   Tariff tariff
   
   /** Total number of customers within a customer model that are committed 
@@ -52,7 +52,7 @@ class TariffSubscription {
   static constraints = {
     id(nullable: false, blank: false, unique: true)
     competition(nullable: false)
-    customer(nullable: false)
+    customerInfo(nullable: false)
     tariff(nullable: false)
     customersCommitted(min: 0)
     expirations(nullable: true)

@@ -21,15 +21,15 @@ import grails.test.GrailsUnitTestCase
 class CustomerTests extends GrailsUnitTestCase {
 
   Competition competition
-  Customer customer
+  CustomerInfo customerInfo
 
   protected void setUp() {
     super.setUp()
     competition = new Competition(name: 'testCompetition')
     registerMetaClass(Competition)
     Competition.metaClass.'static'.currentCompetition = {-> return competition }
-    customer = new Customer()
-    mockForConstraintsTests(Customer, [customer])
+    customerInfo = new CustomerInfo()
+    mockForConstraintsTests(CustomerInfo, [customerInfo])
   }
 
   protected void tearDown() {
@@ -37,13 +37,13 @@ class CustomerTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    customer.id = null
-    customer.competition = null
-    assertFalse(customer.validate())
-    assertEquals('nullable', customer.errors.getFieldError('id').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('competition').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('name').getCode())
-    assertEquals('nullable', customer.errors.getFieldError('customerType').getCode())
+    customerInfo.id = null
+    customerInfo.competition = null
+    assertFalse(customerInfo.validate())
+    assertEquals('nullable', customerInfo.errors.getFieldError('id').getCode())
+    assertEquals('nullable', customerInfo.errors.getFieldError('competition').getCode())
+    assertEquals('nullable', customerInfo.errors.getFieldError('name').getCode())
+    assertEquals('nullable', customerInfo.errors.getFieldError('customerType').getCode())
     //assertEquals('nullable', customer.errors.getFieldError('multiContracting').getCode())
     //assertEquals('nullable', customer.errors.getFieldError('canNegotiate').getCode())
     //assertEquals('nullable', customer.errors.getFieldError('upperPowerCap').getCode())
@@ -55,14 +55,14 @@ class CustomerTests extends GrailsUnitTestCase {
   }
 
   void testBlankValidationLogic() {
-    customer = new Customer(id: '', name: '')
-    assertFalse(customer.validate())
-    assertEquals('blank', customer.errors.getFieldError('id').getCode())
-    assertEquals('blank', customer.errors.getFieldError('name').getCode())
+    customerInfo = new CustomerInfo(id: '', name: '')
+    assertFalse(customerInfo.validate())
+    assertEquals('blank', customerInfo.errors.getFieldError('id').getCode())
+    assertEquals('blank', customerInfo.errors.getFieldError('name').getCode())
   }
 
   void testIdUniqueness() {
-    Customer customer1 = new Customer(id: customer.id)
+    CustomerInfo customer1 = new CustomerInfo(id: customerInfo.id)
     assertFalse(customer1.validate())
     assertEquals('unique', customer1.errors.getFieldError('id').getCode())
   }

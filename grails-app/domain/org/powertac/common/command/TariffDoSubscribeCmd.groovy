@@ -20,7 +20,7 @@ import org.joda.time.DateTime
 import org.powertac.common.*
 
  /**
- * Command object that represents a customer's request to subscribe
+ * Command object that represents a customerInfo's decision to subscribe
  * to either a published or an individually negotiated tariff.
  *
  * @author Carsten Block
@@ -29,12 +29,12 @@ import org.powertac.common.*
 class TariffDoSubscribeCmd implements Serializable {
   String id = IdGenerator.createId()
   Competition competition
-  Customer customer
+  CustomerInfo customerInfo
   int customerCount = 1
   String tariffId
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, customer: Customer]
+  static belongsTo = [competition: Competition, customer: CustomerInfo]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
@@ -42,7 +42,7 @@ class TariffDoSubscribeCmd implements Serializable {
       if (!val.current)  return [Constants.COMPETITION_INACTIVE]
       else return true
     })
-    customer(nullable: false)
+    customerInfo(nullable: false)
     customerCount(min: 1)
     tariffId (nullable: false, validator: {val, obj ->
       if (Tariff.get(val).state == Tariff.State.WITHDRAWN) return [Constants.TARIFF_OUTDATED]
