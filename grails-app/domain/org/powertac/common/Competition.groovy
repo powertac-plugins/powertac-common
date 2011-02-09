@@ -133,7 +133,7 @@ class Competition implements Serializable {
 
   static constraints = {
     id(nullable: false, unique: true, blank: false)
-    name(unique: true, blank: false)
+    name(nullable: false, unique: true, blank: false)
     enabled(nullable: false)
     current(nullable: false)
     competitionStatus(nullable: false)
@@ -175,5 +175,10 @@ class Competition implements Serializable {
 
   public static currentCompetition() {return Competition.findByCurrent(true, [cache: true])}
 
-  public String toString() {return name}
+  public String toString() 
+  {
+    if (name == null)
+      println "competition name is null"
+    return name
+  }
 }

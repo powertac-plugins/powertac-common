@@ -123,7 +123,7 @@ public interface AccountingService {
    *
    * @return a list of all active tariffs, which might be empty if no tariffs are published
    */
-  public List<Tariff> publishTariffList();
+  //public List<Tariff> publishTariffList();
 
 
   /**
