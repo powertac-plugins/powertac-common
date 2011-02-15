@@ -28,7 +28,7 @@ class DomainClassTransformerTests extends GroovyTestCase {
     assert (broker.validate() && broker.save())
     product = new Product(competition: competition, productType: ProductType.Future)
     assert (product.validate() && product.save())
-    timeslot = new Timeslot(competition: competition, serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    timeslot = new Timeslot(serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
     assert (timeslot.validate() && timeslot.save())
     shout = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
     assert (shout.validate() && shout.save())
@@ -76,7 +76,7 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Timeslot)
     assertEquals(timeslot.id, returnValue.id)
-    assertEquals(timeslot.competition, returnValue.competition)
+    //assertEquals(timeslot.competition, returnValue.competition)
     assertEquals(timeslot.serialNumber, returnValue.serialNumber)
   }
 
@@ -85,7 +85,7 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Shout)
     assertEquals(shout.id, returnValue.id)
-    assertEquals(timeslot.competition, returnValue.competition)
+    //assertEquals(timeslot.competition, returnValue.competition)
     assertEquals(shout.competition, returnValue.competition)
     assertEquals(shout.product, returnValue.product)
     assertEquals(shout.timeslot, returnValue.timeslot)

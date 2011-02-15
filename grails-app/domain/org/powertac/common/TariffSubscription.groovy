@@ -99,12 +99,15 @@ class TariffSubscription {
     }
     // post the signup bonus
     if (tariff.getSignupPayment() != 0.0) {
+      println "signup bonus: ${customerCount} customers, total = ${customerCount * tariff.getSignupPayment()}"
       Timeslot current = Timeslot.currentTimeslot()
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.SIGNUP,
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
           timeslot: current, charge: customerCount * tariff.getSignupPayment())
       tx.save()
+      current.addToTariffTx(tx)
     }
+    this.save()
   }
   
   /**
@@ -139,7 +142,9 @@ class TariffSubscription {
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
           timeslot: current, charge: penaltyCount * tariff.getEarlyWithdrawPayment())
       tx.save()
+      current.addToTariffTx(tx)
     }
+    this.save()
   }
 
   /**
@@ -157,6 +162,7 @@ class TariffSubscription {
         timeslot: Timeslot.currentTimeslot(), 
         charge: -customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
     result.save()
+    Timeslot.currentTimeslot().addToTariffTx(result)
     // update total usage for the day
     if (timeService.getHourOfDay() == 0) {
       //reset the daily usage counter
@@ -170,7 +176,9 @@ class TariffSubscription {
           timeslot: Timeslot.currentTimeslot(),
           charge: customersCommitted * tariff.getPeriodicPayment())
       pp.save()
+      Timeslot.currentTimeslot().addToTariffTx(pp)
     }
+    this.save()
     return result
   }
   

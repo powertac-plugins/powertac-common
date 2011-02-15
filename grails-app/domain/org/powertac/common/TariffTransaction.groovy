@@ -53,7 +53,7 @@ class TariffTransaction implements Serializable {
    *  positive for credit to broker, negative for debit from broker */
   BigDecimal charge = 0.0
 
-  static belongsTo = [customer: CustomerInfo, timeslot: Timeslot]
+  static belongsTo = Timeslot
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

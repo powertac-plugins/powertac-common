@@ -32,7 +32,7 @@ class CustomerInfo implements Serializable {
   String id = IdGenerator.createId()
 
   /** Competition this customer is defined for */
-  Competition competition = Competition.currentCompetition()
+  //Competition competition = Competition.currentCompetition()
 
   /** Name of the customer model */
   String name
@@ -41,28 +41,28 @@ class CustomerInfo implements Serializable {
   CustomerType customerType
 
   /** describes whether or not this customer engages in multiple contracts at the same time */
-  Boolean multiContracting
+  Boolean multiContracting = false
 
   /** describes whether or not this customer negotiates over contracts */
-  Boolean canNegotiate
+  Boolean canNegotiate = false
 
   /** >0: max power consumption (think consumer with fuse limit); <0: min power production (think nuclear power plant with min output) */
-  BigDecimal upperPowerCap
+  BigDecimal upperPowerCap = 100.0
 
   /** >0: min power consumption (think refrigerator); <0: max power production (think power plant with max capacity) */
-  BigDecimal lowerPowerCap
+  BigDecimal lowerPowerCap = 0.0
 
   /** >=0 - gram CO2 per kW/h */
-  BigDecimal carbonEmissionRate
+  BigDecimal carbonEmissionRate = 0.0
 
   /** measures how wind changes translate into load / generation changes of the customer */
-  BigDecimal windToPowerConversion
+  BigDecimal windToPowerConversion = 0.0
 
   /** measures how temperature changes translate into load / generation changes of the customer */
-  BigDecimal tempToPowerConversion
+  BigDecimal tempToPowerConversion = 0.0
 
   /** measures how sun intensity changes translate into load /generation changes of the customer */
-  BigDecimal sunToPowerConversion
+  BigDecimal sunToPowerConversion = 0.0
 
   //TODO: Possibly add parameters as the ones below that provide descriptive statistical information on historic power consumption / production of the customer
   /*
@@ -72,13 +72,13 @@ class CustomerInfo implements Serializable {
   private BigDecimal maxResponsiveness;   // define factor characterizing max responsiveness to price signals, i.e. "elasticity"
   */
 
-  static belongsTo = [competition: Competition]
+  //static belongsTo = [competition: Competition]
 
-  static hasMany = [meterReadings: TariffTransaction] //, tariffs: Tariff]
+  static hasMany = [subscriptions: TariffSubscription]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false)
+    //competition(nullable: true)
     name (blank: false, unique: true)
     customerType(nullable: false)
     multiContracting (nullable: false)

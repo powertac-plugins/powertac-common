@@ -46,7 +46,7 @@ class Timeslot implements Serializable
   Integer serialNumber
 
   /** competition for which this timeslot is valid */
-  Competition competition = Competition.currentCompetition()
+  //Competition competition = Competition.currentCompetition()
 
   /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
   Boolean enabled = false
@@ -62,14 +62,14 @@ class Timeslot implements Serializable
   
   static transients = ['timeService']
 
-  static belongsTo = [competition: Competition]
+  //static belongsTo = [competition: Competition]
 
   static hasMany = [tariffTx: TariffTransaction, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     serialNumber(nullable: false)
-    competition(nullable: false)
+    //competition(nullable: false)
     enabled(nullable: false)
     current(nullable: false)
     startDateTime(nullable: false)
@@ -97,11 +97,11 @@ class Timeslot implements Serializable
   }
 
   public Timeslot next() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1)
+    return Timeslot.findBySerialNumber(this.serialNumber + 1)
   }
 
   public Timeslot previous() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1)
+    return Timeslot.findBySerialNumber(this.serialNumber - 1)
   }
 
 }

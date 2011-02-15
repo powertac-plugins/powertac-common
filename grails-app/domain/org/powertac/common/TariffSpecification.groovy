@@ -46,7 +46,7 @@ class TariffSpecification implements Serializable
   Instant expiration
   
   /** Minimum contract duration (in milliseconds) */
-  long minDuration = 0
+  Long minDuration = 0
   
   /** Type of power covered by this tariff */
   PowerType powerType = PowerType.CONSUMPTION
