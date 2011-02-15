@@ -55,7 +55,7 @@ class Timeslot implements Serializable {
 
   static belongsTo = [competition: Competition]
 
-  static hasMany = [meterReadings: MeterReading, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
+  static hasMany = [tariffTx: TariffTransaction, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

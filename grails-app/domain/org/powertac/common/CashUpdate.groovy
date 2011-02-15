@@ -53,7 +53,7 @@ class CashUpdate implements Serializable {
   String transactionId
 
   /** The competition this cash update belongs to  */
-  Competition competition = Competition.currentCompetition()
+  //Competition competition = Competition.currentCompetition()
 
   /** The broker who owns the cash account in which this cash update takes place  */
   Broker broker

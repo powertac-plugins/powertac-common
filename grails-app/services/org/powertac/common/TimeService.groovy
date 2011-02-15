@@ -16,6 +16,8 @@
 
 package org.powertac.common
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import org.joda.time.base.AbstractDateTime
 
@@ -94,8 +96,21 @@ class TimeService
     return new Instant(ms - ms % mod)
   }
 
-  public getCurrentTime() {
-    return this.currentTime
+  /**
+   * Returns the current time as an Instant
+   */
+  Instant getCurrentTime() 
+  {
+    return currentTime
+  }
+  
+  /**
+   * Returns the current hour-of-day
+   */
+  int getHourOfDay()
+  {
+    DateTime now = new DateTime(currentTime, DateTimeZone.UTC)
+    return now.getHourOfDay()
   }
 
   /**

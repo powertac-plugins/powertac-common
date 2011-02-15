@@ -240,6 +240,10 @@ class Tariff
    * this Tariff, as long as this Tariff has not expired. If the
    * subscription succeeds, then the TariffSubscription instance is
    * return, otherwise null.
+   * <p>
+   * Note that you cannot unsubscribe directly from a Tariff -- you have to do
+   * that from the TariffSubscription that represents the Tariff you want
+   * to unsubscribe from.</p>
    */
   TariffSubscription subscribe (CustomerInfo customer, int customerCount)
   {

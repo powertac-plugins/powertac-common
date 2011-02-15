@@ -17,41 +17,51 @@
 package org.powertac.common
 
 /**
- *  A {@code MeterReading} instance represents the amount of energy consumed
- * ({@code amount < 0}) or produced {@code amount > 0} by a specific customerInfo
- * in a specific timeslot of a specific competition
+ *  A {@code TariffTransaction} instance represents the amount of energy consumed
+ * ({@code amount < 0}) or produced {@code amount > 0} by some members of a 
+ * specific customer model, in a specific timeslot, under a particular tariff.
+ * Question: do we need to include the customer count from the tariff?
  *
  * @author Carsten Block, KIT
  * @version 1.0 - 04/Feb/2011
  */
-class MeterReading implements Serializable {
+class TariffTransaction implements Serializable {
+  
+  enum TxType { PRODUCTION, CONSUMPTION, PERIODIC, SIGNUP, WITHDRAW }
 
   String id = IdGenerator.createId()
-
-  /** The competition in which this meter reading was generated */
-  Competition competition = Competition.currentCompetition()
+  
+  /** Purpose of this transaction */
+  TxType txType = TxType.CONSUMPTION
 
   /** The customerInfo or more precisely his meter that is being read */
   CustomerInfo customerInfo
+  
+  /** Number of individual customers involved */
+  int customerCount = 0
+  
+  /** The Tariff that applies to this billing */
+  Tariff tariff
 
   /** The timeslot for which this meter reading is generated */
   Timeslot timeslot
 
   /** The amount of energy consumer (> 0) or produced (<0) as metered */
-  BigDecimal amount
+  BigDecimal amount = 0.0
+  
+  /** The charge for this reading, according to the tariff:
+   *  positive for credit to broker, negative for debit from broker */
+  BigDecimal charge = 0.0
 
-  /** flag that marks the latest meter reading for a particular broker in a particular competition and timeslot; used to speed up db queries */
-  Boolean latest
-
-  static belongsTo = [competition: Competition, customer: CustomerInfo, timeslot: Timeslot]
+  static belongsTo = [customer: CustomerInfo, timeslot: Timeslot]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition (nullable: false)
     customerInfo (nullable: false)
+    tariff (nullable: false)
     timeslot (nullable: false)
-    amount (nullable: false, scale: Constants.DECIMALS)
-    latest (nullable: false)
+    //amount (nullable: false, scale: Constants.DECIMALS)
+    //charge (nullable: false, scale: Constants.DECIMALS)
   }
 
   static mapping = {
@@ -59,6 +69,6 @@ class MeterReading implements Serializable {
   }
 
   public String toString() {
-    return "$customerInfo-$timeslot-$amount"
+    return "$customerInfo-$timeslot-$txType-$amount"
   }
 }
