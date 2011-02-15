@@ -12,6 +12,7 @@ class TariffSubscriptionTests extends GroovyTestCase {
   Tariff tariff
   Broker broker
   Competition competition
+  Timeslot timeslot
   CustomerInfo customerInfo
 
   protected void setUp() {
@@ -20,8 +21,13 @@ class TariffSubscriptionTests extends GroovyTestCase {
     competition.save()
     broker = new Broker(competition: competition, userName: "Joe")
     broker.save()
-    timeService.currentTime = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
-    DateTime exp = new DateTime(2011, 3, 10, 0, 0, 0, 0, DateTimeZone.UTC)
+    now = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC)
+    timeService.currentTime = now.toInstant()
+    timeslot = new Timeslot(competition: competition, serialNumber: 0, 
+        startDateTime: new DateTime(now.millis, DateTimeZone.UTC), 
+        endDateTime: new DateTime(now.millis + TimeService.HOUR, DateTimeZone.UTC))
+    
+    DateTime exp = new DateTime(now.millis + TimeService.WEEK * 10, DateTimeZone.UTC)
     TariffSpecification tariffSpec = 
         new TariffSpecification(brokerId: broker.getId(),
                                 expiration: exp.toInstant(),
@@ -55,5 +61,7 @@ class TariffSubscriptionTests extends GroovyTestCase {
     assertEquals("correct customer", customerInfo, ts.customerInfo)
     assertEquals("correct tariff", tariff, ts.tariff)
     assertEquals("correct customer count", 3, ts.customersCommitted)
-  }  
+  }
+  
+  // subscription with non-zero signup bonus
 }

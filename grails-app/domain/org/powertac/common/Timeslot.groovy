@@ -16,7 +16,9 @@
 
 package org.powertac.common
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
+import org.joda.time.Instant
 
  /**
  * A timeslot instance describes a duration in time (slot). Time slots are used (i) to
@@ -28,7 +30,12 @@ import org.joda.time.DateTime
  * @author Carsten Block
  * @version 1.0 - Feb,6,2011
  */
-class Timeslot implements Serializable {
+class Timeslot implements Serializable 
+{
+  static TimeService getTimeService()
+  {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
 
@@ -36,7 +43,7 @@ class Timeslot implements Serializable {
    * used to find succeeding / preceding timeslot instances
    * @see {@code Timeslot.next()} {@code Timeslot.previous()}
    */
-  Long serialNumber
+  Integer serialNumber
 
   /** competition for which this timeslot is valid */
   Competition competition = Competition.currentCompetition()
@@ -52,6 +59,8 @@ class Timeslot implements Serializable {
 
   /** end date and time of the timeslot */
   DateTime endDateTime
+  
+  static transients = ['timeService']
 
   static belongsTo = [competition: Competition]
 
@@ -77,18 +86,22 @@ class Timeslot implements Serializable {
     return "$startDateTime - $endDateTime";
   }
 
-  public static Timeslot currentTimeslot() {
-    def competition = Competition.currentCompetition()
-    if (!competition) return null
-    return Timeslot.findByCompetitionAndCurrent(competition, true, [cache: true])
+  /**
+   * Note that this scheme for finding the current timeslot relies on the
+   * time granularity reported by the timeService being the same as the length
+   * of a timeslot.
+   */
+  public static Timeslot currentTimeslot() 
+  {
+    return Timeslot.findByStartDateTime(timeService.currentDateTime)
   }
 
   public Timeslot next() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1l)
+    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1)
   }
 
   public Timeslot previous() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1l)
+    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1)
   }
 
 }

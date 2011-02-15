@@ -73,6 +73,7 @@ class TimeService
 
   // the current time
   private Instant currentTime
+  private DateTime currentDateTime
 
   /**
    * Updates simulation time when called as specified by clock
@@ -83,6 +84,7 @@ class TimeService
     long systemTime = new Instant().getMillis()
     long raw = base + (systemTime - start) * rate
     currentTime = new Instant(raw - raw % modulo)
+    currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
     //println "updateTime: sys=${systemTime}, raw=${raw}, cooked=${cooked} => ${currentTime}"
     runActions()
   }
@@ -104,13 +106,17 @@ class TimeService
     return currentTime
   }
   
+  DateTime getCurrentDateTime()
+  {
+    return currentDateTime
+  }
+  
   /**
    * Returns the current hour-of-day
    */
   int getHourOfDay()
   {
-    DateTime now = new DateTime(currentTime, DateTimeZone.UTC)
-    return now.getHourOfDay()
+    return currentDateTime.getHourOfDay()
   }
 
   /**
@@ -119,6 +125,7 @@ class TimeService
   protected void setCurrentTime (Instant time)
   {
     currentTime = time
+    currentDateTime = new DateTime(time, DateTimeZone.UTC)
   }
   
   /**
@@ -127,6 +134,7 @@ class TimeService
   protected void setCurrentTime (AbstractDateTime time)
   {
     currentTime = new Instant(time)
+    currentDateTime = new DateTime(time, DateTimeZone.UTC)
   }
 
   /**
