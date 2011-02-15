@@ -98,7 +98,7 @@ class TariffSubscription {
       }
     }
     // post the signup bonus
-    if (tariff.getSignupPayment() != 0.0) {
+    if (tariff.signupPayment != 0.0) {
       println "signup bonus: ${customerCount} customers, total = ${customerCount * tariff.getSignupPayment()}"
       Timeslot current = Timeslot.currentTimeslot()
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.SIGNUP,
@@ -136,7 +136,7 @@ class TariffSubscription {
     }
     customersCommitted -= customerCount
     // Post early-withdrawal penalties
-    if (tariff.getEarlyWithdrawPayment != 0.0 && penaltyCount > 0) {
+    if (tariff.earlyWithdrawPayment != 0.0 && penaltyCount > 0) {
       Timeslot current = Timeslot.currentTimeslot()
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.WITHDRAW,
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
@@ -170,7 +170,7 @@ class TariffSubscription {
     }
     totalUsage += amount / customersCommitted
     // generate the periodic payment if necessary
-    if (tariff.getPeriodicPayment() != 0.0) {
+    if (tariff.periodicPayment != 0.0) {
       TariffTransaction pp = new TariffTransaction(txType: TariffTransaction.TxType.PERIODIC,
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
           timeslot: Timeslot.currentTimeslot(),

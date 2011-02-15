@@ -116,6 +116,7 @@ class Tariff
     }
     offerDate = timeService.getCurrentTime()
     analyze()
+    this.save()
   }
 
   /** Returns the actual realized price, or 0.0 if information unavailable */
@@ -250,12 +251,14 @@ class Tariff
     if (isExpired())
       return null
     
-    TariffSubscription sub = subscriptions?.findByCustomer(customer)
+    TariffSubscription sub = TariffSubscription.findByTariffAndCustomerInfo(this, customer)
     if (sub == null) {
       sub = new TariffSubscription(customerInfo: customer,
                                    tariff: this)
     }
     sub.subscribe(customerCount)
+    this.addToSubscriptions(sub)
+    this.save()
     return sub
   }
   
