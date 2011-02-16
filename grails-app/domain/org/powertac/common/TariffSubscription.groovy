@@ -149,18 +149,19 @@ class TariffSubscription {
 
   /**
    * Generates and returns a TariffTransaction instance for the current timeslot that
-   * represents the amount of production (positive amount) or consumption
-   * (negative amount), along with the credit/debit that results. Also generates
+   * represents the amount of production (negative amount) or consumption
+   * (positive amount), along with the credit/debit that results. Also generates
    * a separate TariffTransaction for the fixed periodic payment if it's non-zero.
    */
   TariffTransaction usePower (double amount)
   {
     // generate the usage transaction
-    def txType = amount > 0 ? TariffTransaction.TxType.PRODUCTION: TariffTransaction.TxType.CONSUMPTION
+    def txType = amount < 0 ? TariffTransaction.TxType.PRODUCTION: TariffTransaction.TxType.CONSUMPTION
     TariffTransaction result = new TariffTransaction(txType: txType,
-        customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
+        customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
         timeslot: Timeslot.currentTimeslot(), 
-        charge: -customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
+        amount: amount,
+        charge: customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
     result.save()
     Timeslot.currentTimeslot().addToTariffTx(result)
     // update total usage for the day
@@ -171,8 +172,9 @@ class TariffSubscription {
     totalUsage += amount / customersCommitted
     // generate the periodic payment if necessary
     if (tariff.periodicPayment != 0.0) {
+      tariff.addPeriodicPayment()
       TariffTransaction pp = new TariffTransaction(txType: TariffTransaction.TxType.PERIODIC,
-          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
+          customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
           timeslot: Timeslot.currentTimeslot(),
           charge: customersCommitted * tariff.getPeriodicPayment())
       pp.save()

@@ -159,6 +159,14 @@ class Tariff
   {
     tariffSpec.periodicPayment
   }
+  
+  /**
+   * Adds periodic payments to the total cost, so realized price includes it.
+   */
+  void addPeriodicPayment ()
+  {
+    totalCost += periodicPayment
+  }
 
   /** 
    * Returns the usage charge for the current timeslot. The kwh parameter

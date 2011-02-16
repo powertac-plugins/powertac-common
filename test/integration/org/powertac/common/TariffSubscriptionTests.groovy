@@ -165,4 +165,91 @@ class TariffSubscriptionTests extends GroovyTestCase
     assertEquals("six customers committed", 6, tsub1.customersCommitted)
     assertEquals("two expiration records", 2, tsub.expirations.size())
   }
+  
+  // Check consumption transactions
+  void testConsumption ()
+  {
+    Instant exp = new Instant(now.millis + TimeService.WEEK * 10)
+    TariffSpecification tariffSpec =
+        new TariffSpecification(brokerId: broker.getId(),
+                                expiration: exp,
+                                minDuration: TimeService.WEEK * 4,
+                                signupPayment: -33.2)
+    tariffSpec.addToRates(new Rate(value: 0.121))
+    tariffSpec.save()
+    tariff = new Tariff(tariffSpec: tariffSpec)
+    tariff.init()
+    tariff.save()
+
+    // subscribe and consume in the first timeslot
+    TariffSubscription tsub = tariff.subscribe(customerInfo, 4)
+    assertTrue("subscription saved", tsub.validate() && tsub.save())
+    assertEquals("four customers committed", 4, tsub.customersCommitted)
+    tsub.usePower(24.4) // consumption
+    assertEquals("correct total usage", 24.4 / 4, tsub.totalUsage)
+    assertEquals("correct realized price", 0.121, tariff.realizedPrice, 1e-6)
+    Timeslot current = Timeslot.currentTimeslot() 
+    assertEquals("two transactions", 2, current.tariffTx.size())
+    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.SIGNUP)
+    assertNotNull("found signup tx", ttx)
+    assertEquals("correct charge", -33.2 * 4, ttx.charge, 1e-6)
+    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.CONSUMPTION)
+    assertNotNull("found consumption tx", ttx)
+    assertEquals("correct amount", 24.4, ttx.amount)
+    assertEquals("correct charge", 0.121 * 24.4, ttx.charge, 1e-6)
+
+    // just consume in the second timeslot
+    Instant hour = new Instant(now.millis + TimeService.HOUR)
+    timeService.currentTime = hour
+    timeslot = new Timeslot(serialNumber: 1,
+        startDateTime: new DateTime(hour.millis, DateTimeZone.UTC),
+        endDateTime: new DateTime(hour.millis + TimeService.HOUR, DateTimeZone.UTC))
+    timeslot.save()
+    tsub.usePower(32.8) // consumption
+    assertEquals("correct total usage", (24.4 + 32.8) / 4, tsub.totalUsage, 1e-6)
+    assertEquals("correct realized price", 0.121, tariff.realizedPrice, 1e-6)
+    current = Timeslot.currentTimeslot() 
+    assertEquals("one transaction", 1, current.tariffTx.size())
+    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.CONSUMPTION)
+    assertNotNull("found consumption tx", ttx)
+    assertEquals("correct amount", 32.8, ttx.amount)
+    assertEquals("correct charge", 0.121 * 32.8, ttx.charge, 1e-6)
+  }
+  
+  // Check two-part tariff
+  void testTwoPart()
+  {
+    Instant exp = new Instant(now.millis + TimeService.WEEK * 10)
+    TariffSpecification tariffSpec =
+        new TariffSpecification(brokerId: broker.getId(),
+                                expiration: exp,
+                                minDuration: TimeService.WEEK * 4,
+                                signupPayment: -31.2,
+                                periodicPayment: 1.3)
+    tariffSpec.addToRates(new Rate(value: 0.112))
+    tariffSpec.save()
+    tariff = new Tariff(tariffSpec: tariffSpec)
+    tariff.init()
+    tariff.save()
+
+    // subscribe and consume in the first timeslot
+    TariffSubscription tsub = tariff.subscribe(customerInfo, 6)
+    assertTrue("subscription saved", tsub.validate() && tsub.save())
+    assertEquals("six customers committed", 6, tsub.customersCommitted)
+    tsub.usePower(28.8) // consumption
+    assertEquals("correct total usage", 28.8 / 6, tsub.totalUsage)
+    assertEquals("correct realized price", (0.112 * 28.8 + 6 * 1.3) / 28.8, tariff.realizedPrice, 1e-6)
+    Timeslot current = Timeslot.currentTimeslot() 
+    assertEquals("two transactions", 3, current.tariffTx.size())
+    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.SIGNUP)
+    assertNotNull("found signup tx", ttx)
+    assertEquals("correct charge", -31.2 * 6, ttx.charge, 1e-6)
+    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.CONSUMPTION)
+    assertNotNull("found consumption tx", ttx)
+    assertEquals("correct amount", 28.8, ttx.amount)
+    assertEquals("correct charge", 0.112 * 28.8, ttx.charge, 1e-6)
+    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.PERIODIC)
+    assertNotNull("found periodoc tx", ttx)
+    assertEquals("correct charge", 6 * 1.3, ttx.charge, 1e-6)
+  }
 }
