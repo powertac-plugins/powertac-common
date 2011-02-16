@@ -6,6 +6,7 @@ import org.joda.time.Duration
 import org.joda.time.Instant
 
 import org.powertac.common.enumerations.CustomerType
+import org.powertac.common.enumerations.PowerType
 
 class TariffSubscriptionTests extends GroovyTestCase 
 {
@@ -251,5 +252,40 @@ class TariffSubscriptionTests extends GroovyTestCase
     ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.PERIODIC)
     assertNotNull("found periodoc tx", ttx)
     assertEquals("correct charge", 6 * 1.3, ttx.charge, 1e-6)
+  }
+    
+  // Check production transactions
+  void testProduction ()
+  {
+    Instant exp = new Instant(now.millis + TimeService.WEEK * 10)
+    TariffSpecification tariffSpec =
+        new TariffSpecification(brokerId: broker.getId(),
+                                powerType: PowerType.PRODUCTION,
+                                expiration: exp,
+                                minDuration: TimeService.WEEK * 4,
+                                signupPayment: -34.2,
+                                earlyWithdrawPayment: 35.0)
+    tariffSpec.addToRates(new Rate(value: 0.102))
+    tariffSpec.save()
+    tariff = new Tariff(tariffSpec: tariffSpec)
+    tariff.init()
+    tariff.save()
+
+    // subscribe and consume in the first timeslot
+    TariffSubscription tsub = tariff.subscribe(customerInfo, 4)
+    assertTrue("subscription saved", tsub.validate() && tsub.save())
+    assertEquals("four customers committed", 4, tsub.customersCommitted)
+    tsub.usePower(-244.6) // production
+    assertEquals("correct total usage", -244.6 / 4, tsub.totalUsage)
+    assertEquals("correct realized price", 0.102, tariff.realizedPrice, 1e-6)
+    Timeslot current = Timeslot.currentTimeslot() 
+    assertEquals("two transactions", 2, current.tariffTx.size())
+    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.SIGNUP)
+    assertNotNull("found signup tx", ttx)
+    assertEquals("correct charge", -34.2 * 4, ttx.charge, 1e-6)
+    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.PRODUCTION)
+    assertNotNull("found production tx", ttx)
+    assertEquals("correct amount", -244.6, ttx.amount)
+    assertEquals("correct charge", -0.102 * 244.6, ttx.charge, 1e-6)
   }
 }
