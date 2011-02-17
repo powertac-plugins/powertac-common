@@ -129,7 +129,7 @@ class Competition implements Serializable {
   /** scaling factor to convert between prices stored in the data store and local prices */
   BigDecimal priceScaling = 1
 
-  static hasMany = [brokers: Broker, customers: CustomerInfo, orderbooks: Orderbook, positionUpdates: PositionUpdate, products: Product, shouts: Shout, tariffs: Tariff, timeslots: Timeslot, transactionLogs: TransactionLog]
+  static hasMany = [brokers: Broker, timeslots: Timeslot]
 
   static constraints = {
     id(nullable: false, unique: true, blank: false)

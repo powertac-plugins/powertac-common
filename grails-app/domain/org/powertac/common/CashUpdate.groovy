@@ -17,7 +17,7 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.joda.time.DateTime
+import org.joda.time.Instant
 
 /**
  * A {@code CashUpdate} domain instance represents a single cash transaction
@@ -74,13 +74,14 @@ class CashUpdate implements Serializable {
   Boolean latest
 
   /** creation date of this cash update in local competition time  */
-  DateTime dateCreated = timeService?.getCurrentTime()?.toDateTime()
+  Instant dateCreated = timeService?.getCurrentTime()
 
-  static belongsTo = [broker: Broker, competition: Competition]
+  static auditable = true
+  
+  static belongsTo = [broker: Broker]
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    competition(nullable: false)
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
     overallBalance(nullable: false, scale: Constants.DECIMALS)
@@ -93,9 +94,8 @@ class CashUpdate implements Serializable {
 
   static mapping = {
     id(generator: 'assigned')
-    competition(index: 'cu_competition_broker_latest_idx')
-    broker(index: 'cu_competition_broker_latest_idx')
-    latest(index: 'cu_competition_broker_latest_idx')
+    broker(index: 'cu_broker_latest_idx')
+    latest(index: 'cu_broker_latest_idx')
   }
 
   public String toString() {

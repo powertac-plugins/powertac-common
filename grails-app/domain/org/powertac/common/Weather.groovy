@@ -19,6 +19,8 @@ package org.powertac.common
 /**
  * A weather domain instance provides telemetry data for a particular timeslot, which can
  * be either forecast ({@forecast = true}) or metered ({@forecast=false}).
+ * <p>
+ * Note that this is an immutable value type, and is therefore not auditable.</p>
  *
  * @author Carsten Block, KIT
  * @version 1.0 - 04/Feb/2011
@@ -26,9 +28,6 @@ package org.powertac.common
 class Weather implements Serializable {
 
   String id = IdGenerator.createId()
-
-  /** the comeptition for which this weather instance is generated */
-  Competition competition = Competition.currentCompetition()
 
   /** the target timeslot for which this weather (forecast) is generated. If this timeslot is the same as {@code currentTimeslot} the weather instance consists of metered weather (i.e. forecast error = 0) */
   Timeslot targetTimeslot
@@ -50,7 +49,6 @@ class Weather implements Serializable {
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition (nullable: false)
     targetTimeslot (nullable: false)
     currentTimeslot (nullable: false)
     temperature (nullable: true)

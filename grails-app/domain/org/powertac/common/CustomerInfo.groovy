@@ -31,9 +31,6 @@ class CustomerInfo implements Serializable {
 
   String id = IdGenerator.createId()
 
-  /** Competition this customer is defined for */
-  //Competition competition = Competition.currentCompetition()
-
   /** Name of the customer model */
   String name
 
@@ -71,14 +68,13 @@ class CustomerInfo implements Serializable {
 
   private BigDecimal maxResponsiveness;   // define factor characterizing max responsiveness to price signals, i.e. "elasticity"
   */
-
-  //static belongsTo = [competition: Competition]
+  
+  static auditable = true
 
   static hasMany = [subscriptions: TariffSubscription]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    //competition(nullable: true)
     name (blank: false, unique: true)
     customerType(nullable: false)
     multiContracting (nullable: false)

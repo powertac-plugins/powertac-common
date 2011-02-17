@@ -20,13 +20,8 @@ import grails.test.GrailsUnitTestCase
 
 class ProductTests extends GrailsUnitTestCase {
 
-  Competition competition
-
   protected void setUp() {
     super.setUp()
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     mockForConstraintsTests(Product)
   }
 
@@ -38,7 +33,6 @@ class ProductTests extends GrailsUnitTestCase {
     Product product = new Product(id: null, competition: null)
     assertFalse(product.validate())
     assertEquals('nullable', product.errors.getFieldError('id').getCode())
-    assertEquals('nullable', product.errors.getFieldError('competition').getCode())
     assertEquals('nullable', product.errors.getFieldError('productType').getCode())
   }
 }

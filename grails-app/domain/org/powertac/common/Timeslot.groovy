@@ -45,9 +45,6 @@ class Timeslot implements Serializable
    */
   Integer serialNumber
 
-  /** competition for which this timeslot is valid */
-  //Competition competition = Competition.currentCompetition()
-
   /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
   Boolean enabled = false
 
@@ -60,9 +57,9 @@ class Timeslot implements Serializable
   /** end date and time of the timeslot */
   DateTime endDateTime
   
+  static auditable = true
+  
   static transients = ['timeService']
-
-  //static belongsTo = [competition: Competition]
 
   static hasMany = [tariffTx: TariffTransaction, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
 
@@ -78,8 +75,7 @@ class Timeslot implements Serializable
 
   static mapping = {
     id (generator: 'assigned')
-    competition(index:'ts_competition_current_idx')
-    current(index:'ts_competition_current_idx')
+    current(index:'ts_current_idx')
   }
 
   public String toString() {

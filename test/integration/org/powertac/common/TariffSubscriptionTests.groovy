@@ -15,7 +15,7 @@ class TariffSubscriptionTests extends GroovyTestCase
   
   Tariff tariff
   Broker broker
-  Competition competition
+  //Competition competition
   Timeslot timeslot
   CustomerInfo customerInfo
   DateTime now
@@ -23,9 +23,9 @@ class TariffSubscriptionTests extends GroovyTestCase
   protected void setUp() 
   {
     super.setUp()
-    competition = new Competition(name: "test", current: true)
-    competition.save()
-    broker = new Broker(competition: competition, userName: "Joe")
+    //competition = new Competition(name: "test", current: true)
+    //competition.save()
+    broker = new Broker(userName: "Joe")
     broker.save()
     TariffTransaction.list()*.delete()
     Timeslot.list()*.delete()

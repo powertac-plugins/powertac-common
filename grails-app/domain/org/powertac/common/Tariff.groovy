@@ -87,6 +87,8 @@ class Tariff
                        "minDuration", "powerType", "signupPayment", 
                        "earlyWithdrawPayment", "periodicPayment"]
   
+  static auditable = true
+  
   static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {

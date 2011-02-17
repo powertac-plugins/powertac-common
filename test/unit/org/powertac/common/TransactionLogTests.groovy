@@ -24,16 +24,12 @@ import org.powertac.common.enumerations.TransactionType
 class TransactionLogTests extends GrailsUnitTestCase {
 
   def timeService
-  Competition competition
   Broker broker
 
   protected void setUp() {
     super.setUp()
     timeService = new TimeService()
     timeService.setCurrentTime(new DateTime())
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     broker = new Broker (userName: 'testBroker')
     registerMetaClass(TransactionLog)
     TransactionLog.metaClass.getTimeService = {-> return timeService}
@@ -44,12 +40,11 @@ class TransactionLogTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    TransactionLog transactionLog = new TransactionLog(id: null, competition: null, dateCreated: null)
+    TransactionLog transactionLog = new TransactionLog(id: null, dateCreated: null)
     assertNull(transactionLog.id)
     mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse(transactionLog.validate())
     assertEquals('nullable', transactionLog.errors.getFieldError('id').getCode())
-    assertEquals('nullable', transactionLog.errors.getFieldError('competition').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('product').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('timeslot').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('transactionType').getCode())

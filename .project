@@ -18,6 +18,31 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>audit-logging-0.5.4-grails-app-controllers</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.6/projects/powertac-common/plugins/audit-logging-0.5.4/grails-app/controllers</locationURI>
+		</link>
+		<link>
+			<name>audit-logging-0.5.4-grails-app-domain</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.6/projects/powertac-common/plugins/audit-logging-0.5.4/grails-app/domain</locationURI>
+		</link>
+		<link>
+			<name>audit-logging-0.5.4-grails-app-i18n</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.6/projects/powertac-common/plugins/audit-logging-0.5.4/grails-app/i18n</locationURI>
+		</link>
+		<link>
+			<name>audit-logging-0.5.4-grails-app-views</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.6/projects/powertac-common/plugins/audit-logging-0.5.4/grails-app/views</locationURI>
+		</link>
+		<link>
+			<name>audit-logging-0.5.4-src-groovy</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.6/projects/powertac-common/plugins/audit-logging-0.5.4/src/groovy</locationURI>
+		</link>
+		<link>
 			<name>code-coverage-1.2-grails-app-i18n</name>
 			<type>2</type>
 			<locationURI>GRAILS_ROOT/1.3.6/projects/powertac-common/plugins/code-coverage-1.2/grails-app/i18n</locationURI>

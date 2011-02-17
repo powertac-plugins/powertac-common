@@ -36,9 +36,6 @@ class TariffSpecification implements Serializable
 {
   String id = IdGenerator.createId()
   
-  /** ID of the specified Tariff */
-  //String tariffId // same as TariffSpecification id?
-  
   /** ID of the Broker who offers this Tariff */
   String brokerId
   

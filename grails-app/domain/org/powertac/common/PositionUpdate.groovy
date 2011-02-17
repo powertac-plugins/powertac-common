@@ -19,7 +19,7 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.joda.time.DateTime
+import org.joda.time.Instant
 
 /**
  * A {@code PositionUpdate} domain instance represents a single position change
@@ -53,9 +53,6 @@ class PositionUpdate implements Serializable {
 
   String id = IdGenerator.createId()
 
-  /** the competition this position update belongs to */
-  Competition competition = Competition.currentCompetition()
-
   /** the product this position update belongs to */
   Product product
 
@@ -80,19 +77,20 @@ class PositionUpdate implements Serializable {
   String origin
 
   /** creation date of this cash update in local competition time */
-  DateTime dateCreated = timeService?.getCurrentTime()?.toDateTime()
+  Instant dateCreated = timeService?.getCurrentTime()
 
   /** A transactionId is e.g. generated during the execution of a trade in the market and marks all domain instances in all domain classes that were created or changed during this transaction. For example the execution of a shout lead to an addition of 100 units of product 1 to broker X portfolio. Then the shout instance that was matched is marked with the same transactionId as this positionUpdate so that both domain instances can be correlated during ex-post analysis */
   String transactionId
 
   /** flag that marks the latest position update for the specified product, timeslot and broker in the specified competition and that is used to speed up db queries */
   Boolean latest
+  
+  static auditable = true
 
-  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot, competition: Competition]
+  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false)
     product(nullable: false)
     timeslot(nullable: false)
     broker(nullable: false)
@@ -107,11 +105,11 @@ class PositionUpdate implements Serializable {
 
   static mapping = {
     id (generator: 'assigned')
-    competition(index:'pu_competition_product_timeslot_broker_latest_idx')
-    product(index:'pu_competition_product_timeslot_broker_latest_idx')
-    timeslot(index:'pu_competition_product_timeslot_broker_latest_idx')
-    broker(index:'pu_competition_product_timeslot_broker_latest_idx')
-    latest(index:'pu_competition_product_timeslot_broker_latest_idx')
+    competition(index:'pu_product_timeslot_broker_latest_idx')
+    product(index:'pu_product_timeslot_broker_latest_idx')
+    timeslot(index:'pu_product_timeslot_broker_latest_idx')
+    broker(index:'pu_product_timeslot_broker_latest_idx')
+    latest(index:'pu_product_timeslot_broker_latest_idx')
   }
 
   public String toString() {

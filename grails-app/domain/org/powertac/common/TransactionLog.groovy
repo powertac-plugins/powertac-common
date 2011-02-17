@@ -28,12 +28,14 @@ import org.powertac.common.enumerations.TransactionType
  * (price, quantity tuple and - in case of CDA markets - buyer and seller) or (ii)
  * a quote (which occurs if an order was entered into the system that changed the best
  * bid and/or best ask price / quantity but did not causing a clearing / trade).
- *
+ *<p>
  * Note: this domain class / table is closely modeled after the Thompson Reuter's TAQ data
  * file format in order to allow ex-post data analysis using the econometrics tools of the
  * Karlsruhe financial markets research group. The denormalization (trade and quote in one
  * domain class) is on purpose as econometrics analysis of market efficiency usually rely
- * on the combined data stream of both information types sorted by time precedence
+ * on the combined data stream of both information types sorted by time precedence</p>
+ * <p>
+ * This an immutable value type, and therefore it not auditable.</p>
  *
  * @author Carsten Block
  * @version 1.0 - 04/Feb/2011
@@ -52,9 +54,6 @@ class TransactionLog implements Serializable {
   }
 
   String id = IdGenerator.createId()
-
-  /** the competition for which this trade or quote information is created */
-  Competition competition = Competition.currentCompetition()
 
   /** the product for which this trade or quote information is created */
   Product product
@@ -102,11 +101,10 @@ class TransactionLog implements Serializable {
   BigDecimal askSize
 
 
-  static belongsTo = [competition: Competition, product: Product, timeslot: Timeslot]
+  static belongsTo = [product: Product, timeslot: Timeslot]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false)
     product(nullable: false)
     timeslot (nullable: false)
     transactionType(nullable: false)
@@ -161,8 +159,6 @@ class TransactionLog implements Serializable {
   static mapping = {
     id (generator: 'assigned')
   }
-
-
 
   String toString() {
     return "${dateCreated}-${transactionType}-${product}-${timeslot}"

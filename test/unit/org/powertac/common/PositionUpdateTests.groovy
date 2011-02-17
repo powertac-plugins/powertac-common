@@ -22,15 +22,11 @@ import org.joda.time.DateTime
 class PositionUpdateTests extends GrailsUnitTestCase {
 
   def timeService
-  Competition competition
 
   protected void setUp() {
     super.setUp()
     timeService = new TimeService()
     timeService.setCurrentTime(new DateTime())
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     registerMetaClass(PositionUpdate)
     PositionUpdate.metaClass.getTimeService = {-> return timeService}
   }
@@ -40,11 +36,10 @@ class PositionUpdateTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    PositionUpdate positionUpdate = new PositionUpdate(id: null, dateCreated: null, competition: null)
+    PositionUpdate positionUpdate = new PositionUpdate(id: null, dateCreated: null)
     mockForConstraintsTests(PositionUpdate, [positionUpdate])
     assertFalse(positionUpdate.validate())
     assertEquals('nullable', positionUpdate.errors.getFieldError('id').getCode())
-    assertEquals('nullable', positionUpdate.errors.getFieldError('competition').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('product').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('timeslot').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('broker').getCode())

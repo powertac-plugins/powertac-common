@@ -27,29 +27,27 @@ package org.powertac.common
 class Broker implements Serializable {
 
   String id = IdGenerator.createId()
-  /** The competition this broker is running in */
-  Competition competition = Competition.currentCompetition()
+  
   /** the broker's login or user name */
   String userName
   /** the broker's identifier token */
   String apiKey = IdGenerator.createId()
+  
+  static auditable = true
 
-  static belongsTo = [competition: Competition]
-
-  static hasMany = [cashUpdates: CashUpdate, positionUpdates: PositionUpdate, shouts: Shout, tariffs: Tariff]
+  static hasMany = [cashUpdates: CashUpdate, positionUpdates: PositionUpdate, shouts: Shout, tariffs: TariffSpecification]
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    userName(nullable: false, blank: false, unique: 'competition', minSize: 2, matches: /([a-zA-Z0-9])*/)
+    userName(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9])*/)
     apiKey(nullable: false, blank: false, unique: true, minSize: 32)
   }
 
   static mapping = {
     cache(true)
     id(generator: 'assigned')
-    competition(index: 'competition_username_apikey_idx')
-    userName(index: 'competition_username_apikey_idx')
-    apiKey(index: 'competition_username_apikey_idx')
+    userName(index: 'username_apikey_idx')
+    apiKey(index: 'username_apikey_idx')
   }
 
   public String toString() {

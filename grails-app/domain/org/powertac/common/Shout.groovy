@@ -49,9 +49,6 @@ class Shout implements Serializable {
 
   String id = IdGenerator.createId()
 
-  /** the competition this shout belongs to */
-  Competition competition = Competition.currentCompetition()
-
   /** the broker who created this shout */
   Broker broker
 
@@ -99,16 +96,15 @@ class Shout implements Serializable {
 
   /** flag that marks the latest shout instance: Purpose: speed up db queries */
   Boolean latest
+  
+  static auditable = true
 
-  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot, competition: Competition]
+  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot]
 
   static transients = ['timeService']
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false, validator: {val ->
-      val?.current ? true : [Constants.COMPETITION_INACTIVE]
-    })
     broker(nullable: false)
     product(nullable: false)
     timeslot(nullable: false)
@@ -155,7 +151,6 @@ class Shout implements Serializable {
    */
   public Shout initModification(ModReasonCode newModReasonCode) {
     def newShout = new Shout()
-    newShout.competition = this.competition
     newShout.broker = this.broker
     newShout.product = this.product
     newShout.timeslot = this.timeslot

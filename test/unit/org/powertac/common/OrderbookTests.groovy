@@ -21,16 +21,12 @@ import org.joda.time.DateTime
 
 class OrderbookTests extends GrailsUnitTestCase {
 
-  Competition competition
   def timeService
 
   protected void setUp() {
     super.setUp()
     timeService = new TimeService()
     timeService.setCurrentTime(new DateTime())
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     registerMetaClass(Orderbook)
     Orderbook.metaClass.getTimeService = {-> return timeService}
   }
@@ -40,12 +36,11 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Orderbook orderbook = new Orderbook(id: null, competition: null, dateExecuted: null, bidSize0: null, bidSize1: null, bidSize2: null, bidSize3: null, bidSize4: null, bidSize5: null, bidSize6: null, bidSize7: null, bidSize8: null, bidSize9: null, askSize0: null, askSize1: null, askSize2: null, askSize3: null, askSize4: null, askSize5: null, askSize6: null, askSize7: null, askSize8: null, askSize9: null)
+    Orderbook orderbook = new Orderbook(id: null, dateExecuted: null, bidSize0: null, bidSize1: null, bidSize2: null, bidSize3: null, bidSize4: null, bidSize5: null, bidSize6: null, bidSize7: null, bidSize8: null, bidSize9: null, askSize0: null, askSize1: null, askSize2: null, askSize3: null, askSize4: null, askSize5: null, askSize6: null, askSize7: null, askSize8: null, askSize9: null)
     mockForConstraintsTests(Orderbook, [orderbook])
     assertNull(orderbook.id)
     assertFalse(orderbook.validate())
     assertEquals('nullable', orderbook.errors.getFieldError('id').getCode())
-    assertEquals('nullable', orderbook.errors.getFieldError('competition').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('dateExecuted').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('transactionId').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('product').getCode())

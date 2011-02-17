@@ -22,16 +22,12 @@ import grails.test.GrailsUnitTestCase
 
 class BrokerTests extends GrailsUnitTestCase {
 
-  Competition competition
   Broker broker
   String userName = 'testName'
   
   protected void setUp() {
     super.setUp()
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
-    broker = new Broker(competition: competition, userName: userName)
+    broker = new Broker(userName: userName)
     mockForConstraintsTests(Broker, [broker])
   }
 
@@ -41,10 +37,8 @@ class BrokerTests extends GrailsUnitTestCase {
 
   void testNullableValidationLogic() {
     Broker broker1 = new Broker(id: null, apiKey: null)
-    broker1.competition = null
     assertFalse(broker1.validate())
     assertEquals('nullable', broker1.errors.getFieldError('id').getCode())
-    assertEquals('nullable', broker1.errors.getFieldError('competition').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('userName').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
   }

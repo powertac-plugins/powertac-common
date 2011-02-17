@@ -17,7 +17,7 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.joda.time.DateTime
+import org.joda.time.Instant
 
 /**
  * An orderbook instance captures a snapshot of the PowerTAC wholesale market's orderbook
@@ -49,10 +49,7 @@ class Orderbook implements Serializable {
 
   String id = IdGenerator.createId()
 
-  /** the competition this orderbook instance belongs to  */
-  Competition competition = Competition.currentCompetition()
-
-  DateTime dateExecuted = timeService?.currentTime?.toDateTime()
+  Instant dateExecuted = timeService?.currentTime
 
   /** the transactionId is generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction. Like this the orderbookInstance with transactionId=1 can be correlated to shout instances with transactionId=1 in ex-post analysis  */
   String transactionId
@@ -147,10 +144,11 @@ class Orderbook implements Serializable {
   /** ask quantity at orderbook level 9  */
   BigDecimal askSize9 = 0.0
 
-
+  static auditable = true
+  
   static transients = ['timeService', 'orderbookArray']
 
-  static belongsTo = [product: Product, timeslot: Timeslot, competition: Competition]
+  static belongsTo = [product: Product, timeslot: Timeslot]
 
   static mapping = {
     id(generator: 'assigned')
@@ -161,7 +159,6 @@ class Orderbook implements Serializable {
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    competition(nullable: false)
     dateExecuted(nullable: false)
     transactionId(nullable: false)
     product(nullable: false)

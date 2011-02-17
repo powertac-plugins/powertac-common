@@ -20,7 +20,7 @@ package org.powertac.common
  *  A {@code TariffTransaction} instance represents the amount of energy consumed
  * ({@code amount < 0}) or produced {@code amount > 0} by some members of a 
  * specific customer model, in a specific timeslot, under a particular tariff.
- * Question: do we need to include the customer count from the tariff?
+ * Note that this is an immutable type, and therefore is not auditable.
  *
  * @author Carsten Block, KIT
  * @version 1.0 - 04/Feb/2011

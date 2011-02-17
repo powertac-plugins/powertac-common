@@ -51,6 +51,8 @@ class TariffSubscription {
   /** Total usage so far in the current day, needed to compute charges for
    *  tiered rates. */
   double totalUsage = 0.0
+  
+  static auditable = true
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)

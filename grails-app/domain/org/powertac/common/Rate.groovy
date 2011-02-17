@@ -40,6 +40,7 @@ class Rate implements Serializable
   BigDecimal expectedMean = 0.0 // expected mean value for variable rate
   TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
+  static auditable = true
   static belongsTo = TariffSpecification
   static hasMany = [rateHistory:HourlyCharge]
   static transients = ["value"]

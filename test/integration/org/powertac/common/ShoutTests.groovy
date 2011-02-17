@@ -25,7 +25,7 @@ import org.powertac.common.enumerations.ProductType
 class ShoutTests extends GroovyTestCase {
 
   TimeService timeService
-  Competition competition
+  //Competition competition
   Product product
   Timeslot timeslot
   Broker broker
@@ -37,8 +37,8 @@ class ShoutTests extends GroovyTestCase {
     userName = 'testBroker'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
     timeService.setCurrentTime(new DateTime())
-    competition = new Competition(name: "test", current: true)
-    assert (competition.validate() && competition.save())
+    //competition = new Competition(name: "test", current: true)
+    //assert (competition.validate() && competition.save())
     broker = new Broker(userName: userName, apiKey: apiKey)
     assert (broker.validate() && broker.save())
     product = new Product(productType: ProductType.Future)
@@ -54,7 +54,6 @@ class ShoutTests extends GroovyTestCase {
   void testNullableValidationLogic() {
     Shout shout = new Shout(competition: null, orderType: null)
     assertFalse(shout.validate())
-    assertEquals('nullable', shout.errors.getFieldError('competition').getCode())
     assertEquals('nullable', shout.errors.getFieldError('broker').getCode())
     assertEquals('nullable', shout.errors.getFieldError('product').getCode())
     assertEquals('nullable', shout.errors.getFieldError('timeslot').getCode())
@@ -70,47 +69,52 @@ class ShoutTests extends GroovyTestCase {
     assertEquals('min.notmet', shout.errors.getFieldError('quantity').getCode())
   }
 
-  void testInactiveCompetitionId() {
-    competition.current = false
-    assertNotNull(competition.save(flush: true))
-    assertFalse(competition.current)
-    Shout shout = new Shout(competition: competition)
-    assertFalse(shout.validate())
-    assertEquals(Constants.COMPETITION_INACTIVE, shout.errors.getFieldError('competition').getCode())
-  }
-
   void testMarketLimitOrderConstraints() {
     Shout shout1 = new Shout(orderType: OrderType.MARKET, limitPrice: 1.0)
     assertFalse(shout1.validate())
-    assertEquals(Constants.SHOUT_MARKETORDER_WITH_LIMIT, shout1.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_MARKETORDER_WITH_LIMIT, 
+                 shout1.errors.getFieldError('limitPrice').getCode())
 
     Shout shout2 = new Shout(orderType: OrderType.LIMIT)
     assertFalse(shout2.validate())
-    assertEquals(Constants.SHOUT_LIMITORDER_NULL_LIMIT, shout2.errors.getFieldError('limitPrice').getCode())
+    assertEquals(Constants.SHOUT_LIMITORDER_NULL_LIMIT, 
+                 shout2.errors.getFieldError('limitPrice').getCode())
   }
 
   void testValidShoutDoCreateCmd() {
-    competition.current = true
-    competition.save()
-    Shout shout = new Shout(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId', dateCreated: timeService.currentTime.toDateTime(), dateMod: timeService.currentTime.toDateTime())
+    Shout shout = new Shout(product: product, timeslot: timeslot, 
+                            broker: broker, quantity: 1.0, limitPrice: 10.0, 
+                            buySellIndicator: BuySellIndicator.BUY, 
+                            orderType: OrderType.LIMIT, transactionId: 'testTransaction', 
+                            latest: true, shoutId: 'testShoutId', 
+                            dateCreated: timeService.currentTime.toDateTime(), 
+                            dateMod: timeService.currentTime.toDateTime())
     if (!shout.validate()) println shout.errors.allErrors
     assertTrue(shout.validate())
 
-    Shout shout1 = new Shout(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET, transactionId: 'testTransaction2', latest: true, shoutId: 'testShoutId', dateCreated: timeService.currentTime.toDateTime(), dateMod: timeService.currentTime.toDateTime())
+    Shout shout1 = new Shout(product: product, timeslot: timeslot, 
+                             broker: broker, quantity: 1.0, 
+                             buySellIndicator: BuySellIndicator.SELL, 
+                             orderType: OrderType.MARKET, transactionId: 'testTransaction2', 
+                             latest: true, shoutId: 'testShoutId', 
+                             dateCreated: timeService.currentTime.toDateTime(), 
+                             dateMod: timeService.currentTime.toDateTime())
     assertTrue(shout1.validate())
   }
 
   void testInitModification() {
-    competition.current = true
-    competition.save(flush: true)
-    assertTrue(competition.current)
-    Shout shout1 = new Shout(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET, transactionId: 'testTransaction2', latest: true, shoutId: 'testShoutId', dateCreated: timeService.currentTime.toDateTime(), dateMod: timeService.currentTime.toDateTime())
+    Shout shout1 = new Shout(product: product, timeslot: timeslot,
+                             broker: broker, quantity: 1.0, 
+                             buySellIndicator: BuySellIndicator.SELL, 
+                             orderType: OrderType.MARKET, transactionId: 'testTransaction2', 
+                             latest: true, shoutId: 'testShoutId', 
+                             dateCreated: timeService.currentTime.toDateTime(), 
+                             dateMod: timeService.currentTime.toDateTime())
     assertTrue(shout1.validate())
     timeService.currentTime = new DateTime().toInstant() //update competition time so that modification date for shout is later then creation date
     Shout shout2 = shout1.initModification(ModReasonCode.DELETIONBYUSER)
     assertNotNull(shout2.id)
     assertFalse(shout1.id.equals(shout2.id))
-    assertEquals(shout1.competition, shout2.competition)
     assertEquals(shout1.broker, shout2.broker)
     assertEquals(shout1.product, shout2.product)
     assertEquals(shout1.timeslot, shout2.timeslot)
@@ -135,21 +139,13 @@ class ShoutTests extends GroovyTestCase {
   }
 
   void testShoutCreateByNestedIds() {
-    competition.current = true
-    competition.save(flush: true)
-    assertTrue(competition.current)
-    Shout shout1 = new Shout('competition.id': competition.id, 'product.id': product.id, 'timeslot.id': timeslot.id, 'broker.id': broker.id, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET, transactionId: 'testTransaction2', latest: true, shoutId: 'testShoutId', dateCreated: timeService.currentTime.toDateTime(), dateMod: timeService.currentTime.toDateTime())
+    Shout shout1 = new Shout('product.id': product.id, 'timeslot.id': timeslot.id, 
+                             'broker.id': broker.id, quantity: 1.0, 
+                             buySellIndicator: BuySellIndicator.SELL, 
+                             orderType: OrderType.MARKET, transactionId: 'testTransaction2', 
+                             latest: true, shoutId: 'testShoutId', 
+                             dateCreated: timeService.currentTime.toDateTime(), 
+                             dateMod: timeService.currentTime.toDateTime())
     assertTrue(shout1.validate())
-  }
-
-  void testGetCurrentCompetition() {
-    competition.current = false
-    competition.save()
-    Competition competition2 = new Competition(name: "test2", current: true)
-    assertTrue (competition2.validate() && competition2.save())
-    assertEquals("test2", Competition.currentCompetition().name)
-    competition2.current = false
-    competition2.save()
-    assertNull(Competition.currentCompetition())
   }
 }

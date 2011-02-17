@@ -36,19 +36,13 @@ class Product implements Serializable {
 
   String id = IdGenerator.createId()
 
-  /** the competition this product is tradeable in */
-  Competition competition = Competition.currentCompetition()
-
   /** the product type, one of Future or Option - currently only Future is supported */
   ProductType productType
-
-  static belongsTo = [competition: Competition]
 
   static hasMany = [orderbooks: Orderbook, transactionLogs: TransactionLog]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false)
     productType(nullable: false)
   }
 

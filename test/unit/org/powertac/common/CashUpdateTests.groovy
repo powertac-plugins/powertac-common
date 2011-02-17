@@ -22,15 +22,11 @@ import org.joda.time.DateTime
 class CashUpdateTests extends GrailsUnitTestCase {
 
   def timeService
-  Competition competition
 
   protected void setUp() {
     super.setUp()
     timeService = new TimeService()
     timeService.setCurrentTime(new DateTime())
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     registerMetaClass(CashUpdate)
     CashUpdate.metaClass.getTimeService = {-> return timeService}
   }
@@ -40,12 +36,11 @@ class CashUpdateTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    CashUpdate cashUpdate = new CashUpdate(competition: null, dateCreated: null)
+    CashUpdate cashUpdate = new CashUpdate(dateCreated: null)
     mockForConstraintsTests(CashUpdate, [cashUpdate])
     assertFalse(cashUpdate.validate())
     //assertEquals('nullable', cashUpdate.errors.getFieldError('id').getCode()) TODO: check nullable validation logic on cashUpdate id field
     assertEquals('nullable', cashUpdate.errors.getFieldError('transactionId').getCode())
-    assertEquals('nullable', cashUpdate.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cashUpdate.errors.getFieldError('broker').getCode())
     assertEquals('nullable', cashUpdate.errors.getFieldError('relativeChange').getCode())
     assertEquals('nullable', cashUpdate.errors.getFieldError('overallBalance').getCode())

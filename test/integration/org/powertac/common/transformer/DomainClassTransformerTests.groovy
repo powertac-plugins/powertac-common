@@ -57,7 +57,6 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Broker)
     assertEquals(broker.id, returnValue.id)
-    assertEquals(broker.competition, returnValue.competition)
     assertEquals(broker.userName, returnValue.userName)
     assertEquals(broker.apiKey, returnValue.apiKey)
   }
@@ -67,7 +66,6 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Product)
     assertEquals(product.id, returnValue.id)
-    assertEquals(product.competition, returnValue.competition)
     assertEquals(product.productType, returnValue.productType)
   }
 
@@ -76,7 +74,6 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Timeslot)
     assertEquals(timeslot.id, returnValue.id)
-    //assertEquals(timeslot.competition, returnValue.competition)
     assertEquals(timeslot.serialNumber, returnValue.serialNumber)
   }
 
@@ -85,8 +82,6 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Shout)
     assertEquals(shout.id, returnValue.id)
-    //assertEquals(timeslot.competition, returnValue.competition)
-    assertEquals(shout.competition, returnValue.competition)
     assertEquals(shout.product, returnValue.product)
     assertEquals(shout.timeslot, returnValue.timeslot)
     assertEquals(shout.broker, returnValue.broker)
