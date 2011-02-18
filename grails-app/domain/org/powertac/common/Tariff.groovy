@@ -66,8 +66,8 @@ class Tariff
   Tariff isSupersededBy
 
   /** Tracks the realized price for variable-rate tariffs. */
-  double totalCost = 0.0
-  double totalUsage = 0.0
+  Double totalCost = 0.0
+  Double totalUsage = 0.0
   
   /** Records the date when the Tariff was first offered */
   Instant offerDate
@@ -76,8 +76,8 @@ class Tariff
   Duration maxHorizon // TODO lazy instantiation?
   
   /** True if the maps are keyed by hour-in-week rather than hour-in-day */
-  boolean isWeekly = false
-  boolean analyzed = false
+  Boolean isWeekly = false
+  Boolean analyzed = false
   
   // map is an array, indexed by tier-threshold and hour-in-day/week
   def tiers = []
@@ -185,6 +185,7 @@ class Tariff
     if (recordUsage) {
       totalUsage += kwh
       totalCost += amt
+      this.save()
     }
     return amt
   }
@@ -268,7 +269,10 @@ class Tariff
     }
     sub.subscribe(customerCount)
     this.addToSubscriptions(sub)
-    this.save()
+    this.withTransaction {
+      sub.save()
+      this.save()
+    }
     return sub
   }
   
@@ -390,5 +394,18 @@ class Tariff
       }
     }
     analyzed = true
+  }
+  
+  // auditing closures
+  def onSave = {
+    println "new Tariff ${id} inserted" 
+  }
+  def onChange = { oldMap,newMap ->
+    println "Tariff ${id} was changed"
+    oldMap.each { key, oldVal ->
+      if(oldVal != newMap[key]) {
+        println " * $key changed from $oldVal to " + newMap[key]
+      }
+    }
   }
 }

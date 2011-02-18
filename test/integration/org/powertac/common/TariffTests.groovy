@@ -20,6 +20,7 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class TariffTests extends GrailsUnitTestCase 
 {
@@ -33,6 +34,7 @@ class TariffTests extends GrailsUnitTestCase
   protected void setUp () 
   {
     super.setUp()
+    AuditLogEvent.list()*.delete()
     start = new DateTime(2011, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     timeService.setCurrentTime(start)
     exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
@@ -129,6 +131,10 @@ class TariffTests extends GrailsUnitTestCase
     timeService.currentTime = new DateTime(2011, 1, 2, 7, 0, 0, 0, DateTimeZone.UTC).toInstant()
     assertEquals("7:00 price", 0.6, te.getUsageCharge(4.0, 235.0, true))
     assertEquals("realized price 4", 4.8/39.0, te.realizedPrice, 1e-6)
+
+    println "Audit record count: ${AuditLogEvent.count()}"
+    def trace = AuditLogEvent.findAllByClassNameAndPersistedObjectId(te.getClass().getName(), te.id)
+    trace.each { println it.toString() }
   }
   
   // time-of-use weekly: 
