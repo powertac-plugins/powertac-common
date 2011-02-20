@@ -18,21 +18,74 @@
 
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.joda.time.DateTime
+
+/**
+ * A {@code PositionUpdate} domain instance represents a single position change
+ * in a broker's depot / portfolio. Each update thus carries a {@code relativeChange}
+ * that describes the concrete addition or subtraction of a certain product in a certain
+ * timeslot as part of the respective position transaction as well as an
+ * {@code overallBalance}, which represents the running total of the broker's position of
+ * the product for the timeslot.
+ *
+ * To determine the total amount of a product a certain broker owns for a certain product
+ * in a certain competition, one simply searches for the instance marked as {@code
+ * latest=true} discriminating by competition, product, timeslot, and broker (this is an
+ * indexed search and thus fast).
+ *
+ * @author Carsten Block, KIT
+ * @version 1.0 - 04/Feb/2011
+ */
 
 class PositionUpdate implements Serializable {
 
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
+
   String id = IdGenerator.createId()
-  Competition competition
+
+  /** the competition this position update belongs to */
+  Competition competition = Competition.currentCompetition()
+
+  /** the product this position update belongs to */
   Product product
+
+  /** the timeslot this position update belongs to */
   Timeslot timeslot
+
+  /** the broker this position update belongs to */
   Broker broker
+
+  /** The amount added (> 0) to or deduced (<0) from the broker's overall position for the specified product in the specified timeslot*/
   BigDecimal relativeChange
+
+  /** The running total position the broker owns (>0) / owes (< 0) of the specified product in the specified timeslot */
   BigDecimal overallBalance
+
+
+  /** The reason why this change took place */
   String reason
+
+
+  /** The originator of this position change, e.g. pda market, tax authority, or distribution utility */
   String origin
-  LocalDateTime dateCreated = new LocalDateTime();
+
+  /** creation date of this cash update in local competition time */
+  DateTime dateCreated = timeService?.getCurrentTime()?.toDateTime()
+
+  /** A transactionId is e.g. generated during the execution of a trade in the market and marks all domain instances in all domain classes that were created or changed during this transaction. For example the execution of a shout lead to an addition of 100 units of product 1 to broker X portfolio. Then the shout instance that was matched is marked with the same transactionId as this positionUpdate so that both domain instances can be correlated during ex-post analysis */
   String transactionId
+
+  /** flag that marks the latest position update for the specified product, timeslot and broker in the specified competition and that is used to speed up db queries */
   Boolean latest
 
   static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot, competition: Competition]

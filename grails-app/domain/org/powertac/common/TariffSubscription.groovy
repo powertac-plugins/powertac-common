@@ -15,14 +15,13 @@
  */
 package org.powertac.common
 
-import org.joda.time.DateTime
-import org.joda.time.Duration
+//import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 
 /**
  * A TariffSubscription is an entity representing an association between a Customer
- * and a Tariff. You get one by
- * calling the subscribe() method on Tariff. If there is no
+ * and a Tariff. Instances of this class are not intended to be serialized.
+ * You get one by calling the subscribe() method on Tariff. If there is no
  * current subscription for that Customer (which in most cases is actually
  * a population model), then a new TariffSubscription is created and
  * returned from the Tariff.  
@@ -33,9 +32,7 @@ class TariffSubscription {
   def timeService
 
   String id = IdGenerator.createId()
-  Competition competition
-  Customer customer
-  Tariff tariff
+
   
   /** Total number of customers within a customer model that are committed 
    * to this tariff subscription. This needs to be a count, otherwise tiered 
@@ -49,13 +46,18 @@ class TariffSubscription {
    *  holds the oldest subscriptions - the ones that can be unsubscribed soonest
    *  without penalty. */
   List expirations = []
+  
+  /** Total usage so far in the current day, needed to compute charges for
+   *  tiered rates. */
+  double totalUsage = 0.0
 
-  static transients = ['timeService']
-
+  static belongsTo = [tariff: Tariff]
+  
+  static hasMany = [customers: CustomerInfo, transactions: TariffTransaction]
+  
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    competition(nullable: false)
-    customer(nullable: false)
+    customerInfo(nullable: true)
     tariff(nullable: false)
     customersCommitted(min: 0)
     expirations(nullable: true)
@@ -64,7 +66,9 @@ class TariffSubscription {
     id(generator: 'assigned')
   }
   
-  // TODO: withdraw, assess fee/bonus, count customers free to withdraw
+  static transients = ['expiredCustomerCount']
+  
+  // TODO: revoke
   
   /**
    * Subscribes some number of discrete customers. This is typically some portion of the population in a
@@ -95,13 +99,106 @@ class TariffSubscription {
         expirations.add([start + minDuration, customerCount])
       }
     }
-    // Compute signup bonus here?
+    // post the signup bonus
+    if (tariff.signupPayment != 0.0) {
+      println "signup bonus: ${customerCount} customers, total = ${customerCount * tariff.getSignupPayment()}"
+      Timeslot current = Timeslot.currentTimeslot()
+      TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.SIGNUP,
+          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
+          timeslot: current, charge: customerCount * tariff.getSignupPayment())
+      tx.save()
+      current.addToTariffTx(tx)
+    }
+    this.save()
   }
   
-  void withdraw (int customerCount)
+  /**
+   * Removes customerCount customers (at most) from this subscription,
+   * posts early-withdrawal fees if appropriate. 
+   */
+  void unsubscribe (int customerCount)
   {
-    // start by updating the customer count
+    // first, make customerCount no larger than the subscription count
+    customerCount = Math.min(customerCount, customersCommitted)
+    // find the number of customers who can withdraw without penalty
+    int freeAgentCount = getExpiredCustomerCount()
+    int penaltyCount = Math.max (customerCount - freeAgentCount, 0)
+    // update the expirations list
+    int expCount = customerCount
+    while (expCount > 0) {
+      int cec = expirations[0][1]
+      if (cec <= expCount) {
+        expCount -= cec
+        expirations.remove(0)
+      }
+      else {
+        expirations[0][1] -= expCount
+        expCount = 0
+      }
+    }
     customersCommitted -= customerCount
-    // Compute early-withdrawal penalties here?
+    // Post early-withdrawal penalties
+    if (tariff.earlyWithdrawPayment != 0.0 && penaltyCount > 0) {
+      Timeslot current = Timeslot.currentTimeslot()
+      TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.WITHDRAW,
+          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
+          timeslot: current, charge: penaltyCount * tariff.getEarlyWithdrawPayment())
+      tx.save()
+      current.addToTariffTx(tx)
+    }
+    this.save()
+  }
+
+  /**
+   * Generates and returns a TariffTransaction instance for the current timeslot that
+   * represents the amount of production (negative amount) or consumption
+   * (positive amount), along with the credit/debit that results. Also generates
+   * a separate TariffTransaction for the fixed periodic payment if it's non-zero.
+   */
+  TariffTransaction usePower (double amount)
+  {
+    // generate the usage transaction
+    def txType = amount < 0 ? TariffTransaction.TxType.PRODUCTION: TariffTransaction.TxType.CONSUMPTION
+    TariffTransaction result = new TariffTransaction(txType: txType,
+        customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
+        timeslot: Timeslot.currentTimeslot(), 
+        amount: amount,
+        charge: customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
+    result.save()
+    Timeslot.currentTimeslot().addToTariffTx(result)
+    // update total usage for the day
+    if (timeService.getHourOfDay() == 0) {
+      //reset the daily usage counter
+      totalUsage = 0.0
+    }
+    totalUsage += amount / customersCommitted
+    // generate the periodic payment if necessary
+    if (tariff.periodicPayment != 0.0) {
+      tariff.addPeriodicPayment()
+      TariffTransaction pp = new TariffTransaction(txType: TariffTransaction.TxType.PERIODIC,
+          customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
+          timeslot: Timeslot.currentTimeslot(),
+          charge: customersCommitted * tariff.getPeriodicPayment())
+      pp.save()
+      Timeslot.currentTimeslot().addToTariffTx(pp)
+    }
+    this.save()
+    return result
+  }
+  
+  /**
+   * Returns the number of individual customers who may withdraw from this
+   * subscription without penalty.
+   */
+  int getExpiredCustomerCount ()
+  {
+    int cc = 0
+    Instant today = timeService.truncateInstant(timeService.currentTime, TimeService.DAY)
+    expirations.each { time, num ->
+      if (time.millis <= today.millis) {
+        cc += num
+      }
+    }
+    return cc
   }
 }

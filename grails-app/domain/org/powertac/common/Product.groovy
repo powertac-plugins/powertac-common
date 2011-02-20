@@ -20,10 +20,26 @@ package org.powertac.common
 
 import org.powertac.common.enumerations.ProductType
 
+/**
+ * A product instance describes a product that is tradeable in the powertac wholesale market.
+ * Currently we only support Futures (see {@link ProductType}), which are binding energy
+ * consumption or production commitments at a defined price for a particular {@link
+ * Timeslot} sometimes in the future. In later versions of PowerTAC one might implement
+ * Options as another product tradeable in the wholesale mareket, which grants the option
+ * holder the right (but comes with no obligation) to consume or produce energy at a certain
+ * price for a defined timeslot.
+ *
+ * @author Carsten Block
+ * @version 1.0, Feb 6, 2011
+ */
 class Product implements Serializable {
 
   String id = IdGenerator.createId()
-  Competition competition
+
+  /** the competition this product is tradeable in */
+  Competition competition = Competition.currentCompetition()
+
+  /** the product type, one of Future or Option - currently only Future is supported */
   ProductType productType
 
   static belongsTo = [competition: Competition]

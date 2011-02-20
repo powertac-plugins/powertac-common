@@ -1,0 +1,45 @@
+<plugin name='powertac-common' version='0.9' grailsVersion='1.3.6 &gt; *'>
+  <author>Carsten Block</author>
+  <title>Common domain classes and command objects for powertac competition</title>
+  <description>\
+This plugin provides common domain classes and command objects for powertac competition.
+</description>
+  <documentation>http://powertac.org/plugin/powertac-common</documentation>
+  <resources>
+    <resource>BuildConfig</resource>
+    <resource>Config</resource>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+    <resource>org.powertac.common.Broker</resource>
+    <resource>org.powertac.common.CashUpdate</resource>
+    <resource>org.powertac.common.Competition</resource>
+    <resource>org.powertac.common.CustomerInfo</resource>
+    <resource>org.powertac.common.HourlyCharge</resource>
+    <resource>org.powertac.common.Orderbook</resource>
+    <resource>org.powertac.common.PositionUpdate</resource>
+    <resource>org.powertac.common.Product</resource>
+    <resource>org.powertac.common.Rate</resource>
+    <resource>org.powertac.common.Shout</resource>
+    <resource>org.powertac.common.SimulationAction</resource>
+    <resource>org.powertac.common.Tariff</resource>
+    <resource>org.powertac.common.TariffSpecification</resource>
+    <resource>org.powertac.common.TariffSubscription</resource>
+    <resource>org.powertac.common.TariffTransaction</resource>
+    <resource>org.powertac.common.Timeslot</resource>
+    <resource>org.powertac.common.TransactionLog</resource>
+    <resource>org.powertac.common.Weather</resource>
+    <resource>org.powertac.common.command.CashDoUpdateCmd</resource>
+    <resource>org.powertac.common.command.PositionDoUpdateCmd</resource>
+    <resource>org.powertac.common.command.ShoutDoCreateCmd</resource>
+    <resource>org.powertac.common.command.ShoutDoDeleteCmd</resource>
+    <resource>org.powertac.common.command.ShoutDoUpdateCmd</resource>
+    <resource>org.powertac.common.command.TariffDoRevokeCmd</resource>
+    <resource>org.powertac.common.command.TariffDoSubscribeCmd</resource>
+    <resource>org.powertac.common.ClockDriveJob</resource>
+    <resource>org.powertac.common.TimeService</resource>
+  </resources>
+  <dependencies>
+    <plugin name='jodaTime' version='1.1' />
+  </dependencies>
+  <behavior />
+</plugin>

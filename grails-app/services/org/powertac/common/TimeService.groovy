@@ -16,12 +16,12 @@
 
 package org.powertac.common
 
-import java.util.SortedSet;
-
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import org.joda.time.base.AbstractDateTime
 
-/**
+ /**
  * This is the simulation time-keeper and event queue. Here's how it works:
  * <ul>
  * <li>You create it with four parameters: (base, start, rate, modulo), defined as
@@ -72,7 +72,8 @@ class TimeService
   SortedSet<SimulationAction> actions
 
   // the current time
-  Instant currentTime
+  private Instant currentTime
+  private DateTime currentDateTime
 
   /**
    * Updates simulation time when called as specified by clock
@@ -83,6 +84,7 @@ class TimeService
     long systemTime = new Instant().getMillis()
     long raw = base + (systemTime - start) * rate
     currentTime = new Instant(raw - raw % modulo)
+    currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
     //println "updateTime: sys=${systemTime}, raw=${raw}, cooked=${cooked} => ${currentTime}"
     runActions()
   }
@@ -95,13 +97,35 @@ class TimeService
     long ms = time.millis
     return new Instant(ms - ms % mod)
   }
+
+  /**
+   * Returns the current time as an Instant
+   */
+  Instant getCurrentTime() 
+  {
+    return currentTime
+  }
   
+  DateTime getCurrentDateTime()
+  {
+    return currentDateTime
+  }
+  
+  /**
+   * Returns the current hour-of-day
+   */
+  int getHourOfDay()
+  {
+    return currentDateTime.getHourOfDay()
+  }
+
   /**
    * Sets current time to a specific value. Intended for testing purposes only.
    */
   protected void setCurrentTime (Instant time)
   {
     currentTime = time
+    currentDateTime = new DateTime(time, DateTimeZone.UTC)
   }
   
   /**
@@ -110,6 +134,7 @@ class TimeService
   protected void setCurrentTime (AbstractDateTime time)
   {
     currentTime = new Instant(time)
+    currentDateTime = new DateTime(time, DateTimeZone.UTC)
   }
 
   /**

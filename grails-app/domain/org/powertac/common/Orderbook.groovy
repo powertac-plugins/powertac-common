@@ -16,64 +16,147 @@
 
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.joda.time.DateTime
 
+/**
+ * An orderbook instance captures a snapshot of the PowerTAC wholesale market's orderbook
+ * up to a maximum level (depth) of 10 entries on each side. Each level of the orderbook
+ * consists of the limit price as well as the aggregated buy / sell quantity on that level.
+ * For example bid0 = 10, bidSize0=100 means that the best buy limit price was 10 with an
+ * aggregated buy volume of 100 pieces (which can come from 1 or more orders with limit
+ * price 10.
+ *
+ * Note the orderbook is denormalized on purpose to ensure simple and fast database
+ * handling. You can use the the {@code setOrderbookArray ( ) and {@getOrderbookArray ( )}* methods to access or manipulate orderbook instances. These are internally mapped to the
+ * bid0..9, bidSize0..0, ask0..0, askSize0..9 properties.
+ *
+ * @author Carsten Block
+ * @version 1.0 , Feb 6, 2011
+ */
 class Orderbook implements Serializable {
 
+  //def timeService
+  /**
+   * Retrieves the timeService (Singleton) reference from the main application context
+   * This is necessary as DI by name (i.e. def timeService) stops working if a class
+   * instance is deserialized rather than constructed.
+   * Note: In the code below you can can still user timeService.xyzMethod()
+   */
+  private getTimeService() {
+    ApplicationHolder.application.mainContext.timeService
+  }
+
   String id = IdGenerator.createId()
-  Competition competition
-  LocalDateTime dateExecuted
+
+  /** the competition this orderbook instance belongs to  */
+  Competition competition = Competition.currentCompetition()
+
+  DateTime dateExecuted = timeService?.currentTime?.toDateTime()
+
+  /** the transactionId is generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction. Like this the orderbookInstance with transactionId=1 can be correlated to shout instances with transactionId=1 in ex-post analysis  */
   String transactionId
+
+  /** the product this orderbook is generated for  */
   Product product
+
+  /** the timeslot this orderbook is generated for  */
   Timeslot timeslot
+
+  /** flag that marks the latest orderbook for a particular product and timeslot in a particular competition: used to speed up db lookup of the latest orderbook instance */
   Boolean latest
+
+  /** bid price at orderbook level 0  */
   BigDecimal bid0 = null
+  /** bid price at orderbook level 1  */
   BigDecimal bid1 = null
+  /** bid price at orderbook level 2  */
   BigDecimal bid2 = null
+  /** bid price at orderbook level 3  */
   BigDecimal bid3 = null
+  /** bid price at orderbook level 4  */
   BigDecimal bid4 = null
+  /** bid price at orderbook level 5  */
   BigDecimal bid5 = null
+  /** bid price at orderbook level 6  */
   BigDecimal bid6 = null
+  /** bid price at orderbook level 7  */
   BigDecimal bid7 = null
+  /** bid price at orderbook level 8  */
   BigDecimal bid8 = null
+  /** bid price at orderbook level 9  */
   BigDecimal bid9 = null
+  /** bid quantity at orderbook level 0  */
   BigDecimal bidSize0 = 0.0
+  /** bid quantity at orderbook level 1  */
   BigDecimal bidSize1 = 0.0
+  /** bid quantity at orderbook level 2  */
   BigDecimal bidSize2 = 0.0
+  /** bid quantity at orderbook level 3  */
   BigDecimal bidSize3 = 0.0
+  /** bid quantity at orderbook level 4  */
   BigDecimal bidSize4 = 0.0
+  /** bid quantity at orderbook level 5  */
   BigDecimal bidSize5 = 0.0
+  /** bid quantity at orderbook level 6  */
   BigDecimal bidSize6 = 0.0
+  /** bid quantity at orderbook level 7  */
   BigDecimal bidSize7 = 0.0
+  /** bid quantity at orderbook level 8  */
   BigDecimal bidSize8 = 0.0
+  /** bid quantity at orderbook level 9  */
   BigDecimal bidSize9 = 0.0
+  /** ask price at orderbook level 0  */
   BigDecimal ask0 = null
+  /** ask price at orderbook level 1  */
   BigDecimal ask1 = null
+  /** ask price at orderbook level 2  */
   BigDecimal ask2 = null
+  /** ask price at orderbook level 3  */
   BigDecimal ask3 = null
+  /** ask price at orderbook level 4  */
   BigDecimal ask4 = null
+  /** ask price at orderbook level 5  */
   BigDecimal ask5 = null
+  /** ask price at orderbook level 6  */
   BigDecimal ask6 = null
+  /** ask price at orderbook level 7  */
   BigDecimal ask7 = null
+  /** ask price at orderbook level 8  */
   BigDecimal ask8 = null
+  /** ask price at orderbook level 9  */
   BigDecimal ask9 = null
+  /** ask quantity at orderbook level 0  */
   BigDecimal askSize0 = 0.0
+  /** ask quantity at orderbook level 1  */
   BigDecimal askSize1 = 0.0
+  /** ask quantity at orderbook level 2  */
   BigDecimal askSize2 = 0.0
+  /** ask quantity at orderbook level 3  */
   BigDecimal askSize3 = 0.0
+  /** ask quantity at orderbook level 4  */
   BigDecimal askSize4 = 0.0
+  /** ask quantity at orderbook level 5  */
   BigDecimal askSize5 = 0.0
+  /** ask quantity at orderbook level 6  */
   BigDecimal askSize6 = 0.0
+  /** ask quantity at orderbook level 7  */
   BigDecimal askSize7 = 0.0
+  /** ask quantity at orderbook level 8  */
   BigDecimal askSize8 = 0.0
+  /** ask quantity at orderbook level 9  */
   BigDecimal askSize9 = 0.0
+
+
+  static transients = ['timeService', 'orderbookArray']
 
   static belongsTo = [product: Product, timeslot: Timeslot, competition: Competition]
 
   static mapping = {
     id(generator: 'assigned')
-    latest index: 'Orderbook_Idx_Product_Outdated'
-    product index: 'Orderbook_Idx_Product_Outdated'
+    latest index: 'Orderbook_Idx_Product_Timeslot_Latest'
+    timeslot index: 'Orderbook_Idx_Product_Timeslot_Latest'
+    product index: 'Orderbook_Idx_Product_Timeslot_Latest'
   }
 
   static constraints = {
@@ -84,7 +167,7 @@ class Orderbook implements Serializable {
     product(nullable: false)
     timeslot(nullable: false)
     latest(nullable: false)
-     bid0(nullable: true, scale: Constants.DECIMALS)
+    bid0(nullable: true, scale: Constants.DECIMALS)
     bid1(nullable: true, scale: Constants.DECIMALS)
     bid2(nullable: true, scale: Constants.DECIMALS)
     bid3(nullable: true, scale: Constants.DECIMALS)
@@ -127,7 +210,6 @@ class Orderbook implements Serializable {
 
   }
 
-  static transients = ['orderbookArray']
 
   /**
    * Allows updating of the orderbook's {@code bid}, {@code bidSize}, {@code ask}, {@code
@@ -198,7 +280,6 @@ class Orderbook implements Serializable {
     askSize9 = orderbookArray[1][1][9] == null ? 0.0 : orderbookArray[1][1][9]
   }
 
-
   /**
    * Allows access to the orderbook's {@code bid}, {@code bidSize}, {@code ask}, {@code
    * askSize} fields using a three dimensional array. Internally this array is generated
@@ -220,7 +301,6 @@ class Orderbook implements Serializable {
    *
    * @return a three dimensional array representing the orderbook as described above
    */
-
   public BigDecimal[][][] getOrderbookArray() {
 
     BigDecimal[][][] orderbookArray = new BigDecimal[2][2][10];

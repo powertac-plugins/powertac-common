@@ -16,6 +16,7 @@
 
 package org.powertac.common.enumerations;
 
+@Deprecated
 public enum TariffState {
   /**
    * Tariff is publicly visible to brokers & consumers

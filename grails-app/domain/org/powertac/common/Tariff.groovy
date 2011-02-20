@@ -15,18 +15,16 @@
  */
 package org.powertac.common
 
-import java.math.BigDecimal;
-
+//import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
-import org.joda.time.Partial
-import org.powertac.common.enumerations.PowerType;
+import org.powertac.common.enumerations.PowerType
 
 /**
  * Entity wrapper for TariffSpecification that supports Tariff evaluation 
- * and billing.
+ * and billing. Instances of this class are not intended to be serialized.
  * Tariffs are composed of Rates, which may be applicable for limited daily
  * and/or weekly times, and within particular usage tiers. The Tariff
  * transforms the list of Rates into an array, indexed first by tier and
@@ -41,25 +39,20 @@ import org.powertac.common.enumerations.PowerType;
  */
 class Tariff 
 {
+  // ----------- State enumeration --------------
   
-  // link the Time Service
-  def timeService
-
-    // ----------- State enumeration --------------  
   enum State
   {
     OFFERED, ACTIVE, WITHDRAWN, INACTIVE
   }
 
-  /** Explicit tariff ID - Must be the same in Broker and Server */
-  String id
+  def timeService
+
+  String id = IdGenerator.createId()
   
   /** The Tariff spec*/
   TariffSpecification tariffSpec
   
-  /** The broker who offers the tariff */
-  Broker broker
-
   /** Last date new subscriptions will be accepted */
   Instant expiration
   
@@ -74,7 +67,7 @@ class Tariff
   double totalUsage = 0.0
   
   /** Records the date when the Tariff was first offered */
-  Instant offerDate
+  DateTime offerDate
   
   /** Maximum future interval over which price can be known */
   Duration maxHorizon // TODO lazy instantiation?
@@ -91,6 +84,8 @@ class Tariff
                        "minDuration", "powerType", "signupPayment", 
                        "earlyWithdrawPayment", "periodicPayment"]
   
+  static belongsTo = [broker: Broker, competition: Competition]
+  
   static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
@@ -100,7 +95,7 @@ class Tariff
     state(nullable: false)
     isSupersededBy(nullable: true)
     maxHorizon(nullable:true)
-  }
+ }
   
   static mapping = {
     id (generator: 'assigned')
@@ -120,6 +115,7 @@ class Tariff
     }
     offerDate = timeService.getCurrentTime()
     analyze()
+    this.save()
   }
 
   /** Returns the actual realized price, or 0.0 if information unavailable */
@@ -161,6 +157,14 @@ class Tariff
   BigDecimal getPeriodicPayment ()
   {
     tariffSpec.periodicPayment
+  }
+  
+  /**
+   * Adds periodic payments to the total cost, so realized price includes it.
+   */
+  void addPeriodicPayment ()
+  {
+    totalCost += periodicPayment
   }
 
   /** 
@@ -244,18 +248,24 @@ class Tariff
    * this Tariff, as long as this Tariff has not expired. If the
    * subscription succeeds, then the TariffSubscription instance is
    * return, otherwise null.
+   * <p>
+   * Note that you cannot unsubscribe directly from a Tariff -- you have to do
+   * that from the TariffSubscription that represents the Tariff you want
+   * to unsubscribe from.</p>
    */
-  TariffSubscription subscribe (Customer customer, int customerCount)
+  TariffSubscription subscribe (CustomerInfo customer, int customerCount)
   {
     if (isExpired())
       return null
     
-    TariffSubscription sub = subscriptions?.findByCustomer(customer)
+    TariffSubscription sub = TariffSubscription.findByTariffAndCustomerInfo(this, customer)
     if (sub == null) {
-      sub = new TariffSubscription(customer: customer,
+      sub = new TariffSubscription(customerInfo: customer,
                                    tariff: this)
     }
     sub.subscribe(customerCount)
+    this.addToSubscriptions(sub)
+    this.save()
     return sub
   }
   

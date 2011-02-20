@@ -16,28 +16,56 @@
 
 package org.powertac.common
 
-import org.joda.time.LocalDateTime
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.joda.time.DateTime
+import org.joda.time.Instant
 
-class Timeslot implements Serializable {
+ /**
+ * A timeslot instance describes a duration in time (slot). Time slots are used (i) to
+ * correlate tradeable products (energy futures) and trades in the market with a future time
+ * interval where settlement (i.e. delivery / consumption) has to take place, (ii) to
+ * correlate meter readings with a duration in time, (iii) to  allow tariffs to define
+ * different consumption / production prices for different times of a day
+ *
+ * @author Carsten Block
+ * @version 1.0 - Feb,6,2011
+ */
+class Timeslot implements Serializable 
+{
+  static TimeService getTimeService()
+  {
+    ApplicationHolder.application.mainContext.timeService
+  }
 
   String id = IdGenerator.createId()
-  Long serialNumber
-  Competition competition
-  Boolean enabled = false
-  Boolean current = false
-  LocalDateTime startDateTime = new LocalDateTime()
-  LocalDateTime endDateTime = new LocalDateTime()
 
-  SortedSet orderbooks
+  /**
+   * used to find succeeding / preceding timeslot instances
+   * @see {@code Timeslot.next()} {@code Timeslot.previous()}
+   */
+  Integer serialNumber
+
+  /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
+  Boolean enabled = false
+
+  /** indicates that this timeslot is the present / now() timeslot in the competition */
+  Boolean current = false
+
+  /** start date and time of the timeslot */
+  DateTime startDateTime
+
+  /** end date and time of the timeslot */
+  DateTime endDateTime
+  
+  static transients = ['timeService']
 
   static belongsTo = [competition: Competition]
 
-  static hasMany = [meterReadings: MeterReading, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
+  static hasMany = [transactions: TariffTransaction, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     serialNumber(nullable: false)
-    competition(nullable: false)
     enabled(nullable: false)
     current(nullable: false)
     startDateTime(nullable: false)
@@ -54,18 +82,22 @@ class Timeslot implements Serializable {
     return "$startDateTime - $endDateTime";
   }
 
-  public static Timeslot currentTimeslot() {
-    def competition = Competition.currentCompetition()
-    if (!competition) return null
-    return Timeslot.findByCompetitionAndCurrent(competition, true, [cache: true])
+  /**
+   * Note that this scheme for finding the current timeslot relies on the
+   * time granularity reported by the timeService being the same as the length
+   * of a timeslot.
+   */
+  public static Timeslot currentTimeslot() 
+  {
+    return Timeslot.findByStartDateTime(timeService.currentDateTime)
   }
 
   public Timeslot next() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1l)
+    return Timeslot.findBySerialNumber(this.serialNumber + 1)
   }
 
   public Timeslot previous() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1l)
+    return Timeslot.findBySerialNumber(this.serialNumber - 1)
   }
 
 }

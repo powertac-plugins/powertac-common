@@ -46,7 +46,7 @@ class TariffSpecification implements Serializable
   Instant expiration
   
   /** Minimum contract duration (in milliseconds) */
-  long minDuration = 0
+  Long minDuration = 0
   
   /** Type of power covered by this tariff */
   PowerType powerType = PowerType.CONSUMPTION
@@ -64,17 +64,16 @@ class TariffSpecification implements Serializable
   
   //def rates
   //def supersedes
-
+  
   static hasMany = [rates: Rate, supersedes: String]
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    //tariffId(nullable: false, blank: false)
     brokerId(nullable: false, blank: false)
     expiration(nullable: true)
     minDuration(min: 24*60*60*1000l) // one day
     powerType(nullable: false)
-    rates(nullable: false, minSize: 1)
+    rates(nullable: true, minSize: 1)
   }
 
   static mapping = {
