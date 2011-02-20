@@ -231,7 +231,6 @@ class TariffSubscriptionTests extends GroovyTestCase
     tariffSpec.save()
     tariff = new Tariff(tariffSpec: tariffSpec)
     tariff.init()
-    tariff.save()
 
     // subscribe and consume in the first timeslot
     TariffSubscription tsub = tariff.subscribe(customerInfo, 6)

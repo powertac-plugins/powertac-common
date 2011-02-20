@@ -15,7 +15,7 @@
  */
 package org.powertac.common
 
-//import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
@@ -89,15 +89,19 @@ class Tariff
   
   static auditable = true
   
+  static belongsTo = [broker: Broker]
+  
   static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
     id(nullable: false, blank: false)
-    broker(nullable:false)
+    broker(nullable: false)
+    tariffSpec(nullable: false)
     expiration(nullable: true)
     state(nullable: false)
     isSupersededBy(nullable: true)
-    maxHorizon(nullable:true)
+    maxHorizon(nullable: true)
+    subscriptions(nullable: true)
   }
   
   static mapping = {
@@ -112,13 +116,17 @@ class Tariff
   {
     id = tariffSpec.id
     broker = Broker.findById(tariffSpec.getBrokerId())
+    assert broker != null
     expiration = tariffSpec.getExpiration()
-    tariffSpec.getSupersedes().each {
+    tariffSpec.getSupersedes().each { // invert the supersedes relation
       Tariff.findById(it).isSupersededBy = this
     }
     offerDate = timeService.getCurrentTime()
     analyze()
-    this.save()
+    if (!this.validate()) {
+      this.errors.each { println it.toString() }
+    }
+    assert this.save()
   }
 
   /** Returns the actual realized price, or 0.0 if information unavailable */
@@ -185,7 +193,7 @@ class Tariff
     if (recordUsage) {
       totalUsage += kwh
       totalCost += amt
-      this.save()
+      assert this.save(flush: true)
     }
     return amt
   }
@@ -269,8 +277,10 @@ class Tariff
     }
     sub.subscribe(customerCount)
     this.addToSubscriptions(sub)
+    customer.addToSubscriptions(sub)
     this.withTransaction {
       sub.save()
+      customer.save()
       this.save()
     }
     return sub

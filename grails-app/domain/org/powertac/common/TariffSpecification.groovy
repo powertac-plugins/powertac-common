@@ -66,7 +66,6 @@ class TariffSpecification implements Serializable
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    //tariffId(nullable: false, blank: false)
     brokerId(nullable: false, blank: false)
     expiration(nullable: true)
     minDuration(min: 24*60*60*1000l) // one day

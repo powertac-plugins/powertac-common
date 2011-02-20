@@ -41,6 +41,10 @@ class Broker implements Serializable {
     id(nullable: false, blank: false, unique: true)
     userName(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9])*/)
     apiKey(nullable: false, blank: false, unique: true, minSize: 32)
+    cashUpdates(nullable: true)
+    positionUpdates(nullable: true)
+    shouts(nullable: true)
+    tariffs(nullable: true)
   }
 
   static mapping = {

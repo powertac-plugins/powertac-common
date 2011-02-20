@@ -77,6 +77,7 @@ class CustomerInfo implements Serializable {
     id (nullable: false, blank: false, unique: true)
     name (blank: false, unique: true)
     customerType(nullable: false)
+    subscriptions(nullable: true)
     multiContracting (nullable: false)
     canNegotiate (nullable: false)
     upperPowerCap (nullable: false, scale: Constants.DECIMALS)

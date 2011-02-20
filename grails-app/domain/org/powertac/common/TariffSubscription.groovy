@@ -53,6 +53,8 @@ class TariffSubscription {
   double totalUsage = 0.0
   
   static auditable = true
+  
+  static belongsTo = [tariff: Tariff, customerInfo: CustomerInfo]
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
