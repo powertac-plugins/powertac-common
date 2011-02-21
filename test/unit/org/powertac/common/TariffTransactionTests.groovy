@@ -18,16 +18,14 @@ package org.powertac.common
 
 import grails.test.GrailsUnitTestCase
 
-class ProductTests extends GrailsUnitTestCase {
+class TariffTransactionTests extends GrailsUnitTestCase {
 
-  Competition competition
+  TariffTransaction tx
 
   protected void setUp() {
     super.setUp()
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
-    mockForConstraintsTests(Product)
+    tx = new TariffTransaction()
+    mockForConstraintsTests(TariffTransaction)
   }
 
   protected void tearDown() {
@@ -35,10 +33,18 @@ class ProductTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Product product = new Product(id: null, competition: null)
-    assertFalse(product.validate())
-    assertEquals('nullable', product.errors.getFieldError('id').getCode())
-    assertEquals('nullable', product.errors.getFieldError('competition').getCode())
-    assertEquals('nullable', product.errors.getFieldError('productType').getCode())
+    TariffTransaction tx1 = new TariffTransaction(id: null, competition: null)
+    assertNull(tx1.id)
+    assertFalse(tx1.validate())
+    assertEquals('nullable', tx1.errors.getFieldError('id').getCode())
+    assertEquals('nullable', tx1.errors.getFieldError('customerInfo').getCode())
+    assertEquals('nullable', tx1.errors.getFieldError('tariff').getCode())
+    assertEquals('nullable', tx1.errors.getFieldError('timeslot').getCode())
+  }
+
+  void testBlankValidationLogic() {
+    TariffTransaction meterReading1 = new TariffTransaction(id: '')
+    assertFalse(meterReading1.validate())
+    assertEquals('blank', meterReading1.errors.getFieldError('id').getCode())
   }
 }

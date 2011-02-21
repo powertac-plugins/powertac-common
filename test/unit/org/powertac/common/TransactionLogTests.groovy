@@ -17,17 +17,26 @@
 package org.powertac.common
 
 import grails.test.GrailsUnitTestCase
-import org.powertac.common.enumerations.TransactionType
+import org.joda.time.DateTime
 import org.powertac.common.enumerations.BuySellIndicator
+import org.powertac.common.enumerations.TransactionType
 
 class TransactionLogTests extends GrailsUnitTestCase {
 
+  def timeService
+  Competition competition
   Broker broker
 
   protected void setUp() {
     super.setUp()
+    timeService = new TimeService()
+    timeService.setCurrentTime(new DateTime())
+    competition = new Competition(name: 'testCompetition')
+    registerMetaClass(Competition)
+    Competition.metaClass.'static'.currentCompetition = {-> return competition }
     broker = new Broker (userName: 'testBroker')
-    mockForConstraintsTests(TransactionLog)
+    registerMetaClass(TransactionLog)
+    TransactionLog.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() {
@@ -35,8 +44,9 @@ class TransactionLogTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    TransactionLog transactionLog = new TransactionLog(id: null, dateCreated: null)
+    TransactionLog transactionLog = new TransactionLog(id: null, competition: null, dateCreated: null)
     assertNull(transactionLog.id)
+    mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse(transactionLog.validate())
     assertEquals('nullable', transactionLog.errors.getFieldError('id').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('competition').getCode())
@@ -50,6 +60,7 @@ class TransactionLogTests extends GrailsUnitTestCase {
 
   void testQuoteValidationLogic() {
     TransactionLog transactionLog = new TransactionLog(transactionType: TransactionType.QUOTE, price: 1.0, quantity: 10.0, buyer: broker, seller: broker, buySellIndicator: BuySellIndicator.BUY)
+    mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse (transactionLog.validate())
     assertEquals('quote.price.notnull', transactionLog.errors.getFieldError('price').getCode())
     assertEquals('quote.quantity.notnull', transactionLog.errors.getFieldError('quantity').getCode())
@@ -60,6 +71,7 @@ class TransactionLogTests extends GrailsUnitTestCase {
 
   void testTradeValidationLogic() {
     TransactionLog transactionLog = new TransactionLog(transactionType: TransactionType.TRADE, bid: 1.0, bidSize: 10.0, ask: 1.0, askSize: 10.0)
+    mockForConstraintsTests(TransactionLog, [transactionLog])
     assertFalse (transactionLog.validate())
     assertEquals('trade.price.null', transactionLog.errors.getFieldError('price').getCode())
     assertEquals('trade.quantity.null', transactionLog.errors.getFieldError('quantity').getCode())

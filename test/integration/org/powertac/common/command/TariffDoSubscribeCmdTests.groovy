@@ -15,7 +15,7 @@ class TariffDoSubscribeCmdTests extends GroovyTestCase
   Timeslot timeslot
   Broker broker
   Broker broker2
-  Customer customer
+  CustomerInfo customerInfo
   String userName
   String apiKey
   TariffSpecification tariffSpec
@@ -32,7 +32,7 @@ class TariffDoSubscribeCmdTests extends GroovyTestCase
     assert (broker.validate() && broker.save())
     broker2 = new Broker(competition: competition, userName: userName + '2', apiKey: apiKey + '2')
     assert (broker2.validate() && broker2.save())
-    customer = new Customer(competition: competition, name: "suburbia", 
+    customerInfo = new CustomerInfo(competition: competition, name: "suburbia", 
                             customerType: CustomerType.CustomerHousehold)
     Instant exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     tariffSpec = new TariffSpecification(brokerId: broker.id, expiration: exp,
@@ -76,7 +76,7 @@ class TariffDoSubscribeCmdTests extends GroovyTestCase
     }
     assert(tariff.save())
     TariffDoSubscribeCmd cmd = new TariffDoSubscribeCmd(competition: competition, tariffId: tariff.id,
-                                                        customer: customer, customerCount: 4)
+                                                        customerInfo: customerInfo, customerCount: 4)
     assertFalse(cmd.validate())
     assertEquals(Constants.TARIFF_OUTDATED, cmd.errors.getFieldError('tariffId').getCode())
   }

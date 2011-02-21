@@ -2,14 +2,10 @@ package org.powertac.common.command
 
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.joda.time.Duration
 import org.joda.time.Instant
-import org.powertac.common.enumerations.BuySellIndicator
-import org.powertac.common.enumerations.OrderType
-import org.powertac.common.enumerations.ProductType
 import org.powertac.common.*
 
-class TariffDoRevokeCmdTests extends GroovyTestCase 
+class TariffDoRevokeCmdTests extends GroovyTestCase
 {
   // get ref to TimeService
   def timeService
