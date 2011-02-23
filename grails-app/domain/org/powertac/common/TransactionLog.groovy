@@ -35,7 +35,7 @@ import org.powertac.common.enumerations.TransactionType
  * domain class) is on purpose as econometrics analysis of market efficiency usually rely
  * on the combined data stream of both information types sorted by time precedence</p>
  * <p>
- * This an immutable value type, and therefore it not auditable.</p>
+ * This an immutable value type, and therefore is not auditable.</p>
  *
  * @author Carsten Block
  * @version 1.0 - 04/Feb/2011
