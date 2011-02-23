@@ -323,7 +323,7 @@ class Rate implements Serializable
         return expectedMean
       }
       // otherwise, return the most recent price announcement for the given time
-      HourlyCharge probe = new HourlyCharge(when: inst.plus(1000l), value: 0)
+      HourlyCharge probe = new HourlyCharge(atTime: inst.plus(1000l), value: 0)
       SortedSet<HourlyCharge> head = rateHistory.headSet(probe)
       if (head == null || head.size() == 0) {
         return expectedMean // default

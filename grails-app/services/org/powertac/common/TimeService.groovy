@@ -69,7 +69,7 @@ class TimeService
   long modulo = 15*60*1000l
 
   // simulation action queue
-  SortedSet<SimulationAction> actions
+  TreeSet<SimulationAction> actions
 
   // the current time
   private Instant currentTime
@@ -144,7 +144,7 @@ class TimeService
   {
     if (actions == null)
       actions = new TreeSet<SimulationAction>()
-    actions.add(new SimulationAction(when:time, action:act))
+    actions.add(new SimulationAction(atTime:time, action:act))
   }
   
   /**
@@ -154,7 +154,7 @@ class TimeService
   {
     if (actions == null)
       return
-    while (!actions.isEmpty() && actions.first().when <= currentTime) {
+    while (!actions.isEmpty() && actions.first().atTime <= currentTime) {
       SimulationAction act = actions.first()
       act.action.call(currentTime)
       actions.remove(act)
