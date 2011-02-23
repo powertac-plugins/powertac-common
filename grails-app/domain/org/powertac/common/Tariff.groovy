@@ -405,17 +405,4 @@ class Tariff
     }
     analyzed = true
   }
-  
-  // auditing closures
-  def onSave = {
-    println "new Tariff ${id} inserted" 
-  }
-  def onChange = { oldMap,newMap ->
-    println "Tariff ${id} was changed"
-    oldMap.each { key, oldVal ->
-      if(oldVal != newMap[key]) {
-        println " * $key changed from $oldVal to " + newMap[key]
-      }
-    }
-  }
 }
