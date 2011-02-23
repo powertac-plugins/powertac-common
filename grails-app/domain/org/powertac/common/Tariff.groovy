@@ -15,7 +15,7 @@
  */
 package org.powertac.common
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+//import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
@@ -89,19 +89,15 @@ class Tariff
   
   static auditable = true
   
-  static belongsTo = [broker: Broker]
-  
   static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
     id(nullable: false, blank: false)
-    broker(nullable: false)
-    tariffSpec(nullable: false)
+    broker(nullable:false)
     expiration(nullable: true)
     state(nullable: false)
     isSupersededBy(nullable: true)
-    maxHorizon(nullable: true)
-    subscriptions(nullable: true)
+    maxHorizon(nullable:true)
   }
   
   static mapping = {
@@ -116,17 +112,13 @@ class Tariff
   {
     id = tariffSpec.id
     broker = Broker.findById(tariffSpec.getBrokerId())
-    assert broker != null
     expiration = tariffSpec.getExpiration()
-    tariffSpec.getSupersedes().each { // invert the supersedes relation
+    tariffSpec.getSupersedes().each {
       Tariff.findById(it).isSupersededBy = this
     }
     offerDate = timeService.getCurrentTime()
     analyze()
-    if (!this.validate()) {
-      this.errors.each { println it.toString() }
-    }
-    assert this.save()
+    this.save()
   }
 
   /** Returns the actual realized price, or 0.0 if information unavailable */
@@ -179,7 +171,8 @@ class Tariff
   }
 
   /** 
-   * Returns the usage charge for the current timeslot. The kwh parameter
+   * Returns the usage charge for a single customer in the current timeslot. 
+   * The kwh parameter
    * defaults to 1.0, in which case you get the per-kwh value. If you supply
    * the cumulativeUsage parameter, then the charge may be affected by the
    * rate tier structure.
@@ -193,17 +186,19 @@ class Tariff
     if (recordUsage) {
       totalUsage += kwh
       totalCost += amt
-      assert this.save(flush: true)
+      this.save(flush: true)
     }
     return amt
   }
   
   /** 
-   * Returns the usage charge for an amount of energy at some time in 
+   * Returns the usage charge for a single customer using an amount of 
+   * energy at some time in 
    * the past or future. If the requested time is farther in the future 
-   * than maxHorizon, then the result will be a default value, which 
+   * than maxHorizon, then the result will may be a default value, which 
    * may not be useful. The cumulativeUsage parameter sets the base for
-   * probing the rate tier structure.
+   * probing the rate tier structure. Do not use this method for billing,
+   * because it does not update the realized-price data.
    */
   double getUsageCharge (Instant when, double kwh = 1.0, double cumulativeUsage = 0.0)
   {
@@ -277,10 +272,8 @@ class Tariff
     }
     sub.subscribe(customerCount)
     this.addToSubscriptions(sub)
-    customer.addToSubscriptions(sub)
     this.withTransaction {
       sub.save()
-      customer.save()
       this.save()
     }
     return sub

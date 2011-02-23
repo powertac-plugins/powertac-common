@@ -9,15 +9,15 @@ import org.joda.time.Instant
  */
 class SimulationAction implements Comparable
 {
-  Instant when
+  Instant atTime
   def action
   
   static constraints = {
-    when(nullable:false)
+    atTime(nullable:false)
   }
 
   int compareTo (obj)
   {
-    when.compareTo(obj.when)
+    atTime.compareTo(obj.atTime)
   }
 }

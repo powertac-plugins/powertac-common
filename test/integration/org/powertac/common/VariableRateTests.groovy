@@ -74,8 +74,8 @@ class VariableRateTests extends GroovyTestCase
       t1.errors.each { println it }
       fail("Could not save Tariff")
     }
-    r1.addToRateHistory(new HourlyCharge(value: 0.08, when: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.07, when: new DateTime(2011, 1, 26, 11, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.08, atTime: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.07, atTime: new DateTime(2011, 1, 26, 11, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     assertTrue("Validate", r1.validate())
     assertNotNull("Save", r1.save())
     assertFalse("Rate is variable", r1.isFixed)
@@ -99,9 +99,9 @@ class VariableRateTests extends GroovyTestCase
       t1.errors.each { println it }
       fail("Could not save Tariff")
     }
-    r1.addToRateHistory(new HourlyCharge(value: 0.08, when: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.07, when: new DateTime(2011, 1, 26, 11, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.06, when: new DateTime(2011, 1, 26, 9, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.08, atTime: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.07, atTime: new DateTime(2011, 1, 26, 11, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.06, atTime: new DateTime(2011, 1, 26, 9, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     assertTrue("Validate", r1.validate())
     assertNotNull("Save", r1.save())
     assertFalse("Rate is variable", r1.isFixed)
@@ -126,12 +126,12 @@ class VariableRateTests extends GroovyTestCase
       t1.errors.each { println it }
       fail("Could not save Tariff")
     }
-    r1.addToRateHistory(new HourlyCharge(value: 0.06, when: new DateTime(2011, 1, 26, 9, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.07, when: new DateTime(2011, 1, 26, 11, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.08, when: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.09, when: new DateTime(2011, 1, 26, 13, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.11, when: new DateTime(2011, 1, 26, 14, 0, 0, 0, DateTimeZone.UTC).toInstant()))
-    r1.addToRateHistory(new HourlyCharge(value: 0.12, when: new DateTime(2011, 1, 26, 15, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.06, atTime: new DateTime(2011, 1, 26, 9, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.07, atTime: new DateTime(2011, 1, 26, 11, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.08, atTime: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.09, atTime: new DateTime(2011, 1, 26, 13, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.11, atTime: new DateTime(2011, 1, 26, 14, 0, 0, 0, DateTimeZone.UTC).toInstant()))
+    r1.addToRateHistory(new HourlyCharge(value: 0.12, atTime: new DateTime(2011, 1, 26, 15, 0, 0, 0, DateTimeZone.UTC).toInstant()))
     assertTrue("Validate", r1.validate())
     assertNotNull("Save", r1.save())
     assertFalse("Rate is variable", r1.isFixed)
