@@ -25,7 +25,6 @@ import org.powertac.common.*
 
 class ShoutDoUpdateCmdTests extends GroovyTestCase {
 
-  Competition competition
   Product product
   Timeslot timeslot
   Broker broker
@@ -38,17 +37,15 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     super.setUp()
     userName = 'testBroker'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
-    competition = new Competition(name: "test", current: true)
-    assert (competition.validate() && competition.save())
-    broker = new Broker(competition: competition, userName: userName, apiKey: apiKey)
+    broker = new Broker(userName: userName, apiKey: apiKey)
     assert (broker.validate() && broker.save())
-    broker2 = new Broker(competition: competition, userName: userName+'2', apiKey: apiKey+'2')
+    broker2 = new Broker(userName: userName+'2', apiKey: apiKey+'2')
     assert (broker2.validate() && broker2.save())
-    product = new Product(competition: competition, productType: ProductType.Future)
+    product = new Product(productType: ProductType.Future)
     assert (product.validate() && product.save())
-    timeslot = new Timeslot(competition: competition, serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    timeslot = new Timeslot(serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
     assert (timeslot.validate() && timeslot.save())
-    shout = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
+    shout = new Shout(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
     assert (shout.validate() && shout.save())
   }
 
@@ -59,7 +56,6 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
   void testNullableValidationLogic() {
     ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd()
     assertFalse(cmd.validate())
-    assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('shout').getCode())
   }
@@ -93,14 +89,6 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
     assertNull(cmd3.errors.getFieldError('quantity')?.getCode())
   }
 
-  void testInactiveCompetitionId() {
-    competition.current = false
-    competition.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition)
-    assertFalse(cmd.validate())
-    assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
-  }
-
   void testShoutOutdated() {
     shout.latest = false
     shout.save()
@@ -132,17 +120,15 @@ class ShoutDoUpdateCmdTests extends GroovyTestCase {
   }
 
   void testInvalidBroker(){
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition, shout: shout, broker: broker2)
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shout: shout, broker: broker2)
     assertFalse(cmd.validate())
     assertEquals(Constants.SHOUT_WRONG_BROKER, cmd.errors.getFieldError('broker').getCode())
   }
 
   void testValidShoutDoUpdateCmd() {
-    competition.current = true
-    competition.save()
     shout.modReasonCode = ModReasonCode.INSERT
     shout.save()
-    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(competition: competition, shout: shout, broker: broker, quantity: 9.99, limitPrice: 99.99)
+    ShoutDoUpdateCmd cmd = new ShoutDoUpdateCmd(shout: shout, broker: broker, quantity: 9.99, limitPrice: 99.99)
     assertTrue(cmd.validate())
   }
 }

@@ -28,7 +28,6 @@ class VariableRateTests extends GroovyTestCase
 {
   // get ref to TimeService
   def timeService
-  def competition
   def broker
 
   protected void setUp()

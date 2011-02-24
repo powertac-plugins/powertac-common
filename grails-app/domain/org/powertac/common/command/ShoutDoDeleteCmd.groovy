@@ -30,19 +30,14 @@ import org.powertac.common.*
  */
 class ShoutDoDeleteCmd implements Serializable {
   String id = IdGenerator.createId()
-  Competition competition
   Broker broker
   Shout shout
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, broker: Broker, shout: Shout]
+  static belongsTo = [broker: Broker, shout: Shout]
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    competition(nullable: false, validator: {val ->
-      if (!val.current) return [Constants.COMPETITION_INACTIVE]
-      else return true
-    })
     broker (nullable: false, validator: {val, obj ->
       if (obj?.shout?.broker?.id != obj?.broker?.id) return [Constants.SHOUT_WRONG_BROKER]
       return true

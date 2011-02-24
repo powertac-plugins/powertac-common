@@ -105,7 +105,7 @@ class PositionUpdate implements Serializable {
 
   static mapping = {
     id (generator: 'assigned')
-    competition(index:'pu_product_timeslot_broker_latest_idx')
+    //competition(index:'pu_product_timeslot_broker_latest_idx')
     product(index:'pu_product_timeslot_broker_latest_idx')
     timeslot(index:'pu_product_timeslot_broker_latest_idx')
     broker(index:'pu_product_timeslot_broker_latest_idx')

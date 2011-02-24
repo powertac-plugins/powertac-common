@@ -30,7 +30,6 @@ import org.powertac.common.*
  */
 class ShoutDoCreateCmd implements Serializable {
   String id = IdGenerator.createId()
-  Competition competition
   Broker broker
   Product product
   Timeslot timeslot
@@ -40,17 +39,10 @@ class ShoutDoCreateCmd implements Serializable {
   OrderType orderType
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, broker: Broker, product: Product, timeslot: Timeslot]
+  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false, validator: {val ->
-      if (!val?.current){
-        return [Constants.COMPETITION_INACTIVE]
-      } else {
-        return true
-      }
-    })
     broker(nullable: false)
     product (nullable: false)
     timeslot(nullable: false, validator: {val ->

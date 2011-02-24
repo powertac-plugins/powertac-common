@@ -32,23 +32,13 @@ import org.powertac.common.*
  */
 class TariffDoRevokeCmd implements Serializable {
   String id = IdGenerator.createId()
-  Competition competition
-  //Broker broker // why is this needed?
   String tariffId
   DateTime dateCreated = new DateTime()
 
-  //static belongsTo = [competition: Competition, broker: Broker, tariff: Tariff]
+  //static belongsTo = [broker: Broker, tariff: Tariff]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition (nullable: false, validator: {val ->
-      if (!val.current) return [Constants.COMPETITION_INACTIVE]
-      else return true
-    })
-//    broker (nullable: false, validator: {val, obj ->
-//      if (obj?.tariff?.broker?.id != obj?.broker?.id) return [Constants.TARIFF_WRONG_BROKER]
-//      return true
-//    })
     tariffId (nullable: false, validator: {val, obj ->
       Tariff tf = Tariff.get(val)
       if (tf == null) return [Constants.NOT_FOUND]

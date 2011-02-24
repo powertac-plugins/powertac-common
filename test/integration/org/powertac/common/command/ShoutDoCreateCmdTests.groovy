@@ -24,7 +24,6 @@ import org.powertac.common.*
 
 class ShoutDoCreateCmdTests extends GroovyTestCase {
 
-  Competition competition
   Product product
   Timeslot timeslot
   Broker broker
@@ -35,13 +34,11 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
     super.setUp()
     userName = 'testBroker'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
-    competition = new Competition(name: "test")
-    assert (competition.validate() && competition.save())
-    broker = new Broker(competition: competition, userName: userName, apiKey: apiKey)
+    broker = new Broker(userName: userName, apiKey: apiKey)
     assert (broker.validate() && broker.save())
-    product = new Product(competition: competition, productType: ProductType.Future)
+    product = new Product(productType: ProductType.Future)
     assert(product.validate() && product.save())
-    timeslot = new Timeslot(competition: competition, serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    timeslot = new Timeslot(serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
     assert(timeslot.validate() && timeslot.save())
   }
 
@@ -54,7 +51,6 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
     cmd.id = null
     assertFalse (cmd.validate())
     assertEquals('nullable', cmd.errors.getFieldError('id').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('product').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('timeslot').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
@@ -70,17 +66,7 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
     assertEquals('min.notmet', cmd.errors.getFieldError('quantity').getCode())
   }
 
-  void testInactiveCompetition() {
-    competition.current = false
-    competition.save()
-    ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(competition: competition)
-    assertFalse(cmd.validate())
-    assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
-  }
-
   void testInactiveTimeslot() {
-    competition.current = true
-    competition.save()
     timeslot.enabled = false
     timeslot.save()
     ShoutDoCreateCmd cmd= new ShoutDoCreateCmd(timeslot: timeslot)
@@ -101,12 +87,10 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
   void testValidShoutDoCreateCmd(){
     timeslot.enabled = true
     timeslot.save()
-    competition.current = true
-    competition.save()
-    ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT)
+    ShoutDoCreateCmd cmd = new ShoutDoCreateCmd(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT)
     assertTrue (cmd.validate())
 
-    ShoutDoCreateCmd cmd2 = new ShoutDoCreateCmd(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET)
+    ShoutDoCreateCmd cmd2 = new ShoutDoCreateCmd(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, buySellIndicator: BuySellIndicator.SELL, orderType: OrderType.MARKET)
     assertTrue (cmd2.validate())
   }
 }

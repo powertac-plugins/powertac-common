@@ -32,7 +32,6 @@ import org.powertac.common.IdGenerator
  */
 class CashDoUpdateCmd implements Serializable {
   String id = IdGenerator.createId()
-  Competition competition
   Broker broker
   BigDecimal relativeChange
   String transactionId
@@ -40,14 +39,10 @@ class CashDoUpdateCmd implements Serializable {
   String origin
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, broker: Broker]
+  static belongsTo = [broker: Broker]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false, validator: {val ->
-      if (!val.current) return [Constants.COMPETITION_INACTIVE]
-      else return true
-    })
     broker(nullable: false)
     relativeChange(nullable: false, scale: Constants.DECIMALS)
     transactionId(nullable: true)

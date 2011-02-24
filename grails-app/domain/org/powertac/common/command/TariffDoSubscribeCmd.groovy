@@ -28,20 +28,15 @@ import org.powertac.common.*
  */
 class TariffDoSubscribeCmd implements Serializable {
   String id = IdGenerator.createId()
-  Competition competition
   CustomerInfo customerInfo
   int customerCount = 1
   String tariffId
   DateTime dateCreated = new DateTime()
 
-  static belongsTo = [competition: Competition, customer: CustomerInfo]
+  static belongsTo = [customer: CustomerInfo]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false, validator: {val ->
-      if (!val.current)  return [Constants.COMPETITION_INACTIVE]
-      else return true
-    })
     customerInfo(nullable: false)
     customerCount(min: 1)
     tariffId (nullable: false, validator: {val, obj ->

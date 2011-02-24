@@ -18,18 +18,9 @@ class PositionDoUpdateCmdTests extends GrailsUnitTestCase {
     PositionDoUpdateCmd cmd = new PositionDoUpdateCmd(id: null)
     assertFalse(cmd.validate())
     assertEquals('nullable', cmd.errors.getFieldError('id').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('competition').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('broker').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('relativeChange').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('product').getCode())
     assertEquals('nullable', cmd.errors.getFieldError('timeslot').getCode())
   }
-
-  void testInactiveCompetition() {
-    Competition competition = new Competition(current: false)
-    PositionDoUpdateCmd cmd = new PositionDoUpdateCmd(competition: competition)
-    assertFalse(cmd.validate())
-    assertEquals(Constants.COMPETITION_INACTIVE, cmd.errors.getFieldError('competition').getCode())
-  }
-
 }
