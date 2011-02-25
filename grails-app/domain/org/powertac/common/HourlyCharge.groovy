@@ -8,6 +8,7 @@ class HourlyCharge implements Serializable, Comparable
   Instant atTime
 	
   static belongsTo = [Rate]
+  
   static constraints = {
     value(nullable:false, min:0.0)
     atTime(nullable:false)

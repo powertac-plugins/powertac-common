@@ -208,6 +208,37 @@ class Rate implements Serializable
   }
   
   /**
+   * Adds a new HourlyCharge to a variable rate. If this
+   * Rate is not variable, or if the HourlyCharge arrives
+   * past its noticeInterval, then we log an error and
+   * drop it on the floor. Returns true just in case the
+   * new charge was added successfully.
+   */
+  boolean addHourlyCharge (HourlyCharge newCharge)
+  {
+    boolean result = false
+    if (isFixed) {
+      // cannot change this rate
+      log.error "Cannot change Rate $this"
+    }
+    else {
+      Instant now = timeService.getCurrentTime()
+      int warning = newCharge.atTime.millis - now.millis
+      if (warning < noticeInterval) {
+        // too late
+        log.error "Too late (${now.millis}) to change rate for ${newCharge.atTime.millis}"
+      }
+      else {
+        log.info "Adding $newCharge to $this"
+        this.addToRateHistory(newCharge)
+        assert this.save()
+        result = true
+      }
+    }
+    return result
+  }
+  
+  /**
    * True just in case this Rate applies at this moment, ignoring the
    * tier.
    */

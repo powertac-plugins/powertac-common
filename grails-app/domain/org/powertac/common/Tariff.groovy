@@ -120,6 +120,16 @@ class Tariff
     analyze()
     this.save()
   }
+  
+  /**
+   * Adds a new HourlyCharge to its Rate. Returns true just
+   * in case the operation was successful.
+   */
+  boolean addHourlyCharge (HourlyCharge newCharge, String rateId)
+  {
+    Rate theRate = Rate.get(rateId)
+    return theRate.addHourlyCharge(newCharge)
+  }
 
   /** Returns the actual realized price, or 0.0 if information unavailable */
   double getRealizedPrice ()
