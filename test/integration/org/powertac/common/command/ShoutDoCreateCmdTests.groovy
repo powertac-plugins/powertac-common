@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.enumerations.ProductType
@@ -38,7 +38,7 @@ class ShoutDoCreateCmdTests extends GroovyTestCase {
     assert (broker.validate() && broker.save())
     product = new Product(productType: ProductType.Future)
     assert(product.validate() && product.save())
-    timeslot = new Timeslot(serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    timeslot = new Timeslot(serialNumber: 0, startInstant: new Instant(), endInstant: new Instant())
     assert(timeslot.validate() && timeslot.save())
   }
 

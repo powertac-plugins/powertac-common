@@ -1,6 +1,6 @@
 package org.powertac.common.transformer
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.CompetitionStatus
 import org.powertac.common.enumerations.OrderType
@@ -28,7 +28,7 @@ class DomainClassTransformerTests extends GroovyTestCase {
     assert (broker.validate() && broker.save())
     product = new Product(competition: competition, productType: ProductType.Future)
     assert (product.validate() && product.save())
-    timeslot = new Timeslot(serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    timeslot = new Timeslot(serialNumber: 0, startInstant: new Instant(), endInstant: new Instant())
     assert (timeslot.validate() && timeslot.save())
     shout = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
     assert (shout.validate() && shout.save())

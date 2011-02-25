@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.*
 
@@ -32,7 +32,7 @@ class ShoutDoDeleteCmd implements Serializable {
   String id = IdGenerator.createId()
   Broker broker
   Shout shout
-  DateTime dateCreated = new DateTime()
+  Instant dateCreated = new Instant()
 
   static belongsTo = [broker: Broker, shout: Shout]
 

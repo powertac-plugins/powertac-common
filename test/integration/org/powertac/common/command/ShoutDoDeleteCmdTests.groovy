@@ -1,6 +1,6 @@
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
@@ -20,8 +20,8 @@ class ShoutDoDeleteCmdTests extends GroovyTestCase {
 
   protected void setUp() {
     super.setUp()
-    timeService.base = new DateTime().millis
-    timeService.start = new DateTime().millis
+    timeService.base = new Instant().millis
+    timeService.start = new Instant().millis
     timeService.rate = 720l
     timeService.modulo = 1800000l
     timeService.updateTime()
@@ -34,7 +34,7 @@ class ShoutDoDeleteCmdTests extends GroovyTestCase {
     assert (broker2.validate() && broker2.save())
     product = new Product(productType: ProductType.Future)
     assert (product.validate() && product.save())
-    timeslot = new Timeslot(serialNumber: 0, startDateTime: new DateTime(), endDateTime: new DateTime())
+    timeslot = new Timeslot(serialNumber: 0, startInstant: new Instant(), endInstant: new Instant())
     assert (timeslot.validate() && timeslot.save())
     shout = new Shout(product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
     if (!shout.validate()) println shout.errors.allErrors

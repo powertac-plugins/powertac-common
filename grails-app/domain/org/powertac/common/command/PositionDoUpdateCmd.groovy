@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.*
 
 /**
@@ -37,7 +37,7 @@ class PositionDoUpdateCmd implements Serializable {
   String transactionId
   String reason
   String origin
-  DateTime dateCreated = new DateTime()
+  Instant dateCreated = new Instant()
 
   static belongsTo = [product: Product, timeslot: Timeslot, broker: Broker]
 

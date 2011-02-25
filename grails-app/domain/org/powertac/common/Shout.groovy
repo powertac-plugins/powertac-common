@@ -17,7 +17,7 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
@@ -77,10 +77,10 @@ class Shout implements Serializable {
   OrderType orderType = OrderType.MARKET
 
   /** the simulation time when the original shout instance was first created */
-  DateTime dateCreated = timeService.getCurrentTime().toDateTime()
+  Instant dateCreated = timeService.getCurrentTime()
 
   /** the latest modification time of the shout */
-  DateTime dateMod = this.dateCreated
+  Instant dateMod = this.dateCreated
 
   /** the reason for the latest modifcation to the shout instance */
   ModReasonCode modReasonCode = ModReasonCode.INSERT
@@ -161,7 +161,7 @@ class Shout implements Serializable {
     newShout.executionPrice = this.executionPrice
     newShout.orderType = this.orderType
     newShout.dateCreated = this.dateCreated
-    newShout.dateMod = timeService.currentTime.toDateTime()
+    newShout.dateMod = timeService.currentTime
     newShout.modReasonCode = newModReasonCode
     newShout.transactionId = null
     newShout.shoutId = this.shoutId

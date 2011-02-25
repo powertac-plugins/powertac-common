@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.*
 
  /**
@@ -31,7 +31,7 @@ class TariffDoSubscribeCmd implements Serializable {
   CustomerInfo customerInfo
   int customerCount = 1
   String tariffId
-  DateTime dateCreated = new DateTime()
+  Instant dateCreated = new Instant()
 
   static belongsTo = [customer: CustomerInfo]
 

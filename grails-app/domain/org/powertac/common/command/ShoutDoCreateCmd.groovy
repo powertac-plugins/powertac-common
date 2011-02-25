@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.*
@@ -37,7 +37,7 @@ class ShoutDoCreateCmd implements Serializable {
   BigDecimal quantity
   BigDecimal limitPrice
   OrderType orderType
-  DateTime dateCreated = new DateTime()
+  Instant dateCreated = new Instant()
 
   static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot]
 

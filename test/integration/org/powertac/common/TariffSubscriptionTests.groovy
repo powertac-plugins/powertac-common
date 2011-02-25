@@ -15,7 +15,6 @@ class TariffSubscriptionTests extends GroovyTestCase
   
   Tariff tariff
   Broker broker
-  //Competition competition
   Timeslot timeslot
   CustomerInfo customerInfo
   DateTime now
@@ -32,8 +31,8 @@ class TariffSubscriptionTests extends GroovyTestCase
     now = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC)
     timeService.currentTime = now.toInstant()
     timeslot = new Timeslot(serialNumber: 0, 
-        startDateTime: new DateTime(now.millis, DateTimeZone.UTC), 
-        endDateTime: new DateTime(now.millis + TimeService.HOUR, DateTimeZone.UTC))
+        startInstant: new Instant(now), 
+        endInstant: new Instant(now.millis + TimeService.HOUR))
     timeslot.save()
     Instant exp = new Instant(now.millis + TimeService.WEEK * 10)
     TariffSpecification tariffSpec = 
@@ -132,8 +131,8 @@ class TariffSubscriptionTests extends GroovyTestCase
     Instant wk2 = new Instant(now.millis + TimeService.WEEK * 2)
     timeService.currentTime = wk2
     timeslot = new Timeslot(serialNumber: 3,
-        startDateTime: new DateTime(wk2.millis, DateTimeZone.UTC),
-        endDateTime: new DateTime(wk2.millis + TimeService.HOUR, DateTimeZone.UTC))
+        startInstant: new Instant(wk2.millis),
+        endInstant: new Instant(wk2.millis + TimeService.HOUR))
     timeslot.save()
     tsub.unsubscribe(2)
     def txs = Timeslot.currentTimeslot().tariffTx
@@ -147,8 +146,8 @@ class TariffSubscriptionTests extends GroovyTestCase
     Instant wk3 = new Instant(now.millis + TimeService.WEEK * 2 + TimeService.HOUR * 6)
     timeService.currentTime = wk3
     timeslot = new Timeslot(serialNumber: 7,
-        startDateTime: new DateTime(wk3.millis, DateTimeZone.UTC),
-        endDateTime: new DateTime(wk3.millis + TimeService.HOUR, DateTimeZone.UTC))
+        startInstant: new Instant(wk3.millis),
+        endInstant: new Instant(wk3.millis + TimeService.HOUR))
     timeslot.save()
     TariffSubscription tsub1 = tariff.subscribe(customerInfo, 4)
     assertEquals("same subscription", tsub, tsub1)
@@ -203,8 +202,8 @@ class TariffSubscriptionTests extends GroovyTestCase
     Instant hour = new Instant(now.millis + TimeService.HOUR)
     timeService.currentTime = hour
     timeslot = new Timeslot(serialNumber: 1,
-        startDateTime: new DateTime(hour.millis, DateTimeZone.UTC),
-        endDateTime: new DateTime(hour.millis + TimeService.HOUR, DateTimeZone.UTC))
+        startInstant: new Instant(hour.millis),
+        endInstant: new Instant(hour.millis + TimeService.HOUR))
     timeslot.save()
     tsub.usePower(32.8) // consumption
     assertEquals("correct total usage", (24.4 + 32.8) / 4, tsub.totalUsage, 1e-6)

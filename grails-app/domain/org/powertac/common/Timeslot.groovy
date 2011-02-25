@@ -17,7 +17,7 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.joda.time.DateTime
+//import org.joda.time.DateTime
 import org.joda.time.Instant
 
  /**
@@ -52,10 +52,10 @@ class Timeslot implements Serializable
   Boolean current = false
 
   /** start date and time of the timeslot */
-  DateTime startDateTime
+  Instant startInstant
 
   /** end date and time of the timeslot */
-  DateTime endDateTime
+  Instant endInstant
   
   static auditable = true
   
@@ -69,8 +69,8 @@ class Timeslot implements Serializable
     //competition(nullable: false)
     enabled(nullable: false)
     current(nullable: false)
-    startDateTime(nullable: false)
-    endDateTime(nullable: false)
+    startInstant(nullable: false)
+    endInstant(nullable: false)
   }
 
   static mapping = {
@@ -79,7 +79,7 @@ class Timeslot implements Serializable
   }
 
   public String toString() {
-    return "$startDateTime - $endDateTime";
+    return "$startInstant - $endInstant";
   }
 
   /**
@@ -89,7 +89,7 @@ class Timeslot implements Serializable
    */
   public static Timeslot currentTimeslot() 
   {
-    return Timeslot.findByStartDateTime(timeService.currentDateTime)
+    return Timeslot.findByStartInstant(timeService.currentTime)
   }
 
   public Timeslot next() {

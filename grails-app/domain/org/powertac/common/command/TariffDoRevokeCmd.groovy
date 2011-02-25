@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.*
 
  /**
@@ -33,7 +33,7 @@ import org.powertac.common.*
 class TariffDoRevokeCmd implements Serializable {
   String id = IdGenerator.createId()
   String tariffId
-  DateTime dateCreated = new DateTime()
+  Instant dateCreated = new Instant()
 
   //static belongsTo = [broker: Broker, tariff: Tariff]
 

@@ -16,7 +16,7 @@
 
 package org.powertac.common.command
 
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.Broker
 import org.powertac.common.Competition
 import org.powertac.common.Constants
@@ -37,7 +37,7 @@ class CashDoUpdateCmd implements Serializable {
   String transactionId
   String reason
   String origin
-  DateTime dateCreated = new DateTime()
+  Instant dateCreated = new Instant()
 
   static belongsTo = [broker: Broker]
 
