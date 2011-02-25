@@ -28,6 +28,8 @@ import org.joda.time.*
 */
 class Rate implements Serializable
 {
+  String id = IdGenerator.createId()
+
   int weeklyBegin = -1 // weekly applicability
   int weeklyEnd = -1
   int dailyBegin = -1 // daily applicability
@@ -48,6 +50,10 @@ class Rate implements Serializable
   static constraints = {
     minValue(min:0.0)
     maxValue(min:0.0)
+  }
+  
+  static mapping = {
+    id (generator: 'assigned')
   }
 
   // introduce dependency on TimeService
@@ -211,8 +217,10 @@ class Rate implements Serializable
    * Adds a new HourlyCharge to a variable rate. If this
    * Rate is not variable, or if the HourlyCharge arrives
    * past its noticeInterval, then we log an error and
-   * drop it on the floor. Returns true just in case the
-   * new charge was added successfully.
+   * drop it on the floor. If the update is valid but there's
+   * already an HourlyCharge in the specified timeslot, then
+   * the update must replace the existing HourlyCharge.
+   * Returns true just in case the new charge was added successfully.
    */
   boolean addHourlyCharge (HourlyCharge newCharge)
   {
@@ -220,17 +228,28 @@ class Rate implements Serializable
     if (isFixed) {
       // cannot change this rate
       log.error "Cannot change Rate $this"
+      //println "Cannot change Rate $this"
     }
     else {
       Instant now = timeService.getCurrentTime()
       int warning = newCharge.atTime.millis - now.millis
       if (warning < noticeInterval) {
         // too late
+        //println "Too late (${now.millis}) to change rate for ${newCharge.atTime.millis}"
         log.error "Too late (${now.millis}) to change rate for ${newCharge.atTime.millis}"
       }
       else {
+        // first, remove the existing charge for the specified time
+        HourlyCharge probe = new HourlyCharge(atTime: newCharge.atTime.plus(1000l), value: 0)
+        SortedSet<HourlyCharge> head = rateHistory.headSet(probe)
+        if (head != null || head.size() > 0) {
+          HourlyCharge item = head.last()
+          if (item.atTime == newCharge.atTime)
+            rateHistory.remove(item)
+        }  
         log.info "Adding $newCharge to $this"
-        this.addToRateHistory(newCharge)
+        //println "Adding $newCharge to $this"
+        rateHistory.add(newCharge)
         assert this.save()
         result = true
       }

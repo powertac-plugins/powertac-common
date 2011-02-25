@@ -4,8 +4,11 @@ log4j = {
     // Example of changing the log pattern for the default console
     // appender:
     //
+    root {
+      info()
+    }
     //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+    //  console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
 
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
@@ -21,6 +24,8 @@ log4j = {
            'net.sf.ehcache.hibernate'
 
     warn   'org.mortbay.log'
+    
+    info   'grails.app'
 }
 
 // Added by the Joda-Time plugin:
