@@ -38,7 +38,7 @@ import org.powertac.common.enumerations.TransactionType
  * This an immutable value type, and therefore is not auditable.</p>
  *
  * @author Carsten Block
- * @version 1.0 - 04/Feb/2011
+ * @version 1.1, 02/27/2011
  */
 class TransactionLog implements Serializable {
 
@@ -110,7 +110,6 @@ class TransactionLog implements Serializable {
     transactionType(nullable: false)
     dateCreated(nullable: false)
     transactionId(nullable: false)
-    latest (nullable: false)
 
     price(nullable: true, scale: 2, validator: { val, obj ->
       if (obj.transactionType == TransactionType.TRADE && !val) return ['trade.price.null']

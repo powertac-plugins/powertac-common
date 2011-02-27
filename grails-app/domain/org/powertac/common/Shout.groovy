@@ -38,7 +38,7 @@ import org.powertac.common.enumerations.OrderType
  * "order" being a reserved word in most SQL dialects.
  *
  * @author Carsten Block
- * @version 1.0, Feb, 6 2011
+ * @version 1.1, 02/27/2011
  */
 class Shout implements Serializable {
 
@@ -88,14 +88,8 @@ class Shout implements Serializable {
   /** A transactionId is generated during the execution of the shout and marks all domain instances in all domain classes that were created or changed during this single transaction (e.g. corresponding transactionLog, CashUpdate, or PositionUpdate instances). Later on this id allows for correlation of the different domain class instances during ex post analysis*/
   String transactionId
 
-  /** marks all shout instances that belong to the same original shout. On every shout change a new clone of the domain instance is generated and shoutId serves as common identifier among all these clones.*/
-  String shoutId
-
   /** optional comment that can be used for example to further describe why a shout was deleted by system (e.g. during deactivaton of a timeslot) */
   String comment
-
-  /** flag that marks the latest shout instance: Purpose: speed up db queries */
-  Boolean latest
   
   static auditable = true
 
@@ -123,28 +117,19 @@ class Shout implements Serializable {
     dateMod(nullable: false)
     modReasonCode(nullable: false)
     transactionId(nullable: false)
-    shoutId(nullable: false)
     comment(nullable: true)
-    latest (nullable: false)
   }
 
   static mapping = {
     id (generator: 'assigned')
-    shoutId (index: 'shout_id_idx,shout_id_latest_idx')
-    latest (index: 'shout_id_latest_idx')
   }
 
   /**
    * Special type of cloning for shout instances. This method clones the shout instance and...
    * 1) updates the modReasonCode field in the cloned instance to the value provided as method param
-   * 2) sets the 'latest' property in the original instance to false (and persists the change to the db)
-   * 3) sets the 'latest' property in the cloned instance to true
-   * 4) keeps the 'dateCreated' property in the cloned instance unchanged
-   * 5) sets 'dateMod' property in the cloned instance to *now* (in simulation time)
-   * 6) sets 'transactionId' property in the cloned instance to null
-   *
-   * Note: the original shout instance is saved (in order to persist the
-   * updated 'latest' field property while the cloned shout instance *is not saved*!!
+   * 2) keeps the 'dateCreated' property in the cloned instance unchanged
+   * 3) sets 'dateMod' property in the cloned instance to *now* (in simulation time)
+   * 4) sets 'transactionId' property in the cloned instance to null
    *
    * @param newModReasonCode new modReasonCode to use in the cloned shout instance
    * @return cloned shout instance where the cloned instance is changed as described above
@@ -164,11 +149,7 @@ class Shout implements Serializable {
     newShout.dateMod = timeService.currentTime
     newShout.modReasonCode = newModReasonCode
     newShout.transactionId = null
-    newShout.shoutId = this.shoutId
     newShout.comment = this.comment
-    newShout.latest = true
-    this.latest = false
-    this.save()
     return newShout
   }
 }

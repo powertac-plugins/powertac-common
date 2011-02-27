@@ -42,7 +42,7 @@ class ShoutDoDeleteCmd implements Serializable {
       if (obj?.shout?.broker?.id != obj?.broker?.id) return [Constants.SHOUT_WRONG_BROKER]
       return true
     })
-    shout(nullable: false, validator: {shout ->
+    shout(nullable: false)/*, validator: {shout ->
       if (!shout.latest) {
         return [Constants.SHOUT_OUTDATED]
       } else if (shout.modReasonCode == ModReasonCode.DELETIONBYUSER || shout.modReasonCode == ModReasonCode.DELETIONBYSYSTEM) {
@@ -52,7 +52,7 @@ class ShoutDoDeleteCmd implements Serializable {
       } else {
         return true
       }
-    })
+    })*/
   }
 
   static mapping = {

@@ -45,7 +45,6 @@ class OrderbookTests extends GrailsUnitTestCase {
     assertEquals('nullable', orderbook.errors.getFieldError('transactionId').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('product').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('timeslot').getCode())
-    assertEquals('nullable', orderbook.errors.getFieldError('latest').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('bidSize0').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('bidSize1').getCode())
     assertEquals('nullable', orderbook.errors.getFieldError('bidSize2').getCode())

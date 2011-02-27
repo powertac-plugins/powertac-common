@@ -26,13 +26,8 @@ import org.joda.time.Instant
  * respective cash transaction as well as an {@code overallBalance}, which represents
  * the running total of the broker's cash account.
  *
- * To determine the total amount of cash a certain broker currently owns in a certain
- * competition, one simply searches for the instance marked as {@code
- * latest=true} discriminating by competition and broker (this is an
- * indexed search and thus fast).
- *
- * @author Carsten Block, KIT
- * @version 1.0 - 04/Feb/2011
+ * @author Carsten Block, David Dauer
+ * @version 1.1 - 02/27/2011
  */
 class CashUpdate implements Serializable {
 
@@ -70,9 +65,6 @@ class CashUpdate implements Serializable {
   /** The originator of this cash transaction, e.g. pda market, tax authority, or distribution utility  */
   String origin
 
-  /** flag that marks the latest cash transaction for a particular broker in a particular competition and that is used to speed up db queries  */
-  Boolean latest
-
   /** creation date of this cash update in local competition time  */
   Instant dateCreated = timeService?.getCurrentTime()
 
@@ -89,13 +81,10 @@ class CashUpdate implements Serializable {
     origin(nullable: true)
     dateCreated(nullable: false)
     transactionId(nullable: false, blank: false)
-    latest(nullable: false)
   }
 
   static mapping = {
     id(generator: 'assigned')
-    broker(index: 'cu_broker_latest_idx')
-    latest(index: 'cu_broker_latest_idx')
   }
 
   public String toString() {

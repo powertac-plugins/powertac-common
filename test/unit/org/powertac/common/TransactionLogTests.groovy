@@ -50,7 +50,6 @@ class TransactionLogTests extends GrailsUnitTestCase {
     assertEquals('nullable', transactionLog.errors.getFieldError('transactionType').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('dateCreated').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('transactionId').getCode())
-    assertEquals('nullable', transactionLog.errors.getFieldError('latest').getCode())
   }
 
   void testQuoteValidationLogic() {

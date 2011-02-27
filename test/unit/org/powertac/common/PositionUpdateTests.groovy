@@ -47,6 +47,5 @@ class PositionUpdateTests extends GrailsUnitTestCase {
     assertEquals('nullable', positionUpdate.errors.getFieldError('overallBalance').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('dateCreated').getCode())
     assertEquals('nullable', positionUpdate.errors.getFieldError('transactionId').getCode())
-    assertEquals('nullable', positionUpdate.errors.getFieldError('latest').getCode())
   }
 }

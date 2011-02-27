@@ -49,7 +49,7 @@ class ShoutDoUpdateCmd implements Serializable {
       if (obj?.shout?.broker?.id != obj?.broker?.id) return [Constants.SHOUT_WRONG_BROKER]
       return true
     })
-    shout(nullable: false, validator: {shout ->
+    shout(nullable: false)/*, validator: {shout ->
       if (!shout.latest) {
         return [Constants.SHOUT_OUTDATED]
       } else if (shout.modReasonCode == ModReasonCode.DELETIONBYUSER || shout.modReasonCode == ModReasonCode.DELETIONBYSYSTEM) {
@@ -59,7 +59,7 @@ class ShoutDoUpdateCmd implements Serializable {
       } else {
         return true
       }
-    })
+    })*/
     quantity(nullable: true, min: 0.0, scale: Constants.DECIMALS, validator: {val, obj ->
       if (obj.limitPrice == null && val == null) {
         return [Constants.SHOUT_UPDATE_WITHOUT_LIMIT_AND_QUANTITY]

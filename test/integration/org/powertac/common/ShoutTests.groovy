@@ -86,8 +86,7 @@ class ShoutTests extends GroovyTestCase {
                             broker: broker, quantity: 1.0, limitPrice: 10.0, 
                             buySellIndicator: BuySellIndicator.BUY, 
                             orderType: OrderType.LIMIT, transactionId: 'testTransaction', 
-                            latest: true, shoutId: 'testShoutId', 
-                            dateCreated: timeService.currentTime, 
+                            dateCreated: timeService.currentTime,
                             dateMod: timeService.currentTime)
     if (!shout.validate()) println shout.errors.allErrors
     assertTrue(shout.validate())
@@ -96,8 +95,7 @@ class ShoutTests extends GroovyTestCase {
                              broker: broker, quantity: 1.0, 
                              buySellIndicator: BuySellIndicator.SELL, 
                              orderType: OrderType.MARKET, transactionId: 'testTransaction2', 
-                             latest: true, shoutId: 'testShoutId', 
-                             dateCreated: timeService.currentTime, 
+                             dateCreated: timeService.currentTime,
                              dateMod: timeService.currentTime)
     assertTrue(shout1.validate())
   }
@@ -107,8 +105,7 @@ class ShoutTests extends GroovyTestCase {
                              broker: broker, quantity: 1.0, 
                              buySellIndicator: BuySellIndicator.SELL, 
                              orderType: OrderType.MARKET, transactionId: 'testTransaction2', 
-                             latest: true, shoutId: 'testShoutId', 
-                             dateCreated: timeService.currentTime, 
+                             dateCreated: timeService.currentTime,
                              dateMod: timeService.currentTime)
     assertTrue(shout1.validate())
     timeService.currentTime = new Instant() //update competition time so that modification date for shout is later then creation date
@@ -131,10 +128,7 @@ class ShoutTests extends GroovyTestCase {
     assertEquals(ModReasonCode.DELETIONBYUSER, shout2.modReasonCode)
     assertEquals('testTransaction2', shout1.transactionId)
     assertNull(shout2.transactionId)
-    assertEquals(shout1.shoutId, shout2.shoutId)
     assertEquals(shout1.comment, shout2.comment)
-    assertFalse(shout1.latest)
-    assertTrue(shout2.latest)
 
   }
 
@@ -143,8 +137,7 @@ class ShoutTests extends GroovyTestCase {
                              'broker.id': broker.id, quantity: 1.0, 
                              buySellIndicator: BuySellIndicator.SELL, 
                              orderType: OrderType.MARKET, transactionId: 'testTransaction2', 
-                             latest: true, shoutId: 'testShoutId', 
-                             dateCreated: timeService.currentTime, 
+                             dateCreated: timeService.currentTime,
                              dateMod: timeService.currentTime)
     assertTrue(shout1.validate())
   }

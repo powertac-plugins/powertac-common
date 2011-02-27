@@ -34,8 +34,8 @@ import org.joda.time.Instant
  * latest=true} discriminating by competition, product, timeslot, and broker (this is an
  * indexed search and thus fast).
  *
- * @author Carsten Block, KIT
- * @version 1.0 - 04/Feb/2011
+ * @author Carsten Block, David Dauer
+ * @version 1.1, 02/27/2011
  */
 
 class PositionUpdate implements Serializable {
@@ -68,10 +68,8 @@ class PositionUpdate implements Serializable {
   /** The running total position the broker owns (>0) / owes (< 0) of the specified product in the specified timeslot */
   BigDecimal overallBalance
 
-
   /** The reason why this change took place */
   String reason
-
 
   /** The originator of this position change, e.g. pda market, tax authority, or distribution utility */
   String origin
@@ -81,9 +79,6 @@ class PositionUpdate implements Serializable {
 
   /** A transactionId is e.g. generated during the execution of a trade in the market and marks all domain instances in all domain classes that were created or changed during this transaction. For example the execution of a shout lead to an addition of 100 units of product 1 to broker X portfolio. Then the shout instance that was matched is marked with the same transactionId as this positionUpdate so that both domain instances can be correlated during ex-post analysis */
   String transactionId
-
-  /** flag that marks the latest position update for the specified product, timeslot and broker in the specified competition and that is used to speed up db queries */
-  Boolean latest
   
   static auditable = true
 
@@ -100,16 +95,10 @@ class PositionUpdate implements Serializable {
     origin(nullable: true)
     dateCreated(nullable: false)
     transactionId(nullable: false)
-    latest (nullable: false)
   }
 
   static mapping = {
     id (generator: 'assigned')
-    //competition(index:'pu_product_timeslot_broker_latest_idx')
-    product(index:'pu_product_timeslot_broker_latest_idx')
-    timeslot(index:'pu_product_timeslot_broker_latest_idx')
-    broker(index:'pu_product_timeslot_broker_latest_idx')
-    latest(index:'pu_product_timeslot_broker_latest_idx')
   }
 
   public String toString() {

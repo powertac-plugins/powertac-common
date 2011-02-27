@@ -30,7 +30,7 @@ class DomainClassTransformerTests extends GroovyTestCase {
     assert (product.validate() && product.save())
     timeslot = new Timeslot(serialNumber: 0, startInstant: new Instant(), endInstant: new Instant())
     assert (timeslot.validate() && timeslot.save())
-    shout = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction', latest: true, shoutId: 'testShoutId')
+    shout = new Shout(competition: competition, product: product, timeslot: timeslot, broker: broker, quantity: 1.0, limitPrice: 10.0, buySellIndicator: BuySellIndicator.BUY, orderType: OrderType.LIMIT, transactionId: 'testTransaction')
     assert (shout.validate() && shout.save())
     domainClassTransformer = new DomainClassTransformer()
   }
@@ -89,8 +89,6 @@ class DomainClassTransformerTests extends GroovyTestCase {
     assertEquals(shout.limitPrice, returnValue.limitPrice)
     assertEquals(shout.buySellIndicator, returnValue.buySellIndicator)
     assertEquals(shout.transactionId, returnValue.transactionId)
-    assertEquals(shout.latest, returnValue.latest)
-    assertEquals(shout.shoutId, returnValue.shoutId)
   }
 
   void testNonXmlStringConversion() {

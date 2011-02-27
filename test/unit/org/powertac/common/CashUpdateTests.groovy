@@ -44,7 +44,6 @@ class CashUpdateTests extends GrailsUnitTestCase {
     assertEquals('nullable', cashUpdate.errors.getFieldError('broker').getCode())
     assertEquals('nullable', cashUpdate.errors.getFieldError('relativeChange').getCode())
     assertEquals('nullable', cashUpdate.errors.getFieldError('overallBalance').getCode())
-    assertEquals('nullable', cashUpdate.errors.getFieldError('latest').getCode())
     assertEquals('nullable', cashUpdate.errors.getFieldError('dateCreated').getCode())
   }
 

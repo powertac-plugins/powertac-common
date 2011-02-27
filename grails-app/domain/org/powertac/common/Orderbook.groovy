@@ -31,8 +31,8 @@ import org.joda.time.Instant
  * handling. You can use the the {@code setOrderbookArray ( ) and {@getOrderbookArray ( )}* methods to access or manipulate orderbook instances. These are internally mapped to the
  * bid0..9, bidSize0..0, ask0..0, askSize0..9 properties.
  *
- * @author Carsten Block
- * @version 1.0 , Feb 6, 2011
+ * @author Carsten Block, David Dauer
+ * @version 1.1 , 02/27/2011
  */
 class Orderbook implements Serializable {
 
@@ -59,9 +59,6 @@ class Orderbook implements Serializable {
 
   /** the timeslot this orderbook is generated for  */
   Timeslot timeslot
-
-  /** flag that marks the latest orderbook for a particular product and timeslot in a particular competition: used to speed up db lookup of the latest orderbook instance */
-  Boolean latest
 
   /** bid price at orderbook level 0  */
   BigDecimal bid0 = null
@@ -152,9 +149,6 @@ class Orderbook implements Serializable {
 
   static mapping = {
     id(generator: 'assigned')
-    latest index: 'Orderbook_Idx_Product_Timeslot_Latest'
-    timeslot index: 'Orderbook_Idx_Product_Timeslot_Latest'
-    product index: 'Orderbook_Idx_Product_Timeslot_Latest'
   }
 
   static constraints = {
@@ -163,7 +157,6 @@ class Orderbook implements Serializable {
     transactionId(nullable: false)
     product(nullable: false)
     timeslot(nullable: false)
-    latest(nullable: false)
     bid0(nullable: true, scale: Constants.DECIMALS)
     bid1(nullable: true, scale: Constants.DECIMALS)
     bid2(nullable: true, scale: Constants.DECIMALS)
