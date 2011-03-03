@@ -1,8 +1,9 @@
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import grails.test.GrailsUnitTestCase
 import org.powertac.common.Competition
 import org.powertac.common.Constants
+import org.powertac.common.msg.PositionDoUpdateCmd;
 
 class PositionDoUpdateCmdTests extends GrailsUnitTestCase {
   protected void setUp() {

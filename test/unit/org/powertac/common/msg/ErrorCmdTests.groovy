@@ -1,4 +1,4 @@
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import grails.test.GrailsUnitTestCase
 //import org.powertac.common.exceptions.CompetitionResetException

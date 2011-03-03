@@ -14,12 +14,13 @@
  * governing permissions and limitations under the License.
  */
 
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.enumerations.ProductType
+import org.powertac.common.msg.ShoutDoCreateCmd;
 import org.powertac.common.*
 
 class ShoutDoCreateCmdTests extends GroovyTestCase {

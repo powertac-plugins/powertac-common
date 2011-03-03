@@ -1,10 +1,11 @@
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.enumerations.ProductType
+import org.powertac.common.msg.ShoutDoDeleteCmd;
 import org.powertac.common.*
 
 class ShoutDoDeleteCmdTests extends GroovyTestCase {

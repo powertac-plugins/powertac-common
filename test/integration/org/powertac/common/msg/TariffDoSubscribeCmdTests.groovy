@@ -1,9 +1,10 @@
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import org.powertac.common.enumerations.CustomerType;
+import org.powertac.common.msg.TariffDoSubscribeCmd;
 import org.powertac.common.*
 
 class TariffDoSubscribeCmdTests extends GroovyTestCase 

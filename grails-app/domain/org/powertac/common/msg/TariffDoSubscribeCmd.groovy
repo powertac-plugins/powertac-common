@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  */
 
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import org.joda.time.Instant
 import org.powertac.common.*

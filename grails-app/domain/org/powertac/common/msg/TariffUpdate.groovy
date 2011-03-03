@@ -14,37 +14,34 @@
  * governing permissions and limitations under the License.
  */
 
-package org.powertac.common.command
+package org.powertac.common.msg
 
 import org.joda.time.Instant
 import org.powertac.common.*
 
  /**
- * Command object that represents a broker's request to revoke
- * a particular tariff so that it is no longer subscribable by new customers.
- * <p/>
- * Note: Revoking a tariff does not influence running tariff contracts. These
- * remain valid until the end of the agreed runtime or until the customer decides
- * to exit the contract ahead of time.
+ * Command object that represents a broker's request to update a tariff, either
+ * to change its expiration date or to revoke it.
+ * <p>
+ * Note: Revoking a tariff causes all existing subscriptions to be switched either
+ * to the superseding tariff (if any) or to the default tariff.</p>
  *
- * @author Carsten Block
- * @version 1.0 , Date: 02.01.11
+ * @author Carsten Block, John Collins
  */
-class TariffDoRevokeCmd implements Serializable {
+class TariffUpdate implements Serializable {
   String id = IdGenerator.createId()
   String tariffId
-  Instant dateCreated = new Instant()
-
-  //static belongsTo = [broker: Broker, tariff: Tariff]
-
+  String brokerId
+  //Instant dateCreated = new Instant()
+  
+  Boolean revoke = false
+  Instant newExpiration
+  
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    tariffId (nullable: false, validator: {val, obj ->
-      Tariff tf = Tariff.get(val)
-      if (tf == null) return [Constants.NOT_FOUND]
-      else if (tf.state == Tariff.State.WITHDRAWN) return [Constants.TARIFF_OUTDATED]
-      else return true
-    })
+    tariffId (nullable: false, blank: false)
+    brokerId (nullable: false, blank: false)
+    newExpiration (nullable: true)
   }
 
   static mapping = {

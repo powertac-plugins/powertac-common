@@ -13,22 +13,29 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+package org.powertac.common.msg
 
-package org.powertac.common.command
+import org.powertac.common.IdGenerator;
 
 /**
- * Notification message sent to Broke if Tariff validation fails on server.
+ * Represents a response from server to broker to publication or update
+ * of a tariff.
  * @author jcollins
  */
-class TariffRejectNotification 
+class TariffStatus implements Serializable
 {
+  enum Status {success, noSuchTariff, noSuchUpdate, illegalOperation}
+  String id = IdGenerator.createId()
   String brokerId
   String tariffId
-  String reason
+  String updateId
+  Status status = Status.success
 
   static constraints = {
-    brokerId(nullable: false)
-    tariffId(nullable: false)
-    reason(nullable: true)
+    id(nullable: false, blank: false, unique: true)
+    brokerId(nullable: false, blank: false)
+    tariffId(nullable: false, blank: false)
+    updateId(nullable: true)
+    status(nullable: false)
   }
 }

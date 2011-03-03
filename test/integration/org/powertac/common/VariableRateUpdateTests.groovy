@@ -18,7 +18,7 @@ package org.powertac.common
 import grails.test.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.powertac.common.command.VariableRateUpdate
+import org.powertac.common.msg.VariableRateUpdate
 
 class VariableRateUpdateTests extends GrailsUnitTestCase 
 {
