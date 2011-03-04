@@ -31,14 +31,6 @@ class TariffUpdateTests extends GroovyTestCase
     super.tearDown()
   }
 
-  void testNullableValidationLogic() {
-    TariffUpdate cmd = new TariffUpdate()
-    cmd.id = null
-    assertFalse(cmd.validate())
-    assertEquals('nullable', cmd.errors.getFieldError('id').getCode())
-    assertEquals('nullable', cmd.errors.getFieldError('tariffId').getCode())
-  }
-
   void testTariffIsLegacy() {
     Tariff tariff = new Tariff(tariffSpec: tariffSpec, state: Tariff.State.WITHDRAWN)
     tariff.init()

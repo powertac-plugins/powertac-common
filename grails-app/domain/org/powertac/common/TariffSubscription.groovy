@@ -104,12 +104,10 @@ class TariffSubscription {
     // post the signup bonus
     if (tariff.signupPayment != 0.0) {
       println "signup bonus: ${customerCount} customers, total = ${customerCount * tariff.getSignupPayment()}"
-      Timeslot current = Timeslot.currentTimeslot()
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.SIGNUP,
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
-          timeslot: current, charge: customerCount * tariff.getSignupPayment())
+          postedTime: timeService.currentTime, charge: customerCount * tariff.getSignupPayment())
       tx.save()
-      current.addToTariffTx(tx)
     }
     this.save()
   }
@@ -141,12 +139,10 @@ class TariffSubscription {
     customersCommitted -= customerCount
     // Post early-withdrawal penalties
     if (tariff.earlyWithdrawPayment != 0.0 && penaltyCount > 0) {
-      Timeslot current = Timeslot.currentTimeslot()
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.WITHDRAW,
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
-          timeslot: current, charge: penaltyCount * tariff.getEarlyWithdrawPayment())
+          postedTime: timeService.currentTime, charge: penaltyCount * tariff.getEarlyWithdrawPayment())
       tx.save()
-      current.addToTariffTx(tx)
     }
     this.save()
   }
@@ -190,7 +186,7 @@ class TariffSubscription {
     def txType = amount < 0 ? TariffTransaction.TxType.PRODUCTION: TariffTransaction.TxType.CONSUMPTION
     TariffTransaction result = new TariffTransaction(txType: txType,
         customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
-        timeslot: Timeslot.currentTimeslot(), 
+        postedTime: timeService.currentTime, 
         amount: amount,
         charge: customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
     result.save()
@@ -207,7 +203,7 @@ class TariffSubscription {
       tariff.addPeriodicPayment()
       TariffTransaction pp = new TariffTransaction(txType: TariffTransaction.TxType.PERIODIC,
           customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
-          timeslot: Timeslot.currentTimeslot(),
+          postedTime: timeService.currentTime,
           charge: customersCommitted * tariff.getPeriodicPayment())
       pp.save()
       // TODO - push tx to Accounting svc

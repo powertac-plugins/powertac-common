@@ -37,9 +37,9 @@ class TariffTransactionTests extends GrailsUnitTestCase {
     assertNull(tx1.id)
     assertFalse(tx1.validate())
     assertEquals('nullable', tx1.errors.getFieldError('id').getCode())
-    assertEquals('nullable', tx1.errors.getFieldError('customerInfo').getCode())
+    //assertEquals('nullable', tx1.errors.getFieldError('customerInfo').getCode())
     assertEquals('nullable', tx1.errors.getFieldError('tariff').getCode())
-    assertEquals('nullable', tx1.errors.getFieldError('timeslot').getCode())
+    assertEquals('nullable', tx1.errors.getFieldError('postedTime').getCode())
   }
 
   void testBlankValidationLogic() {

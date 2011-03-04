@@ -15,7 +15,6 @@ class TariffSubscriptionTests extends GroovyTestCase
   
   Tariff tariff
   Broker broker
-  Timeslot timeslot
   CustomerInfo customerInfo
   DateTime now
 
@@ -27,13 +26,8 @@ class TariffSubscriptionTests extends GroovyTestCase
     broker = new Broker(userName: "Joe")
     broker.save()
     TariffTransaction.list()*.delete()
-    Timeslot.list()*.delete()
     now = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC)
     timeService.currentTime = now.toInstant()
-    timeslot = new Timeslot(serialNumber: 0, 
-        startInstant: new Instant(now), 
-        endInstant: new Instant(now.millis + TimeService.HOUR))
-    timeslot.save()
     Instant exp = new Instant(now.millis + TimeService.WEEK * 10)
     TariffSpecification tariffSpec = 
         new TariffSpecification(brokerId: broker.getId(),
@@ -99,14 +93,12 @@ class TariffSubscriptionTests extends GroovyTestCase
     assertEquals("one expiration record", 1, tsub.expirations.size())
     Instant ex = new Instant(now.millis + TimeService.WEEK * 4)
     assertEquals("correct contract interval", ex, tsub.expirations[0][0])
-    assertEquals("correct timeslot", timeslot, Timeslot.currentTimeslot())
-    def txs = Timeslot.currentTimeslot().tariffTx
     assertEquals("one transaction exists", 1, TariffTransaction.count())
+    def txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
     assertNotNull("transactions present", txs)
     assertEquals("one transaction", 1, txs.size())
-    def txArray = txs.toArray()
-    assertEquals("correct txType", TariffTransaction.TxType.SIGNUP, txArray[0].txType)
-    assertEquals("correct charge", -33.2*5, txArray[0].charge)
+    assertEquals("correct txType", TariffTransaction.TxType.SIGNUP, txs[0].txType)
+    assertEquals("correct charge", -33.2*5, txs[0].charge)
   }
   
   // subscription withdrawal without and with penalty
@@ -130,36 +122,27 @@ class TariffSubscriptionTests extends GroovyTestCase
     // move time forward 2 weeks, withdraw 2 customers
     Instant wk2 = new Instant(now.millis + TimeService.WEEK * 2)
     timeService.currentTime = wk2
-    timeslot = new Timeslot(serialNumber: 3,
-        startInstant: new Instant(wk2.millis),
-        endInstant: new Instant(wk2.millis + TimeService.HOUR))
-    timeslot.save()
     tsub.unsubscribe(2)
-    def txs = Timeslot.currentTimeslot().tariffTx
+    def txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
     assertEquals("one transaction", 1, txs.size())
-    def txArray = txs.toArray()
-    assertEquals("correct txType", TariffTransaction.TxType.WITHDRAW, txArray[0].txType)
-    assertEquals("correct charge", 42.1*2, txArray[0].charge)
+    assertEquals("correct txType", TariffTransaction.TxType.WITHDRAW, txs[0].txType)
+    assertEquals("correct charge", 42.1*2, txs[0].charge)
     assertEquals("three customers committed", 3, tsub.customersCommitted)
     
     // move time forward another week, add 4 customers and drop 1
     Instant wk3 = new Instant(now.millis + TimeService.WEEK * 2 + TimeService.HOUR * 6)
     timeService.currentTime = wk3
-    timeslot = new Timeslot(serialNumber: 7,
-        startInstant: new Instant(wk3.millis),
-        endInstant: new Instant(wk3.millis + TimeService.HOUR))
-    timeslot.save()
     TariffSubscription tsub1 = tariff.subscribe(customerInfo, 4)
     assertEquals("same subscription", tsub, tsub1)
     tsub1.unsubscribe(1)
-    txs = Timeslot.currentTimeslot().tariffTx
+    txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
     assertEquals("two transactions", 2, txs.size())
-    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(Timeslot.currentTimeslot(),
-                                                                      TariffTransaction.TxType.SIGNUP)
+    TariffTransaction ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime,
+                                                                        TariffTransaction.TxType.SIGNUP)
     assertNotNull("found signup tx", ttx)
     assertEquals("correct charge", -33.2 * 4, ttx.charge)
-    ttx = TariffTransaction.findByTimeslotAndTxType(Timeslot.currentTimeslot(),
-                                                    TariffTransaction.TxType.WITHDRAW)
+    ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime,
+                                                      TariffTransaction.TxType.WITHDRAW)
     assertNotNull("found withdraw tx", ttx)
     assertEquals("correct charge", 42.1, ttx.charge)
     assertEquals("six customers committed", 6, tsub1.customersCommitted)
@@ -188,12 +171,12 @@ class TariffSubscriptionTests extends GroovyTestCase
     tsub.usePower(24.4) // consumption
     assertEquals("correct total usage", 24.4 / 4, tsub.totalUsage)
     assertEquals("correct realized price", 0.121, tariff.realizedPrice, 1e-6)
-    Timeslot current = Timeslot.currentTimeslot() 
-    assertEquals("two transactions", 2, current.tariffTx.size())
-    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.SIGNUP)
+    def txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
+    assertEquals("two transactions", 2, txs.size())
+    TariffTransaction ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.SIGNUP)
     assertNotNull("found signup tx", ttx)
     assertEquals("correct charge", -33.2 * 4, ttx.charge, 1e-6)
-    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.CONSUMPTION)
+    ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.CONSUMPTION)
     assertNotNull("found consumption tx", ttx)
     assertEquals("correct amount", 24.4, ttx.amount)
     assertEquals("correct charge", 0.121 * 24.4, ttx.charge, 1e-6)
@@ -201,16 +184,12 @@ class TariffSubscriptionTests extends GroovyTestCase
     // just consume in the second timeslot
     Instant hour = new Instant(now.millis + TimeService.HOUR)
     timeService.currentTime = hour
-    timeslot = new Timeslot(serialNumber: 1,
-        startInstant: new Instant(hour.millis),
-        endInstant: new Instant(hour.millis + TimeService.HOUR))
-    timeslot.save()
     tsub.usePower(32.8) // consumption
     assertEquals("correct total usage", (24.4 + 32.8) / 4, tsub.totalUsage, 1e-6)
     assertEquals("correct realized price", 0.121, tariff.realizedPrice, 1e-6)
-    current = Timeslot.currentTimeslot() 
-    assertEquals("one transaction", 1, current.tariffTx.size())
-    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.CONSUMPTION)
+    txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
+    assertEquals("one transaction", 1, txs.size())
+    ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.CONSUMPTION)
     assertNotNull("found consumption tx", ttx)
     assertEquals("correct amount", 32.8, ttx.amount)
     assertEquals("correct charge", 0.121 * 32.8, ttx.charge, 1e-6)
@@ -238,16 +217,16 @@ class TariffSubscriptionTests extends GroovyTestCase
     tsub.usePower(28.8) // consumption
     assertEquals("correct total usage", 28.8 / 6, tsub.totalUsage)
     assertEquals("correct realized price", (0.112 * 28.8 + 6 * 1.3) / 28.8, tariff.realizedPrice, 1e-6)
-    Timeslot current = Timeslot.currentTimeslot() 
-    assertEquals("two transactions", 3, current.tariffTx.size())
-    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.SIGNUP)
+    def txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
+    assertEquals("two transactions", 3, txs.size())
+    TariffTransaction ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.SIGNUP)
     assertNotNull("found signup tx", ttx)
     assertEquals("correct charge", -31.2 * 6, ttx.charge, 1e-6)
-    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.CONSUMPTION)
+    ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.CONSUMPTION)
     assertNotNull("found consumption tx", ttx)
     assertEquals("correct amount", 28.8, ttx.amount)
     assertEquals("correct charge", 0.112 * 28.8, ttx.charge, 1e-6)
-    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.PERIODIC)
+    ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.PERIODIC)
     assertNotNull("found periodoc tx", ttx)
     assertEquals("correct charge", 6 * 1.3, ttx.charge, 1e-6)
   }
@@ -276,12 +255,12 @@ class TariffSubscriptionTests extends GroovyTestCase
     tsub.usePower(-244.6) // production
     assertEquals("correct total usage", -244.6 / 4, tsub.totalUsage)
     assertEquals("correct realized price", 0.102, tariff.realizedPrice, 1e-6)
-    Timeslot current = Timeslot.currentTimeslot() 
-    assertEquals("two transactions", 2, current.tariffTx.size())
-    TariffTransaction ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.SIGNUP)
+    def txs = TariffTransaction.findAllByPostedTime(timeService.currentTime)
+    assertEquals("two transactions", 2, txs.size())
+    TariffTransaction ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.SIGNUP)
     assertNotNull("found signup tx", ttx)
     assertEquals("correct charge", -34.2 * 4, ttx.charge, 1e-6)
-    ttx = TariffTransaction.findByTimeslotAndTxType(current, TariffTransaction.TxType.PRODUCTION)
+    ttx = TariffTransaction.findByPostedTimeAndTxType(timeService.currentTime, TariffTransaction.TxType.PRODUCTION)
     assertNotNull("found production tx", ttx)
     assertEquals("correct amount", -244.6, ttx.amount)
     assertEquals("correct charge", -0.102 * 244.6, ttx.charge, 1e-6)

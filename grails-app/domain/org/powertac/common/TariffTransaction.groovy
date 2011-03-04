@@ -16,14 +16,15 @@
 
 package org.powertac.common
 
+import org.joda.time.Instant
+
 /**
  *  A {@code TariffTransaction} instance represents the amount of energy consumed
  * ({@code amount < 0}) or produced {@code amount > 0} by some members of a 
  * specific customer model, in a specific timeslot, under a particular tariff.
  * Note that this is an immutable type, and therefore is not auditable.
  *
- * @author Carsten Block, KIT
- * @version 1.0 - 04/Feb/2011
+ * @author Carsten Block, John Collins
  */
 class TariffTransaction implements Serializable {
   
@@ -44,7 +45,7 @@ class TariffTransaction implements Serializable {
   Tariff tariff
 
   /** The timeslot for which this meter reading is generated */
-  Timeslot timeslot
+  Instant postedTime
 
   /** The amount of energy consumer (> 0) or produced (<0) as metered */
   BigDecimal amount = 0.0
@@ -59,9 +60,9 @@ class TariffTransaction implements Serializable {
     id (nullable: false, blank: false, unique: true)
     customerInfo (nullable: true) // no customer for publication
     tariff (nullable: false)
-    timeslot (nullable: false)
-    //amount (nullable: false, scale: Constants.DECIMALS)
-    //charge (nullable: false, scale: Constants.DECIMALS)
+    postedTime (nullable: false)
+    amount (nullable: false, scale: Constants.DECIMALS)
+    charge (nullable: false, scale: Constants.DECIMALS)
   }
 
   static mapping = {
@@ -69,6 +70,6 @@ class TariffTransaction implements Serializable {
   }
 
   public String toString() {
-    return "$customerInfo-$timeslot-$txType-$amount"
+    return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${amount}"
   }
 }

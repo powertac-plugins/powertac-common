@@ -83,7 +83,7 @@ class Tariff
   def tiers = []
   def rateMap = []
 
-  static transients = ["realizedPrice", "usageCharge", "expired", "timeService",
+  static transients = ["realizedPrice", "usageCharge", "expired", "revoked", "timeService",
                        "minDuration", "powerType", "signupPayment", 
                        "earlyWithdrawPayment", "periodicPayment"]
   

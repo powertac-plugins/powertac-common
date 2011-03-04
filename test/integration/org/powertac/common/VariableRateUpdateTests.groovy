@@ -143,7 +143,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
       hc.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
     }
-    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, broker.id, tariffId: tf.id, rateId: r1.id)
+    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, brokerId: broker.id, tariffId: tf.id, rateId: r1.id)
     if (!vru.save()) {
       vru.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
