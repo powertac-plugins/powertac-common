@@ -23,15 +23,8 @@ import org.powertac.common.HourlyCharge
  * needs to be added to its Rate.
  * @author jcollins
  */
-class VariableRateUpdate 
+class VariableRateUpdate extends TariffUpdate
 {
   HourlyCharge payload
-  String tariffId
   String rateId
-
-  static constraints = {
-    payload(nullable: false)
-    tariffId(nullable: false)
-    rateId(nullable: false)
-  }
 }

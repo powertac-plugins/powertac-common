@@ -43,7 +43,7 @@ class Tariff
   
   enum State
   {
-    OFFERED, ACTIVE, WITHDRAWN, INACTIVE
+    OFFERED, ACTIVE, WITHDRAWN, KILLED, INACTIVE
   }
 
   def timeService
@@ -296,6 +296,14 @@ class Tariff
   boolean isExpired ()
   {
     return timeService.getCurrentTime().millis > expiration.millis
+  }
+  
+  /**
+   * True just in case this tariff has been revoked.
+   */
+  boolean isRevoked ()
+  {
+    return state == State.KILLED
   }
 
   /**

@@ -13,30 +13,12 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
 package org.powertac.common.msg
 
-import org.joda.time.Instant
-import org.powertac.common.*
-
- /**
- * Command object that represents a broker's request to update a tariff, either
- * to change its expiration date or to revoke it.
- * <p>
- * Note: Revoking a tariff causes all existing subscriptions to be switched either
- * to the superseding tariff (if any) or to the default tariff.</p>
- *
- * @author Carsten Block, John Collins
+/**
+ * Message to request revocation of an existing tariff.
+ * @author jcollins
  */
-class TariffUpdate implements Serializable 
+class TariffRevoke extends TariffUpdate
 {
-  String id = IdGenerator.createId()
-  String tariffId
-  String brokerId
-  
-  //no constraints with subclasses...
-  
-  static mapping = {
-    id (generator: 'assigned')
-  }
 }

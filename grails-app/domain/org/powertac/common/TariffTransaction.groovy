@@ -27,7 +27,7 @@ package org.powertac.common
  */
 class TariffTransaction implements Serializable {
   
-  enum TxType { PRODUCTION, CONSUMPTION, PERIODIC, SIGNUP, WITHDRAW }
+  enum TxType { PUBLICATION, PRODUCTION, CONSUMPTION, PERIODIC, SIGNUP, WITHDRAW }
 
   String id = IdGenerator.createId()
   
@@ -53,11 +53,11 @@ class TariffTransaction implements Serializable {
    *  positive for credit to broker, negative for debit from broker */
   BigDecimal charge = 0.0
 
-  static belongsTo = Timeslot
+  //static belongsTo = Timeslot
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    customerInfo (nullable: false)
+    customerInfo (nullable: true) // no customer for publication
     tariff (nullable: false)
     timeslot (nullable: false)
     //amount (nullable: false, scale: Constants.DECIMALS)

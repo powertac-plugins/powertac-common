@@ -150,6 +150,33 @@ class TariffSubscription {
     }
     this.save()
   }
+  
+  /**
+   * Handles the subscription switch in case the underlying Tariff has been
+   * revoked. Returns the new subscription just in case the Tariff was
+   * revoked, otherwise returns null.
+   */
+  TariffSubscription handleRevokedTariff ()
+  {
+    // if the tariff is not revoked, then just return this subscription
+    if (!tariff.isRevoked()) {
+      log.warn "Tariff ${tariff.id} is not revoked."
+      return this
+    }
+    // if the tariff has already been superseded, then switch subscription to
+    // that new tariff
+    Tariff newTariff = tariff.isSupersededBy 
+    if (newTariff == null) {
+      // there is no superseding tariff, so we have to revert to the default tariff.
+      newTariff = tariffMarketService.getDefaultTariff
+    }
+      TariffSubscription result =
+          newTariff.subscribe(customerInfo, customersCommitted)
+      log.info "Tariff ${tariff.id} superseded by ${newTariff.id} for ${customersCommitted} customers"
+      customersCommitted = 0
+      this.save()
+      return result
+  }
 
   /**
    * Generates and returns a TariffTransaction instance for the current timeslot that
@@ -167,7 +194,8 @@ class TariffSubscription {
         amount: amount,
         charge: customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
     result.save()
-    Timeslot.currentTimeslot().addToTariffTx(result)
+    // TODO - push tx to Accounting svc
+    //Timeslot.currentTimeslot().addToTariffTx(result)
     // update total usage for the day
     if (timeService.getHourOfDay() == 0) {
       //reset the daily usage counter
@@ -182,7 +210,8 @@ class TariffSubscription {
           timeslot: Timeslot.currentTimeslot(),
           charge: customersCommitted * tariff.getPeriodicPayment())
       pp.save()
-      Timeslot.currentTimeslot().addToTariffTx(pp)
+      // TODO - push tx to Accounting svc
+      //Timeslot.currentTimeslot().addToTariffTx(pp)
     }
     this.save()
     return result

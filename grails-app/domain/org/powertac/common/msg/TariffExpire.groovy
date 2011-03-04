@@ -15,30 +15,15 @@
  */
 package org.powertac.common.msg
 
-import org.powertac.common.IdGenerator;
+import org.joda.time.Instant;
 
 /**
- * Represents a response from server to broker to publication or update
- * of a tariff.
+ * Request to change expiration date on an existing tariff. If a new
+ * expiration date is not given, then the tariff should be expired as
+ * of the current instant.
  * @author jcollins
  */
-class TariffStatus implements Serializable
+class TariffExpire extends TariffUpdate
 {
-  enum Status {success, noSuchTariff, noSuchUpdate, illegalOperation,
-               invalidTariff, invalidUpdate}
-  String id = IdGenerator.createId()
-  String brokerId
-  String tariffId
-  String updateId
-  String message
-  Status status = Status.success
-
-  static constraints = {
-    id(nullable: false, blank: false, unique: true)
-    brokerId(nullable: false, blank: false)
-    tariffId(nullable: false, blank: false)
-    updateId(nullable: true)
-    message(nullable: true)
-    status(nullable: false)
-  }
+  Instant newExpiration
 }
