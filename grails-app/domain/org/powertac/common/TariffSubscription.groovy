@@ -105,8 +105,6 @@ class TariffSubscription {
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.SIGNUP,
           customerInfo: customerInfo, customerCount: customerCount, tariff: tariff, subscription: this,
           postedTime: timeService.currentTime, charge: customerCount * tariff.getSignupPayment())
-      if (!tx.validate())
-        tx.errors.each { println it.toString() }
       assert tx.save()
     }
     this.save()
