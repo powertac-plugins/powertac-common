@@ -19,7 +19,6 @@ package org.powertac.common
 import grails.test.GrailsUnitTestCase
 
 class CustomerInfoTests extends GrailsUnitTestCase {
-
   CustomerInfo customerInfo
 
   protected void setUp() {

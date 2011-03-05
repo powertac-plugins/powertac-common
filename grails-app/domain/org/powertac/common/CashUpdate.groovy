@@ -44,11 +44,10 @@ class CashUpdate implements Serializable {
 
   String id = IdGenerator.createId()
 
-  /** A transactionId is e.g. generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction.  */
+  /** A transactionId is e.g. generated during the execution of a trade in market
+   * and marks all domain instances in all domain classes that were created or
+   * changed during this transaction.  */
   String transactionId
-
-  /** The competition this cash update belongs to  */
-  //Competition competition = Competition.currentCompetition()
 
   /** The broker who owns the cash account in which this cash update takes place  */
   Broker broker
@@ -62,7 +61,8 @@ class CashUpdate implements Serializable {
   /** The reason why this cash transaction took place  */
   String reason
 
-  /** The originator of this cash transaction, e.g. pda market, tax authority, or distribution utility  */
+  /** The originator of this cash transaction, e.g. pda market, tax authority,
+   * or distribution utility  */
   String origin
 
   /** creation date of this cash update in local competition time  */
@@ -85,6 +85,7 @@ class CashUpdate implements Serializable {
 
   static mapping = {
     id(generator: 'assigned')
+    broker(index: 'cu_competition_broker_idx')
   }
 
   public String toString() {

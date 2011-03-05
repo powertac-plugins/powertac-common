@@ -25,7 +25,6 @@ import org.powertac.common.enumerations.ProductType
 class ShoutTests extends GroovyTestCase {
 
   TimeService timeService
-  //Competition competition
   Product product
   Timeslot timeslot
   Broker broker
@@ -37,8 +36,6 @@ class ShoutTests extends GroovyTestCase {
     userName = 'testBroker'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
     timeService.setCurrentTime(new Instant())
-    //competition = new Competition(name: "test", current: true)
-    //assert (competition.validate() && competition.save())
     broker = new Broker(userName: userName, apiKey: apiKey)
     assert (broker.validate() && broker.save())
     product = new Product(productType: ProductType.Future)

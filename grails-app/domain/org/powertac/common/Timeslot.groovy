@@ -17,7 +17,6 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-//import org.joda.time.DateTime
 import org.joda.time.Instant
 
  /**
@@ -66,7 +65,6 @@ class Timeslot implements Serializable
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     serialNumber(nullable: false)
-    //competition(nullable: false)
     enabled(nullable: false)
     current(nullable: false)
     startInstant(nullable: false)

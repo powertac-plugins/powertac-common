@@ -40,7 +40,8 @@ class TariffDoSubscribeCmd implements Serializable {
     customerInfo(nullable: false)
     customerCount(min: 1)
     tariffId (nullable: false, validator: {val, obj ->
-      if (Tariff.get(val).state == Tariff.State.WITHDRAWN) return [Constants.TARIFF_OUTDATED]
+      if (Tariff.get(val).state == Tariff.State.WITHDRAWN)
+        return [Constants.TARIFF_OUTDATED]
       else return true
     })
   }

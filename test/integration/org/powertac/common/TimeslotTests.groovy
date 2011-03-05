@@ -8,7 +8,6 @@ class TimeslotTests extends GroovyTestCase
 {
   def timeService
 
-  //Competition competition
   Timeslot timeslot1
   Timeslot timeslot2
 
@@ -53,8 +52,6 @@ class TimeslotTests extends GroovyTestCase
   }
 
   void testCurrentTimeslot() {
-    //competition.current = true
-    //competition.save()
     long now = timeService.currentTime.millis
     timeslot1 = new Timeslot(serialNumber: 0, current: false, 
         startInstant: new Instant(now), 
@@ -79,8 +76,6 @@ class TimeslotTests extends GroovyTestCase
 
     assertEquals("timeslot2 is current", timeslot2, Timeslot.currentTimeslot())
 
-    //competition.current = false
-    //competition.save()
     //assertNull (Timeslot.currentTimeslot())
   }
 }

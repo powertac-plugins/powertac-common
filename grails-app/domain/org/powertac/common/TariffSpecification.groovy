@@ -61,7 +61,7 @@ class TariffSpecification implements Serializable
   
   //def rates
   //def supersedes
-
+  
   static hasMany = [rates: Rate, supersedes: String]
   
   static constraints = {

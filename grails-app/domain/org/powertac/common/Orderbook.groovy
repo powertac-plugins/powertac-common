@@ -51,7 +51,10 @@ class Orderbook implements Serializable {
 
   Instant dateExecuted = timeService?.currentTime
 
-  /** the transactionId is generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this transaction. Like this the orderbookInstance with transactionId=1 can be correlated to shout instances with transactionId=1 in ex-post analysis  */
+  /** the transactionId is generated during the execution of a trade in market and
+   * marks all domain instances in all domain classes that were created or changed
+   * during this transaction. Like this the orderbookInstance with transactionId=1
+   * can be correlated to shout instances with transactionId=1 in ex-post analysis  */
   String transactionId
 
   /** the product this orderbook is generated for  */
@@ -149,6 +152,8 @@ class Orderbook implements Serializable {
 
   static mapping = {
     id(generator: 'assigned')
+    timeslot index: 'Orderbook_Idx_Product_Timeslot'
+    product index: 'Orderbook_Idx_Product_Timeslot'
   }
 
   static constraints = {

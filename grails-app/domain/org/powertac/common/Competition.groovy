@@ -92,40 +92,49 @@ class Competition implements Serializable {
 
   /** cost for imbalances caused by too much energy in a broker portfolio */
   BigDecimal balancingCostOver = 0
+
   /** cost for imbalances caused by too little energy in a broker portfolio */
   BigDecimal balancingCostUnder = 0
 
   /** switch to enable or disable liquidity provider service */
   Boolean liquidityProviderEnabled = true
 
-  /** effectively defines the spread width, i.e. the difference between generated bid and ask shout prices */
+  /** effectively defines the spread width, i.e. the difference between generated
+   * bid and ask shout prices */
   BigDecimal premium = 0.01
 
   /** offset added by the liquidity provider to the national energy market prices */
   BigDecimal fixCost = 0
 
-  /** REST base url for retrieving market data - default to the REST interface of the IISM dato store */
+  /** REST base url for retrieving market data - default to the REST interface
+   * of the IISM data store */
   String profileUrl = 'http://ibwmarkets.iw.uni-karlsruhe.de/ps/rest'
 
   /** Name of the time series in the data profile to be used */
   String timeseriesName = 'Average Price'
 
-  /** defines the profile to use for market data retrieval; default 2007 EEX data profile */
+  /** defines the profile to use for market data retrieval; default 2007 EEX
+   * data profile */
   Long profileId = 82
 
-  /** auth token to use for authentication against the iism data store; the default token belongs to a special PowerTAC server account defined in the IISM data store*/
+  /** auth token to use for authentication against the iism data store; the default
+   * token belongs to a special PowerTAC server account defined in the IISM data store*/
   String authToken = 'FYtlyOAmeCmfdVbgkm37oQJsyZ0U1d2u'
 
-  /** regular line capacity at the point of common coupling the liquidity provider can use to bring in energy from outside (i.e. national energy market) into the simulated region or to transfer outside */
+  /** regular line capacity at the point of common coupling the liquidity provider
+   * can use to bring in energy from outside (i.e. national energy market) into the
+   * simulated region or to transfer outside */
   Integer regularCapacity = Integer.MAX_VALUE - 1
 
   /** max technical line capacity*/
   Integer maxCapacity = Integer.MAX_VALUE
 
-  /** percentage price increase (premium) that the liquidity provider will charge in situations where demand exeeds {@code regularCapacity} of the line (default: 5%)*/
+  /** percentage price increase (premium) that the liquidity provider will charge in
+   * situations where demand exeeds {@code regularCapacity} of the line (default: 5%)*/
   BigDecimal percentPriceIncrease = 0.05
 
-  /** scaling factor to convert between prices stored in the data store and local prices */
+  /** scaling factor to convert between prices stored in the data store and
+   * local prices */
   BigDecimal priceScaling = 1
 
   static hasMany = [brokers: Broker, timeslots: Timeslot]

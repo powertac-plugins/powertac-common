@@ -53,9 +53,9 @@ class Tariff
   /** The Tariff spec*/
   TariffSpecification tariffSpec
   
-  /** The broker who offers the tariff */
+  /** The broker behind this tariff */
   Broker broker
-
+  
   /** Last date new subscriptions will be accepted */
   Instant expiration
   
@@ -98,7 +98,7 @@ class Tariff
     state(nullable: false)
     isSupersededBy(nullable: true)
     maxHorizon(nullable:true)
-  }
+ }
   
   static mapping = {
     id (generator: 'assigned')

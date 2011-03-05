@@ -65,19 +65,26 @@ class PositionUpdate implements Serializable {
   /** The amount added (> 0) to or deduced (<0) from the broker's overall position for the specified product in the specified timeslot*/
   BigDecimal relativeChange
 
-  /** The running total position the broker owns (>0) / owes (< 0) of the specified product in the specified timeslot */
+  /** The running total position the broker owns (>0) / owes (< 0) of the specified
+   * product in the specified timeslot */
   BigDecimal overallBalance
 
   /** The reason why this change took place */
   String reason
 
-  /** The originator of this position change, e.g. pda market, tax authority, or distribution utility */
+  /** The originator of this position change, e.g. pda market, tax authority, or
+   * distribution utility */
   String origin
 
   /** creation date of this cash update in local competition time */
   Instant dateCreated = timeService?.getCurrentTime()
 
-  /** A transactionId is e.g. generated during the execution of a trade in the market and marks all domain instances in all domain classes that were created or changed during this transaction. For example the execution of a shout lead to an addition of 100 units of product 1 to broker X portfolio. Then the shout instance that was matched is marked with the same transactionId as this positionUpdate so that both domain instances can be correlated during ex-post analysis */
+  /** A transactionId is e.g. generated during the execution of a trade in the market
+   * and marks all domain instances in all domain classes that were created or changed
+   * during this transaction. For example the execution of a shout lead to an addition
+   * of 100 units of product 1 to broker X portfolio. Then the shout instance that was
+   * matched is marked with the same transactionId as this positionUpdate so that both
+   * domain instances can be correlated during ex-post analysis */
   String transactionId
   
   static auditable = true

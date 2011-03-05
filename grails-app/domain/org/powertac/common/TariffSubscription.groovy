@@ -32,8 +32,6 @@ class TariffSubscription {
   def timeService
 
   String id = IdGenerator.createId()
-  CustomerInfo customerInfo
-  Tariff tariff
   
   /** Total number of customers within a customer model that are committed 
    * to this tariff subscription. This needs to be a count, otherwise tiered 
@@ -105,9 +103,11 @@ class TariffSubscription {
     if (tariff.signupPayment != 0.0) {
       println "signup bonus: ${customerCount} customers, total = ${customerCount * tariff.getSignupPayment()}"
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.SIGNUP,
-          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
+          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff, subscription: this,
           postedTime: timeService.currentTime, charge: customerCount * tariff.getSignupPayment())
-      tx.save()
+      if (!tx.validate())
+        tx.errors.each { println it.toString() }
+      assert tx.save()
     }
     this.save()
   }
@@ -140,9 +140,9 @@ class TariffSubscription {
     // Post early-withdrawal penalties
     if (tariff.earlyWithdrawPayment != 0.0 && penaltyCount > 0) {
       TariffTransaction tx = new TariffTransaction(txType: TariffTransaction.TxType.WITHDRAW,
-          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff,
+          customerInfo: customerInfo, customerCount: customerCount, tariff: tariff, subscription: this,
           postedTime: timeService.currentTime, charge: penaltyCount * tariff.getEarlyWithdrawPayment())
-      tx.save()
+      assert tx.save()
     }
     this.save()
   }
@@ -170,7 +170,7 @@ class TariffSubscription {
           newTariff.subscribe(customerInfo, customersCommitted)
       log.info "Tariff ${tariff.id} superseded by ${newTariff.id} for ${customersCommitted} customers"
       customersCommitted = 0
-      this.save()
+      assert this.save()
       return result
   }
 
@@ -189,7 +189,7 @@ class TariffSubscription {
         postedTime: timeService.currentTime, 
         amount: amount,
         charge: customersCommitted * tariff.getUsageCharge(amount / customersCommitted, totalUsage, true))
-    result.save()
+    assert result.save()
     // TODO - push tx to Accounting svc
     //Timeslot.currentTimeslot().addToTariffTx(result)
     // update total usage for the day
@@ -202,14 +202,14 @@ class TariffSubscription {
     if (tariff.periodicPayment != 0.0) {
       tariff.addPeriodicPayment()
       TariffTransaction pp = new TariffTransaction(txType: TariffTransaction.TxType.PERIODIC,
-          customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
+          customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff, subscription: this,
           postedTime: timeService.currentTime,
           charge: customersCommitted * tariff.getPeriodicPayment())
-      pp.save()
+      assert pp.save()
       // TODO - push tx to Accounting svc
       //Timeslot.currentTimeslot().addToTariffTx(pp)
     }
-    this.save()
+    assert this.save()
     return result
   }
   

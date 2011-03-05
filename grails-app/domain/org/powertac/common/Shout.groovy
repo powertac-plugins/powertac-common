@@ -38,7 +38,6 @@ import org.powertac.common.enumerations.OrderType
  * "order" being a reserved word in most SQL dialects.
  *
  * @author Carsten Block
- * @version 1.1, 02/27/2011
  */
 class Shout implements Serializable {
 
@@ -105,8 +104,10 @@ class Shout implements Serializable {
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, scale: Constants.DECIMALS)
     limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.orderType == OrderType.LIMIT && val == null) return [Constants.SHOUT_LIMITORDER_NULL_LIMIT]
-      if (obj.orderType == OrderType.MARKET && val != null) return [Constants.SHOUT_MARKETORDER_WITH_LIMIT]
+      if (obj.orderType == OrderType.LIMIT && val == null)
+        return [Constants.SHOUT_LIMITORDER_NULL_LIMIT]
+      if (obj.orderType == OrderType.MARKET && val != null)
+        return [Constants.SHOUT_MARKETORDER_WITH_LIMIT]
       return true
     })
     executionQuantity(nullable: true, min: 0.0, scale: Constants.DECIMALS)
@@ -124,6 +125,7 @@ class Shout implements Serializable {
     id (generator: 'assigned')
   }
 
+  // JEC -- do we need this at all?
   /**
    * Special type of cloning for shout instances. This method clones the shout instance and...
    * 1) updates the modReasonCode field in the cloned instance to the value provided as method param

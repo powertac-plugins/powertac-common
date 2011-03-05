@@ -67,39 +67,49 @@ class TransactionLog implements Serializable {
   /** the simulation date and time this trade or quote was generated */
   Instant dateCreated = timeService.getCurrentTime()
 
-  /** A transactionId is e.g. generated during the execution of a trade in market and marks all domain instances in all domain classes that were created or changed during this single transaction. Later on this id allows for correlation of the different domain class instances during ex post analysis*/
+  /** A transactionId is e.g. generated during the execution of a trade in market and
+   * marks all domain instances in all domain classes that were created or changed
+   * during this single transaction. Later on this id allows for correlation of the
+   * different domain class instances during ex post analysis*/
   String transactionId
 
-  /** flag that marks the latest transactionLog instance for a particular product and timeslot in a particular competition: Purpose: speed up db queries */
+  /** flag that marks the latest transactionLog instance for a particular product and
+   * timeslot in a particular competition: Purpose: speed up db queries */
   Boolean latest
 
-  /** trade property: price of a trade, in a pda this is the common clearing price, in a cda this is the price of the best bid / ask the incoming order is matched against */
+  /** trade property: price of a trade, in a pda this is the common clearing price, in
+   * a cda this is the price of the best bid / ask the incoming order is matched
+   * against */
   BigDecimal price
 
   /** trade property: quantity, i.e. number of products exchanged within a single trade */
   BigDecimal quantity
 
-  /** trade property: buyer of the products of this trade - only viable for cda market model */
+  /** trade property: buyer of the products of this trade - only viable for cda market
+   * model */
   Broker buyer
 
-  /** trade property: seller of the products of this trade - only viable for cda market model */
+  /** trade property: seller of the products of this trade - only viable for cda market
+   * model */
   Broker seller
 
-  /** trade property: flag that indicates if this transaction was triggered by an incoming buy or sell order - only viable for cda market model */
+  /** trade property: flag that indicates if this transaction was triggered by an
+   * incoming buy or sell order - only viable for cda market model */
   BuySellIndicator buySellIndicator
 
   /** quote property: bid price of the best bid in the order book */
   BigDecimal bid
 
-  /** quote property: quantity of products requested in the best bid position of the orderbook */
+  /** quote property: quantity of products requested in the best bid position of the
+   * orderbook */
   BigDecimal bidSize
 
   /** quote property: ask price of the best ask in the order book */
   BigDecimal ask
 
-  /** quote property: quantity of products offered in the best ask position of the orderbook */
+  /** quote property: quantity of products offered in the best ask position of the
+   * orderbook */
   BigDecimal askSize
-
 
   static belongsTo = [product: Product, timeslot: Timeslot]
 
