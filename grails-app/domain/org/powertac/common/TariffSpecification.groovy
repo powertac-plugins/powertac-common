@@ -15,8 +15,6 @@
  */
 package org.powertac.common
 
-import java.math.BigDecimal;
-
 import org.powertac.common.enumerations.PowerType
 import org.joda.time.Duration
 import org.joda.time.Instant

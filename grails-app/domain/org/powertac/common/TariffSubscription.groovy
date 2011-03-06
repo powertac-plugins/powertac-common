@@ -181,7 +181,7 @@ class TariffSubscription {
   TariffTransaction usePower (double amount)
   {
     // generate the usage transaction
-    def txType = amount < 0 ? TariffTransaction.TxType.PRODUCTION: TariffTransaction.TxType.CONSUMPTION
+    def txType = amount < 0 ? TariffTransaction.TxType.PRODUCE: TariffTransaction.TxType.CONSUME
     TariffTransaction result = new TariffTransaction(txType: txType,
         customerInfo: customerInfo, customerCount: customersCommitted, tariff: tariff,
         postedTime: timeService.currentTime, 

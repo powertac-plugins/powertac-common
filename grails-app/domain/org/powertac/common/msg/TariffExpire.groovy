@@ -18,9 +18,9 @@ package org.powertac.common.msg
 import org.joda.time.Instant;
 
 /**
- * Request to change expiration date on an existing tariff. If a new
- * expiration date is not given, then the tariff should be expired as
- * of the current instant.
+ * Request to change expiration date on an existing tariff. There are no
+ * constraints on the new expiration date, but dates in the past will not
+ * have retroactive effect.
  * @author jcollins
  */
 class TariffExpire extends TariffUpdate

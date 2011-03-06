@@ -295,7 +295,7 @@ class Tariff
    */
   boolean isExpired ()
   {
-    return timeService.getCurrentTime().millis > expiration.millis
+    return timeService.getCurrentTime().millis >= expiration.millis
   }
   
   /**

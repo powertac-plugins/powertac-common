@@ -28,12 +28,12 @@ import org.joda.time.Instant
  */
 class TariffTransaction implements Serializable {
   
-  enum TxType { PUBLICATION, PRODUCTION, CONSUMPTION, PERIODIC, SIGNUP, WITHDRAW }
+  enum TxType { PUBLISH, PRODUCE, CONSUME, PERIODIC, SIGNUP, WITHDRAW, REVOKE }
 
   String id = IdGenerator.createId()
   
   /** Purpose of this transaction */
-  TxType txType = TxType.CONSUMPTION
+  TxType txType = TxType.CONSUME
 
   /** The customerInfo or more precisely his meter that is being read */
   CustomerInfo customerInfo

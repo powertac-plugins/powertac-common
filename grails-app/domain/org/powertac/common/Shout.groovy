@@ -127,31 +127,18 @@ class Shout implements Serializable {
 
   // JEC -- do we need this at all?
   /**
-   * Special type of cloning for shout instances. This method clones the shout instance and...
+   * Updates shout instance:
    * 1) updates the modReasonCode field in the cloned instance to the value provided as method param
    * 2) keeps the 'dateCreated' property in the cloned instance unchanged
    * 3) sets 'dateMod' property in the cloned instance to *now* (in simulation time)
-   * 4) sets 'transactionId' property in the cloned instance to null
+   * 4) (does not) sets 'transactionId' property in the cloned instance to null
    *
    * @param newModReasonCode new modReasonCode to use in the cloned shout instance
    * @return cloned shout instance where the cloned instance is changed as described above
    */
   public Shout initModification(ModReasonCode newModReasonCode) {
-    def newShout = new Shout()
-    newShout.broker = this.broker
-    newShout.product = this.product
-    newShout.timeslot = this.timeslot
-    newShout.buySellIndicator = this.buySellIndicator
-    newShout.quantity = this.quantity
-    newShout.limitPrice = this.limitPrice
-    newShout.executionQuantity = this.executionQuantity
-    newShout.executionPrice = this.executionPrice
-    newShout.orderType = this.orderType
-    newShout.dateCreated = this.dateCreated
-    newShout.dateMod = timeService.currentTime
-    newShout.modReasonCode = newModReasonCode
-    newShout.transactionId = null
-    newShout.comment = this.comment
-    return newShout
+    this.dateMod = timeService.currentTime
+    this.modReasonCode = newModReasonCode
+    return this
   }
 }
