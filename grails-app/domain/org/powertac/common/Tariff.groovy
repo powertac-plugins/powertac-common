@@ -84,7 +84,7 @@ class Tariff
   def rateMap = []
 
   static transients = ["realizedPrice", "usageCharge", "expired", "revoked", "timeService",
-                       "minDuration", "powerType", "signupPayment", 
+                       "covered", "minDuration", "powerType", "signupPayment", 
                        "earlyWithdrawPayment", "periodicPayment"]
   
   static auditable = true
@@ -232,26 +232,26 @@ class Tariff
         if (tiers.size() > ti + 1) {
           // still tiers remaining
           if (accumulatedAmount >= tiers[ti+1]) {
-            println "accumulatedAmount ${accumulatedAmount} above threshold ${ti+1}: ${tiers[ti+1]}"
+            log.debug "accumulatedAmount ${accumulatedAmount} above threshold ${ti+1}: ${tiers[ti+1]}"
             ti += 1
           }
           else if (remainingAmount + accumulatedAmount > tiers[ti+1]) {
             double amt = tiers[ti+1] - accumulatedAmount
-            println "split off ${amt} below ${tiers[ti+1]}"
+            log.debug "split off ${amt} below ${tiers[ti+1]}"
             result += amt * rateMap[ti++][di].getValue(when)
             remainingAmount -= amt
             accumulatedAmount += amt
           }
           else {
             // it all fits in the current tier
-            println "amount ${remainingAmount} fits in tier ${ti}"
+            log.debug "amount ${remainingAmount} fits in tier ${ti}"
             result += remainingAmount * rateMap[ti][di].getValue(when)
             remainingAmount = 0.0
           }
         }
         else {
           // last tier
-          println "remainder ${remainingAmount} fits in top tier"
+          log.debug "remainder ${remainingAmount} fits in top tier"
           result += remainingAmount * rateMap[ti][di].getValue(when)
           remainingAmount = 0.0
         }
@@ -299,6 +299,25 @@ class Tariff
   }
   
   /**
+   * True just in case the set of Rates cover all the possible hour
+   * and tier slots. If false, then there is some combination of hour
+   * and tier for which no Rate is specified.
+   */
+  boolean isCovered ()
+  {
+    for (tier in 0..<tiers.size()) {
+      for (hour in 0..<(isWeekly? 24 * 7: 24)) {
+        def cell = rateMap[tier][hour]
+        //println "cell: ${cell}" 
+        if (cell == null) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+  
+  /**
    * True just in case this tariff has been revoked.
    */
   boolean isRevoked ()
@@ -331,7 +350,7 @@ class Tariff
         tiers.add rate.tierThreshold
     }
     tiers = tiers.sort()
-    println "${tiers}"
+    log.info "tiers: ${tiers}"
     
     // Next, fill in the tierIndexMap, which maps tier thresholds to
     // array indices. Remember that there's always a 0.0 tier.
@@ -355,7 +374,7 @@ class Tariff
       if (rate.tierThreshold > 0.0) {
         value += tierIndexMap[rate.tierThreshold] * 7 * 24
       }
-      println "inserting ${value}, ${rate}"
+      log.debug "inserting ${value}, ${rate}"
       annotatedRates[(value)] = rate
     }
 
@@ -376,6 +395,9 @@ class Tariff
           day1 = rate.weeklyBegin - 1 // days start at 1
           dayn = rate.weeklyBegin - 1
         }
+        else {
+          dayn = 6 // no days specified for weekly rate
+        }
         if (rate.weeklyEnd >= 0) {
           dayn = rate.weeklyEnd - 1
         }
@@ -386,29 +408,29 @@ class Tariff
         hr1 = rate.dailyBegin
         hrn = rate.dailyEnd
       }
-      println "day1=${day1}, dayn=${dayn}, hr1=${hr1}, hrn=${hrn}"
+      log.debug "day1=${day1}, dayn=${dayn}, hr1=${hr1}, hrn=${hrn}"
       // now we can fill in the array
-      for (day in day1..(Math.max(dayn, isWeekly? 6 : 0))) {
-        for (hour in hr1..(Math.max(hrn, 23))) {
-          rateMap[ti][hour + (day * 24)] = rate
-        }
+      for (day in (dayn < day1? 0 : day1)..dayn) {
         // handle daily wrap-arounds
+        for (hour in (hrn < hr1? 0 : hr1)..hrn) {
+          rateMap[ti][hour + day * 24] = rate
+        }
         if (hrn < hr1) {
-          for (hour in 0..(hrn - 1)) {
-            rateMap[ti][hour + day * 24] = rate
+          for (hour in hr1..23) {
+            rateMap[ti][hour + (day * 24)] = rate
           }
         }
       }
       // handle weekly wrap-arounds
       if (dayn < day1) {
-        for (day in 0..dayn) {
-          for (hour in hr1..(Math.max(hrn, 23))) {
+        for (day in day1..6) {
+          // handle daily wrap-arounds
+          for (hour in (hrn < hr1? 0 : hr1)..hrn) {
             rateMap[ti][hour + day * 24] = rate
           }
-          // handle daily wrap-arounds
           if (hrn < hr1) {
-            for (hour in 0..(hrn - 1)) {
-              rateMap[ti][hour + day * 24] = rate
+            for (hour in hr1..23) {
+              rateMap[ti][hour + (day * 24)] = rate
             }
           }
         }
