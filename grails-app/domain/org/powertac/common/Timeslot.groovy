@@ -60,7 +60,7 @@ class Timeslot implements Serializable
   
   static transients = ['timeService']
 
-  static hasMany = [orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
+  static hasMany = [orderbooks: Orderbook, transactionLogs: MarketTransaction, shouts: Shout]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

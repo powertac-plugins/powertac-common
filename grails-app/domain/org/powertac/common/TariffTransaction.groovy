@@ -17,6 +17,7 @@
 package org.powertac.common
 
 import org.joda.time.Instant
+import org.powertac.common.enumerations.TariffTransactionType
 
 /**
  *  A {@code TariffTransaction} instance represents the amount of energy consumed
@@ -27,22 +28,20 @@ import org.joda.time.Instant
  * @author Carsten Block, John Collins
  */
 class TariffTransaction implements Serializable {
-  
-  enum TxType { PUBLISH, PRODUCE, CONSUME, PERIODIC, SIGNUP, WITHDRAW, REVOKE }
 
   String id = IdGenerator.createId()
   
+  /** Whose transaction is this? */
+  Broker broker
+  
   /** Purpose of this transaction */
-  TxType txType = TxType.CONSUME
+  TariffTransactionType txType = TariffTransactionType.CONSUME
 
   /** The customerInfo or more precisely his meter that is being read */
   CustomerInfo customerInfo
   
   /** Number of individual customers involved */
   int customerCount = 0
-  
-  /** The Tariff that applies to this billing */
-  Tariff tariff
 
   /** The timeslot for which this meter reading is generated */
   Instant postedTime
@@ -54,12 +53,14 @@ class TariffTransaction implements Serializable {
    *  positive for credit to broker, negative for debit from broker */
   BigDecimal charge = 0.0
 
-  static belongsTo = [TariffSubscription]
+  /** The Tariff that applies to this billing */
+  static belongsTo = [tariff:Tariff]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
+    broker(nullable: false)
     customerInfo (nullable: true) // no customer for publication
-    tariff (nullable: false)
+    //tariff (nullable: false)
     postedTime (nullable: false)
     amount (nullable: false, scale: Constants.DECIMALS)
     charge (nullable: false, scale: Constants.DECIMALS)

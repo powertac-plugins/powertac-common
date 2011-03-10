@@ -25,7 +25,7 @@ package org.powertac.common.enumerations;
  * First created: 02.05.2010
  * Last Updated: 02.05.2010
  */
-public enum TransactionType {
+public enum MarketTransactionType {
   QUOTE,
   TRADE
 }

@@ -39,7 +39,7 @@ class Product implements Serializable {
   /** the product type, one of Future or Option - currently only Future is supported */
   ProductType productType
 
-  static hasMany = [orderbooks: Orderbook, transactionLogs: TransactionLog]
+  static hasMany = [orderbooks: Orderbook, transactionLogs: MarketTransaction]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)

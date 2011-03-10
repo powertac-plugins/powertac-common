@@ -89,7 +89,7 @@ class Tariff
   
   static auditable = true
   
-  static hasMany = [subscriptions:TariffSubscription]
+  //static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
     id(nullable: false, blank: false)
@@ -258,35 +258,6 @@ class Tariff
       }
       return result
     }
-  }
-  
-  /**
-   * Subscribes a block of Customers from a single Customer model to
-   * this Tariff, as long as this Tariff has not expired. If the
-   * subscription succeeds, then the TariffSubscription instance is
-   * return, otherwise null.
-   * <p>
-   * Note that you cannot unsubscribe directly from a Tariff -- you have to do
-   * that from the TariffSubscription that represents the Tariff you want
-   * to unsubscribe from.</p>
-   */
-  TariffSubscription subscribe (CustomerInfo customer, int customerCount)
-  {
-    if (isExpired())
-      return null
-    
-    TariffSubscription sub = TariffSubscription.findByTariffAndCustomerInfo(this, customer)
-    if (sub == null) {
-      sub = new TariffSubscription(customerInfo: customer,
-                                   tariff: this)
-    }
-    sub.subscribe(customerCount)
-    this.addToSubscriptions(sub)
-    this.withTransaction {
-      sub.save()
-      this.save()
-    }
-    return sub
   }
   
   /**
