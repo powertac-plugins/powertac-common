@@ -36,22 +36,22 @@ class CashPositionTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    CashPosition cashPosition = new CashPosition(dateCreated: null)
+    CashPosition cashPosition = new CashPosition()
     mockForConstraintsTests(CashPosition, [cashPosition])
     assertFalse(cashPosition.validate())
     //assertEquals('nullable', cashUpdate.errors.getFieldError('id').getCode()) TODO: check nullable validation logic on cashUpdate id field
-    assertEquals('nullable', cashPosition.errors.getFieldError('transactionId').getCode())
+    //assertEquals('nullable', cashPosition.errors.getFieldError('transactionId').getCode())
     assertEquals('nullable', cashPosition.errors.getFieldError('broker').getCode())
-    assertEquals('nullable', cashPosition.errors.getFieldError('relativeChange').getCode())
+    //assertEquals('nullable', cashPosition.errors.getFieldError('relativeChange').getCode())
     assertEquals('nullable', cashPosition.errors.getFieldError('overallBalance').getCode())
-    assertEquals('nullable', cashPosition.errors.getFieldError('dateCreated').getCode())
+    //assertEquals('nullable', cashPosition.errors.getFieldError('dateCreated').getCode())
   }
 
   void testBlankValidationLogic() {
-    CashPosition cashPosition = new CashPosition(id: '', transactionId: '')
+    CashPosition cashPosition = new CashPosition(id: '')
     mockForConstraintsTests(CashPosition, [cashPosition])
     assertFalse(cashPosition.validate())
     assertEquals('blank', cashPosition.errors.getFieldError('id').getCode())
-    assertEquals('blank', cashPosition.errors.getFieldError('transactionId').getCode())
+    //assertEquals('blank', cashPosition.errors.getFieldError('transactionId').getCode())
   }
 }

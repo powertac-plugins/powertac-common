@@ -11,8 +11,8 @@ class PowertacCommonGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Carsten Block"
-    def authorEmail = "" //"powertac@carstenblock.org"
+    def author = "John Collins"
+    def authorEmail = ""
     def title = "Common domain classes and command objects for powertac competition"
     def description = '''\\
 This plugin provides common domain classes and command objects for powertac competition.
