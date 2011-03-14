@@ -43,7 +43,7 @@ class CashPositionTests extends GrailsUnitTestCase {
     //assertEquals('nullable', cashPosition.errors.getFieldError('transactionId').getCode())
     assertEquals('nullable', cashPosition.errors.getFieldError('broker').getCode())
     //assertEquals('nullable', cashPosition.errors.getFieldError('relativeChange').getCode())
-    assertEquals('nullable', cashPosition.errors.getFieldError('overallBalance').getCode())
+    //assertEquals('nullable', cashPosition.errors.getFieldError('overallBalance').getCode())
     //assertEquals('nullable', cashPosition.errors.getFieldError('dateCreated').getCode())
   }
 

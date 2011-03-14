@@ -30,19 +30,25 @@ class Broker implements Serializable {
   
   /** the broker's login or user name */
   String userName
+  
   /** the broker's identifier token */
   String apiKey = IdGenerator.createId()
   
+  /** Broker's current cash position */
+  CashPosition cash
+  
   static auditable = true
 
-  static hasMany = [shouts: Shout, tariffs: TariffSpecification]
+  static hasMany = [shouts: Shout, tariffs: TariffSpecification, marketPositions: MarketPosition]
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
     userName(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9])*/)
     apiKey(nullable: false, blank: false, unique: true, minSize: 32)
-    shouts(nullable: true)
-    tariffs(nullable: true)
+    cash(nullable: true)
+    //shouts(nullable: true)
+    //tariffs(nullable: true)
+    //marketPositions(nullable: true)
   }
 
   static mapping = {

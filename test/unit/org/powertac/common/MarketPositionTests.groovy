@@ -17,15 +17,15 @@
 package org.powertac.common
 
 import grails.test.GrailsUnitTestCase
+import org.joda.time.DateTime
 
-class TariffTransactionTests extends GrailsUnitTestCase {
+class MarketPositionTests extends GrailsUnitTestCase 
+{
 
-  TariffTransaction tx
+  def timeService
 
   protected void setUp() {
     super.setUp()
-    tx = new TariffTransaction()
-    mockForConstraintsTests(TariffTransaction)
   }
 
   protected void tearDown() {
@@ -33,11 +33,12 @@ class TariffTransactionTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    TariffTransaction tx1 = new TariffTransaction(id: null, competition: null)
-    //assertNull(tx1.id)
-    assertFalse(tx1.validate())
-    //assertEquals('nullable', tx1.errors.getFieldError('id').getCode())
-    assertEquals('nullable', tx1.errors.getFieldError('tariff').getCode())
-    assertEquals('nullable', tx1.errors.getFieldError('postedTime').getCode())
+    MarketPosition position = new MarketPosition(id: null)
+    mockForConstraintsTests(MarketPosition, [position])
+    assertFalse(position.validate())
+    //assertEquals('nullable', position.errors.getFieldError('id').getCode())
+    assertEquals('nullable', position.errors.getFieldError('timeslot').getCode())
+    assertEquals('nullable', position.errors.getFieldError('broker').getCode())
+    //assertEquals('nullable', position.errors.getFieldError('overallBalance').getCode())
   }
 }

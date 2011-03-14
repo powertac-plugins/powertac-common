@@ -20,8 +20,8 @@ import org.joda.time.Instant
 import org.powertac.common.enumerations.TariffTransactionType
 
 /**
- *  A {@code TariffTransaction} instance represents the amount of energy consumed
- * ({@code amount < 0}) or produced {@code amount > 0} by some members of a 
+ *  A {@code TariffTransaction} instance represents the quantity of energy consumed
+ * ({@code quantity < 0}) or produced {@code quantity > 0} by some members of a 
  * specific customer model, in a specific timeslot, under a particular tariff.
  * Note that this is an immutable type, and therefore is not auditable.
  *
@@ -29,7 +29,7 @@ import org.powertac.common.enumerations.TariffTransactionType
  */
 class TariffTransaction implements Serializable {
 
-  String id = IdGenerator.createId()
+  Integer id
   
   /** Whose transaction is this? */
   Broker broker
@@ -41,13 +41,13 @@ class TariffTransaction implements Serializable {
   CustomerInfo customerInfo
   
   /** Number of individual customers involved */
-  int customerCount = 0
+  Integer customerCount = 0
 
   /** The timeslot for which this meter reading is generated */
   Instant postedTime
 
-  /** The amount of energy consumer (> 0) or produced (<0) as metered */
-  BigDecimal amount = 0.0
+  /** The quantity of energy consumer (> 0) or produced (< 0) as metered */
+  BigDecimal quantity = 0.0
   
   /** The charge for this reading, according to the tariff:
    *  positive for credit to broker, negative for debit from broker */
@@ -57,12 +57,12 @@ class TariffTransaction implements Serializable {
   static belongsTo = [tariff:Tariff]
 
   static constraints = {
-    id (nullable: false, blank: false, unique: true)
+    id (nullable: false, unique: true)
     broker(nullable: false)
     customerInfo (nullable: true) // no customer for publication
-    //tariff (nullable: false)
+    tariff (nullable: false)
     postedTime (nullable: false)
-    amount (nullable: false, scale: Constants.DECIMALS)
+    quantity (nullable: false, scale: Constants.DECIMALS)
     charge (nullable: false, scale: Constants.DECIMALS)
   }
 
@@ -71,6 +71,6 @@ class TariffTransaction implements Serializable {
   }
 
   public String toString() {
-    return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${amount}"
+    return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${quantity}"
   }
 }

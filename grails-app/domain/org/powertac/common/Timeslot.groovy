@@ -48,7 +48,7 @@ class Timeslot implements Serializable
   Boolean enabled = false
 
   /** indicates that this timeslot is the present / now() timeslot in the competition */
-  Boolean current = false
+  //Boolean current = false
 
   /** start date and time of the timeslot */
   Instant startInstant
@@ -60,20 +60,19 @@ class Timeslot implements Serializable
   
   static transients = ['timeService']
 
-  static hasMany = [orderbooks: Orderbook, transactionLogs: MarketTransaction, shouts: Shout]
+  static hasMany = [orderbooks: Orderbook]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     serialNumber(nullable: false)
     enabled(nullable: false)
-    current(nullable: false)
     startInstant(nullable: false)
     endInstant(nullable: false)
   }
 
   static mapping = {
     id (generator: 'assigned')
-    current(index:'ts_current_idx')
+    //current(index:'ts_current_idx')
   }
 
   public String toString() {

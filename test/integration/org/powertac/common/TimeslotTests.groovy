@@ -24,13 +24,13 @@ class TimeslotTests extends GroovyTestCase
   }
 
   void testNullableConstraints() {
-    Timeslot timeslot = new Timeslot(id: null, serialNumber: null, competition: null, enabled: null, current: null, startInstant: null, endInstant: null)
+    Timeslot timeslot = new Timeslot(id: null, serialNumber: null, enabled: null, startInstant: null, endInstant: null)
     assertFalse(timeslot.validate())
     //assertEquals('nullable', timeslot.errors.getFieldError('id').getCode()) TODO: check null constraint on timeslot id field
     assertEquals('nullable', timeslot.errors.getFieldError('serialNumber').getCode())
     //assertEquals('nullable', timeslot.errors.getFieldError('competition').getCode())
     assertEquals('nullable', timeslot.errors.getFieldError('enabled').getCode())
-    assertEquals('nullable', timeslot.errors.getFieldError('current').getCode())
+    //assertEquals('nullable', timeslot.errors.getFieldError('current').getCode())
     assertEquals('nullable', timeslot.errors.getFieldError('startInstant').getCode())
     assertEquals('nullable', timeslot.errors.getFieldError('endInstant').getCode())
   }

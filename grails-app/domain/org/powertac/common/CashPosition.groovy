@@ -45,9 +45,9 @@ class CashPosition implements Serializable {
   Broker broker
 
   /** The new running total for the broker's cash account  */
-  BigDecimal overallBalance
+  BigDecimal overallBalance = 0.0
 
-  /** creation date of this cash update in local competition time  */
+  /** last update of this cash update in local competition time  */
   Instant lastUpdate = timeService?.getCurrentTime()
 
   //static auditable = true
@@ -66,7 +66,19 @@ class CashPosition implements Serializable {
     id(generator: 'assigned')
   }
 
-  public String toString() {
+  String toString() {
     return "${broker}-${overallBalance}-${lastUpdate}"
+  }
+  
+  /**
+   * Updates the balance in this account by the specified amount,
+   * returns the resulting balance. A withdrawal is negative,
+   * deposit is positive.
+   */
+  BigDecimal deposit (BigDecimal amount)
+  {
+    overallBalance += amount
+    lastUpdate = timeService.currentTime
+    return overallBalance
   }
 }

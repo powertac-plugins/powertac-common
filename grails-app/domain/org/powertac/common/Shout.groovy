@@ -84,7 +84,7 @@ class Shout implements Serializable {
   /** the reason for the latest modifcation to the shout instance */
   ModReasonCode modReasonCode = ModReasonCode.INSERT
 
-  /** A transactionId is generated during the execution of the shout and marks all domain instances in all domain classes that were created or changed during this single transaction (e.g. corresponding transactionLog, CashUpdate, or PositionUpdate instances). Later on this id allows for correlation of the different domain class instances during ex post analysis*/
+  /** A transactionId is generated during the execution of the shout and marks all domain instances in all domain classes that were created or changed during this single transaction (e.g. corresponding transactionLog, CashUpdate, or MarketPosition instances). Later on this id allows for correlation of the different domain class instances during ex post analysis*/
   String transactionId
 
   /** optional comment that can be used for example to further describe why a shout was deleted by system (e.g. during deactivaton of a timeslot) */
