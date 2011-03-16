@@ -7,6 +7,8 @@
 # Deployment directories
 target/
 web-app/WEB-INF/classes/
+grails-app/taglib/
+grails-app/controllers/
 
 # OS generated files 
 .DS_Store?
