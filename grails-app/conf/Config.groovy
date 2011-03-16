@@ -41,4 +41,5 @@ grails.gorm.default.mapping = {
 }
 
 //grails.validateable.packages = ['org.powertac.common.command']
-//graphviz.dot.executable='/usr/local/bin/dot'
+//graphviz.dot.executable='/usr/local/bin/dot'grails.views.default.codec="none" // none, html, base64
+grails.views.gsp.encoding="UTF-8"

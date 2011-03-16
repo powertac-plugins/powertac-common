@@ -41,4 +41,8 @@ class TariffStatus implements Serializable
     message(nullable: true)
     status(nullable: false)
   }
+  
+  static mapping = {
+    id (generator: 'assigned')
+  }
 }
