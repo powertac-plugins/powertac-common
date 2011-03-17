@@ -85,7 +85,7 @@ class TimeService
     long raw = base + (systemTime - start) * rate
     currentTime = new Instant(raw - raw % modulo)
     currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
-    log.info "updateTime: sys=${systemTime}, simTime=${currentTime}"
+    //log.info "updateTime: sys=${systemTime}, simTime=${currentTime}"
     runActions()
   }
   
