@@ -38,7 +38,7 @@ class TariffTests extends GrailsUnitTestCase
     AuditLogEvent.list()*.delete()
     start = new DateTime(2011, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     timeService.setCurrentTime(start)
-    broker = new Broker (userName: 'testBroker')
+    broker = new Broker (username: 'testBroker', password: 'testPassword')
     assert broker.save()
     exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     tariffSpec = new TariffSpecification(brokerId: broker.id, expiration: exp,
