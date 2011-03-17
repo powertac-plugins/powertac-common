@@ -14,17 +14,17 @@ class DomainClassTransformerTests extends GroovyTestCase {
   Timeslot timeslot
   Broker broker
   Shout shout
-  String userName
+  String username
   String apiKey
   DomainClassTransformer domainClassTransformer
 
   protected void setUp() {
     super.setUp()
-    userName = 'testBroker'
+    username = 'testBroker'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
     competition = new Competition(name: "test", enabled: true, current: true, competitionStatus: CompetitionStatus.Finished, description: 'testDescription')
     assert (competition.validate() && competition.save())
-    broker = new Broker(competition: competition, userName: userName, apiKey: apiKey)
+    broker = new Broker(competition: competition, username: username, apiKey: apiKey)
     assert (broker.validate() && broker.save())
     product = new Product(competition: competition, productType: ProductType.Future)
     assert (product.validate() && product.save())
@@ -57,7 +57,7 @@ class DomainClassTransformerTests extends GroovyTestCase {
     def returnValue = domainClassTransformer.fromXml(xmlString)
     assertTrue(returnValue instanceof Broker)
     assertEquals(broker.id, returnValue.id)
-    assertEquals(broker.userName, returnValue.userName)
+    assertEquals(broker.username, returnValue.username)
     assertEquals(broker.apiKey, returnValue.apiKey)
   }
 

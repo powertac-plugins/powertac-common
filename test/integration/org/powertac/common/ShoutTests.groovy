@@ -28,15 +28,15 @@ class ShoutTests extends GroovyTestCase {
   Product product
   Timeslot timeslot
   Broker broker
-  String userName
+  String username
   String apiKey
 
   protected void setUp() {
     super.setUp()
-    userName = 'testBroker'
+    username = 'testBroker'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
     timeService.setCurrentTime(new Instant())
-    broker = new Broker(userName: userName, apiKey: apiKey)
+    broker = new Broker(username: username, apiKey: apiKey)
     assert (broker.validate() && broker.save())
     product = new Product(productType: ProductType.Future)
     assert (product.validate() && product.save())

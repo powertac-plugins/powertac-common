@@ -30,7 +30,7 @@ class MarketTransactionTests extends GrailsUnitTestCase {
     super.setUp()
     timeService = new TimeService()
     timeService.setCurrentTime(new DateTime())
-    broker = new Broker (userName: 'testBroker')
+    broker = new Broker (username: 'testBroker')
     registerMetaClass(MarketTransaction)
     MarketTransaction.metaClass.getTimeService = {-> return timeService}
   }

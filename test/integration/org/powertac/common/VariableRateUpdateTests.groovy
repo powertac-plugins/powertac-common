@@ -28,7 +28,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
 
     protected void setUp() {
     super.setUp()
-    broker = new Broker (userName: 'testBroker')
+    broker = new Broker (username: 'testBroker')
     assert broker.save()
     timeService.setCurrentTime(new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC))
   }

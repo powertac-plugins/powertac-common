@@ -72,6 +72,6 @@ class Broker implements Serializable {
   }
 
   public String toString() {
-    return userName
+    return username
   }
 }

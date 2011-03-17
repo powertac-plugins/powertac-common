@@ -17,7 +17,7 @@ class TariffUpdateTests extends GroovyTestCase
   protected void setUp() {
     super.setUp()
     timeService.setCurrentTime(new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC))
-    broker = new Broker(userName: "Bob")
+    broker = new Broker(username: "Bob")
     assert (broker.validate() && broker.save())
     Instant exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     tariffSpec = new TariffSpecification(brokerId: broker.id, expiration: exp,
