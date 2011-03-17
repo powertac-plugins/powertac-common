@@ -39,7 +39,7 @@ class Broker implements Serializable {
   
   static auditable = true
 
-  static hasMany = [shouts: Shout, tariffs: TariffSpecification, marketPositions: MarketPosition]
+  static hasMany = [shouts: Shout, tariffs: Tariff, marketPositions: MarketPosition]
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)

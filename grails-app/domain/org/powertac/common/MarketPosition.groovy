@@ -30,7 +30,7 @@ package org.powertac.common
 
 class MarketPosition implements Serializable 
 {
-  //String id = IdGenerator.createId()
+  String id = IdGenerator.createId()
   
   /** the broker this position update belongs to */
   Broker broker
@@ -50,15 +50,15 @@ class MarketPosition implements Serializable
   static belongsTo = Broker
 
   static constraints = {
-    //id (nullable: false, blank: false, unique: true)
+    id (nullable: false, blank: false, unique: true)
     timeslot(nullable: false)
     broker(nullable: false)
     //overallBalance(nullable: false)
   }
 
-  //static mapping = {
-  //  id (generator: 'assigned')
-  //}
+  static mapping = {
+    id (generator: 'assigned')
+  }
 
   String toString() {
     return "${broker}-${timeslot}-${overallBalance}"
