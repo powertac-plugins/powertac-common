@@ -15,16 +15,18 @@ class DomainClassTransformerTests extends GroovyTestCase {
   Broker broker
   Shout shout
   String username
+  String password
   String apiKey
   DomainClassTransformer domainClassTransformer
 
   protected void setUp() {
     super.setUp()
     username = 'testBroker'
+    password = 'testPassword'
     apiKey = 'testApiKey-which-needs-to-be-longer-than-32-characters'
     competition = new Competition(name: "test", enabled: true, current: true, competitionStatus: CompetitionStatus.Finished, description: 'testDescription')
     assert (competition.validate() && competition.save())
-    broker = new Broker(competition: competition, username: username, apiKey: apiKey)
+    broker = new Broker(competition: competition, username: username, password: password, apiKey: apiKey)
     assert (broker.validate() && broker.save())
     product = new Product(competition: competition, productType: ProductType.Future)
     assert (product.validate() && product.save())

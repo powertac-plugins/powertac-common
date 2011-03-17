@@ -24,10 +24,11 @@ class BrokerTests extends GrailsUnitTestCase {
 
   Broker broker
   String username = 'testName'
+  String password = 'password'
   
   protected void setUp() {
     super.setUp()
-    broker = new Broker(username: username)
+    broker = new Broker(username: username, password: password)
     mockForConstraintsTests(Broker, [broker])
   }
 
@@ -40,14 +41,16 @@ class BrokerTests extends GrailsUnitTestCase {
     assertFalse(broker1.validate())
     assertEquals('nullable', broker1.errors.getFieldError('id').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('username').getCode())
+    assertEquals('nullable', broker1.errors.getFieldError('password').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
   }
 
   void testBlankValidationLogic() {
-    Broker broker1 = new Broker(id: '', username: '', apiKey: '')
+    Broker broker1 = new Broker(id: '', username: '', password: '', apiKey: '')
     assertFalse(broker1.validate())
     assertEquals('blank', broker1.errors.getFieldError('id').getCode())
     assertEquals('blank', broker1.errors.getFieldError('username').getCode())
+    assertEquals('blank', broker1.errors.getFieldError('password').getCode())
     assertEquals('blank', broker1.errors.getFieldError('apiKey').getCode())
   }
 
@@ -58,14 +61,15 @@ class BrokerTests extends GrailsUnitTestCase {
   }
 
   void testUsernameSpecialCharConstraints() {
-    Broker broker1 = new Broker (username: 'SpecialChars_!?')
+    Broker broker1 = new Broker (username: 'SpecialChars_!?', password:'test')
     assertFalse(broker1.validate())
     assertEquals('matches.invalid', broker1.errors.getFieldError('username').getCode())
   }
 
   void testUsernameTooShortConstraint() {
-    Broker broker1 = new Broker (username: '1')
+    Broker broker1 = new Broker (username: '1', password: '1')
     assertFalse(broker1.validate())
     assertEquals('minSize.notmet', broker1.errors.getFieldError('username').getCode())
+    assertEquals('minSize.notmet', broker1.errors.getFieldError('password').getCode())
   }
 }
