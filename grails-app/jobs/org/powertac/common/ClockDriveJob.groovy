@@ -14,7 +14,6 @@ class ClockDriveJob
    */
   def execute ()
   {
-    println "ClockDrive: update time"
     timeService.updateTime()
   }
 }

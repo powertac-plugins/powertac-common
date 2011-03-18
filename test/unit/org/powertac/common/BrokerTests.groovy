@@ -41,7 +41,7 @@ class BrokerTests extends GrailsUnitTestCase {
     assertFalse(broker1.validate())
     assertEquals('nullable', broker1.errors.getFieldError('id').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('username').getCode())
-    assertEquals('nullable', broker1.errors.getFieldError('password').getCode())
+    //assertEquals('nullable', broker1.errors.getFieldError('password').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
   }
 
@@ -50,7 +50,7 @@ class BrokerTests extends GrailsUnitTestCase {
     assertFalse(broker1.validate())
     assertEquals('blank', broker1.errors.getFieldError('id').getCode())
     assertEquals('blank', broker1.errors.getFieldError('username').getCode())
-    assertEquals('blank', broker1.errors.getFieldError('password').getCode())
+    //assertEquals('blank', broker1.errors.getFieldError('password').getCode())
     assertEquals('blank', broker1.errors.getFieldError('apiKey').getCode())
   }
 
