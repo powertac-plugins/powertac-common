@@ -3,7 +3,7 @@ package org.powertac.common
 
 class ClockDriveJob
 {
-  //def timeout = 5000l // execute job once in 5 seconds
+  def timeout = 5000l // execute job once in 5 seconds
   def timeService
 
   // scheduler trigger support
@@ -14,6 +14,7 @@ class ClockDriveJob
    */
   def execute ()
   {
+    println("Clock Updated " + timeService.getCurrentTime())
     timeService.updateTime()
   }
 }

@@ -118,7 +118,7 @@ class Tariff
     }
     offerDate = timeService.getCurrentTime()
     analyze()
-    this.save()
+    this.save(flush:true)
   }
   
   /**
