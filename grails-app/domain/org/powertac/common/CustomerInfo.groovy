@@ -17,6 +17,7 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.CustomerType
+import org.powertac.common.enumerations.PowerType;
 
 /**
  * A {@code CustomerInfo} instance represents a customer model (i.e. a consumer or a producer)
@@ -37,52 +38,31 @@ class CustomerInfo implements Serializable {
   /** gives a "rough" classification what type of customer to expect based on an enumeration, i.e. a fixed set of customer types */
   CustomerType customerType
 
+  /** gives the power classification of the customer */
+  PowerType powerType
+  
   /** describes whether or not this customer engages in multiple contracts at the same time */
   Boolean multiContracting = false
 
   /** describes whether or not this customer negotiates over contracts */
   Boolean canNegotiate = false
 
-  /** >0: max power consumption (think consumer with fuse limit); <0: min power production (think nuclear power plant with min output) */
-  BigDecimal upperPowerCap = 100.0
-
-  /** >0: min power consumption (think refrigerator); <0: max power production (think power plant with max capacity) */
-  BigDecimal lowerPowerCap = 0.0
-
-  /** >=0 - gram CO2 per kW/h */
-  BigDecimal carbonEmissionRate = 0.0
-
-  /** measures how wind changes translate into load / generation changes of the customer */
-  BigDecimal windToPowerConversion = 0.0
-
-  /** measures how temperature changes translate into load / generation changes of the customer */
-  BigDecimal tempToPowerConversion = 0.0
-
-  /** measures how sun intensity changes translate into load /generation changes of the customer */
-  BigDecimal sunToPowerConversion = 0.0
-
-  //TODO: Possibly add parameters as the ones below that provide descriptive statistical information on historic power consumption / production of the customer
-  /*
-  BigDecimal annualPowerAvg // >0: customer is on average a consumer; <0 customer is on average a producer
-  private BigDecimal minResponsiveness // define factor characterizing minimal responsiveness to price signals, i.e. "elasticity"
-
-  private BigDecimal maxResponsiveness;   // define factor characterizing max responsiveness to price signals, i.e. "elasticity"
-  */
-  
+   
   static auditable = true
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     name (blank: false, unique: true)
     customerType(nullable: false)
+    powerType(nullable: true)
     multiContracting (nullable: false)
     canNegotiate (nullable: false)
-    upperPowerCap (nullable: false, scale: Constants.DECIMALS)
-    lowerPowerCap (nullable: false, scale: Constants.DECIMALS)
-    carbonEmissionRate (nullable: false, scale: Constants.DECIMALS)
-    windToPowerConversion (nullable: false, scale: Constants.DECIMALS)
-    tempToPowerConversion (nullable: false, scale: Constants.DECIMALS)
-    sunToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+ //   upperPowerCap (nullable: false, scale: Constants.DECIMALS)
+ //   lowerPowerCap (nullable: false, scale: Constants.DECIMALS)
+ //   carbonEmissionRate (nullable: false, scale: Constants.DECIMALS)
+ //   windToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+ //   tempToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+ //   sunToPowerConversion (nullable: false, scale: Constants.DECIMALS)
   }
 
   static mapping = {

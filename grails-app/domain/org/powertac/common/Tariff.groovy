@@ -118,7 +118,7 @@ class Tariff
     }
     offerDate = timeService.getCurrentTime()
     analyze()
-    this.save(flush:true)
+    this.save()
   }
   
   /**
@@ -196,7 +196,7 @@ class Tariff
     if (recordUsage) {
       totalUsage += kwh
       totalCost += amt
-      this.save(flush: true)
+      this.save()
     }
     return amt
   }
