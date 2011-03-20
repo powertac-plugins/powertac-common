@@ -32,10 +32,10 @@ class Broker implements Serializable {
   String username
   /* Spring Security-related generated fields */
   String password
-  boolean enabled
-  boolean accountExpired
-  boolean accountLocked
-  boolean passwordExpired
+  Boolean enabled
+  Boolean accountExpired
+  Boolean accountLocked
+  Boolean passwordExpired
 
   /** the broker's identifier token   */
   String apiKey = IdGenerator.createId()
