@@ -47,9 +47,6 @@ class Timeslot implements Serializable
   /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
   Boolean enabled = false
 
-  /** indicates that this timeslot is the present / now() timeslot in the competition */
-  //Boolean current = false
-
   /** start date and time of the timeslot */
   Instant startInstant
 
@@ -72,11 +69,11 @@ class Timeslot implements Serializable
 
   static mapping = {
     id (generator: 'assigned')
-    //current(index:'ts_current_idx')
+    enabled(index:'ts_enabled_idx')
   }
 
   public String toString() {
-    return "$startInstant - $endInstant";
+    return "${serialNumber}: ${startInstant} - ${endInstant} (${enabled})";
   }
 
   /**
@@ -84,9 +81,14 @@ class Timeslot implements Serializable
    * time granularity reported by the timeService being the same as the length
    * of a timeslot.
    */
-  public static Timeslot currentTimeslot() 
+  public static Timeslot currentTimeslot () 
   {
     return Timeslot.findByStartInstant(timeService.currentTime)
+  }
+  
+  public static List<Timeslot> enabledTimeslots ()
+  {
+    return Timeslot.findAllByEnabled(true)
   }
 
   public Timeslot next() {
