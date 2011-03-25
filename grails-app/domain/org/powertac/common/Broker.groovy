@@ -39,6 +39,9 @@ class Broker implements Serializable {
 
   /** the broker's identifier token    */
   String apiKey = IdGenerator.createId()
+  
+  /** If true, the broker is local to the server and does not receive messages */
+  Boolean local = false
 
   /** Broker's current cash position    */
   CashPosition cash
