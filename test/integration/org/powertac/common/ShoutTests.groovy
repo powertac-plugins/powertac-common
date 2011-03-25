@@ -54,11 +54,11 @@ class ShoutTests extends GroovyTestCase {
     Shout shout = new Shout(competition: null, orderType: null)
     assertFalse(shout.validate())
     assertEquals('nullable', shout.errors.getFieldError('broker').getCode())
-    assertEquals('nullable', shout.errors.getFieldError('product').getCode())
+    //assertEquals('nullable', shout.errors.getFieldError('product').getCode())
     assertEquals('nullable', shout.errors.getFieldError('timeslot').getCode())
     assertEquals('nullable', shout.errors.getFieldError('buySellIndicator').getCode())
     assertEquals('nullable', shout.errors.getFieldError('quantity').getCode())
-    assertEquals('nullable', shout.errors.getFieldError('orderType').getCode())
+    //assertEquals('nullable', shout.errors.getFieldError('orderType').getCode())
   }
 
   void testMinValidationLogic() {
@@ -68,17 +68,17 @@ class ShoutTests extends GroovyTestCase {
     assertEquals('min.notmet', shout.errors.getFieldError('quantity').getCode())
   }
 
-  void testMarketLimitOrderConstraints() {
-    Shout shout1 = new Shout(orderType: OrderType.MARKET, limitPrice: 1.0)
-    assertFalse(shout1.validate())
-    assertEquals(Constants.SHOUT_MARKETORDER_WITH_LIMIT, 
-                 shout1.errors.getFieldError('limitPrice').getCode())
-
-    Shout shout2 = new Shout(orderType: OrderType.LIMIT)
-    assertFalse(shout2.validate())
-    assertEquals(Constants.SHOUT_LIMITORDER_NULL_LIMIT, 
-                 shout2.errors.getFieldError('limitPrice').getCode())
-  }
+//  void testMarketLimitOrderConstraints() {
+//    Shout shout1 = new Shout(orderType: OrderType.MARKET, limitPrice: 1.0)
+//    assertFalse(shout1.validate())
+//    assertEquals(Constants.SHOUT_MARKETORDER_WITH_LIMIT, 
+//                 shout1.errors.getFieldError('limitPrice').getCode())
+//
+//    Shout shout2 = new Shout(orderType: OrderType.LIMIT)
+//    assertFalse(shout2.validate())
+//    assertEquals(Constants.SHOUT_LIMITORDER_NULL_LIMIT, 
+//                 shout2.errors.getFieldError('limitPrice').getCode())
+//  }
 
   void testValidShoutDoCreateCmd() {
     Shout shout = new Shout(product: product, timeslot: timeslot, 
@@ -119,10 +119,10 @@ class ShoutTests extends GroovyTestCase {
     assertEquals(shout1.limitPrice, shout2.limitPrice)
     assertEquals(shout1.executionQuantity, shout2.executionQuantity)
     assertEquals(shout1.executionPrice, shout2.executionPrice)
-    assertEquals(shout1.orderType, shout2.orderType)
+    //assertEquals(shout1.orderType, shout2.orderType)
     //assertEquals(shout1.dateCreated, shout2.dateCreated) TODO: check back - copied DateTime instances differ by some milliseconds for whatever reason...
     //assertTrue(shout1.dateMod < shout2.dateMod)
-    assertEquals(shout1.orderType, shout2.orderType)
+    //assertEquals(shout1.orderType, shout2.orderType)
     //assertEquals(ModReasonCode.INSERT, shout1.modReasonCode)
     assertEquals(ModReasonCode.DELETIONBYUSER, shout2.modReasonCode)
     assertEquals('testTransaction2', shout1.transactionId)

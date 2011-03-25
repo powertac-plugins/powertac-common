@@ -73,7 +73,8 @@ class Shout implements Serializable {
   BigDecimal executionPrice
 
   /** either MARKET or LIMIT order */
-  OrderType orderType = OrderType.MARKET
+  // not needed - presence of limit price indicates limit order
+  //OrderType orderType = OrderType.MARKET
 
   /** the simulation time when the original shout instance was first created */
   Instant dateCreated = timeService.getCurrentTime()
@@ -99,25 +100,19 @@ class Shout implements Serializable {
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     broker(nullable: false)
-    product(nullable: false)
+    product(nullable: true)
     timeslot(nullable: false)
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, scale: Constants.DECIMALS)
-    limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.orderType == OrderType.LIMIT && val == null)
-        return [Constants.SHOUT_LIMITORDER_NULL_LIMIT]
-      if (obj.orderType == OrderType.MARKET && val != null)
-        return [Constants.SHOUT_MARKETORDER_WITH_LIMIT]
-      return true
-    })
+    limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS)
     executionQuantity(nullable: true, min: 0.0, scale: Constants.DECIMALS)
 
     executionPrice(nullable: true, min: 0.0, scale: Constants.DECIMALS)
-    orderType(nullable: false)
-    dateCreated(nullable: false)
-    dateMod(nullable: false)
-    modReasonCode(nullable: false)
-    transactionId(nullable: false)
+    //orderType(nullable: true)
+    dateCreated(nullable: true)
+    dateMod(nullable: true)
+    modReasonCode(nullable: true)
+    transactionId(nullable: true)
     comment(nullable: true)
   }
 
