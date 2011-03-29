@@ -16,6 +16,8 @@
 
 package org.powertac.common
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import org.powertac.common.enumerations.CompetitionStatus
 
@@ -65,10 +67,10 @@ class Competition implements Serializable {
   Integer deactivateTimeslotsAhead = 1
 
   /** the start time of the simulation scenario, in wall-clock time */
-  Instant simulationStartTime = new Instant()
+  Instant simulationStartTime
 
   /** the start time of the simulation scenario, in sim time. */
-  Instant simulationBaseTime = new Instant()
+  Instant simulationBaseTime = new DateTime(2010, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
 
   /** the time-compression ratio for the simulation. So if we are running one-hour timeslots every 5 seconds, the rate would be 720 (=default).    */
   Long simulationRate = 720l
@@ -156,7 +158,7 @@ class Competition implements Serializable {
     deactivateTimeslotsAhead(nullable: false, min: 0, validator: {deactivateTimeslotsAhead, competition ->
       deactivateTimeslotsAhead <= (competition.minimumTimeslotCount- competition.timeslotsOpen) ? true : ['deactivateTimeslotsAhead.greater.timeslotsOpen']
     })
-    simulationStartTime(nullable: false)
+    simulationStartTime(nullable: true)
     simulationBaseTime(nullable: false)
     //simulationModulo (nullable: false)
     simulationRate (nullable: false)

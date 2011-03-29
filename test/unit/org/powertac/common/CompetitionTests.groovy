@@ -56,7 +56,7 @@ class CompetitionTests extends GrailsUnitTestCase {
     assertEquals('nullable', competition1.errors.getFieldError('minimumTimeslotCount').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('timeslotsOpen').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('deactivateTimeslotsAhead').getCode())
-    assertEquals('nullable', competition1.errors.getFieldError('simulationStartTime').getCode())
+    //assertEquals('nullable', competition1.errors.getFieldError('simulationStartTime').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('simulationBaseTime').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('simulationRate').getCode())
     //assertEquals('nullable', competition1.errors.getFieldError('simulationModulo').getCode())

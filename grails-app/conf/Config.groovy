@@ -1,4 +1,4 @@
-// configuration for plugin testing - will not be included in the plugin zip
+// configuration for plugin testing - will not be included in the plugin zip (why not?)
 
 log4j = {
     // Example of changing the log pattern for the default console
@@ -25,7 +25,7 @@ log4j = {
 
     warn   'org.mortbay.log'
     
-    info   'grails.app'
+    info   'org.powertac.common', 'grails.app'
 }
 
 // Added by the Joda-Time plugin:
