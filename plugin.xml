@@ -11,16 +11,16 @@ This plugin provides common domain classes and command objects for powertac comp
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
     <resource>org.powertac.common.Broker</resource>
-    <resource>org.powertac.common.CashUpdate</resource>
+    <resource>org.powertac.common.CashPosition</resource>
     <resource>org.powertac.common.Competition</resource>
     <resource>org.powertac.common.CustomerInfo</resource>
     <resource>org.powertac.common.HourlyCharge</resource>
+    <resource>org.powertac.common.MarketPosition</resource>
+    <resource>org.powertac.common.MarketTransaction</resource>
     <resource>org.powertac.common.Orderbook</resource>
-    <resource>org.powertac.common.PositionUpdate</resource>
     <resource>org.powertac.common.Product</resource>
     <resource>org.powertac.common.Rate</resource>
     <resource>org.powertac.common.Shout</resource>
-    <resource>org.powertac.common.SimulationAction</resource>
     <resource>org.powertac.common.Tariff</resource>
     <resource>org.powertac.common.TariffSpecification</resource>
     <resource>org.powertac.common.TariffSubscription</resource>
@@ -28,13 +28,10 @@ This plugin provides common domain classes and command objects for powertac comp
     <resource>org.powertac.common.Timeslot</resource>
     <resource>org.powertac.common.TransactionLog</resource>
     <resource>org.powertac.common.Weather</resource>
-    <resource>org.powertac.common.command.CashDoUpdateCmd</resource>
-    <resource>org.powertac.common.command.PositionDoUpdateCmd</resource>
-    <resource>org.powertac.common.command.ShoutDoCreateCmd</resource>
-    <resource>org.powertac.common.command.ShoutDoDeleteCmd</resource>
-    <resource>org.powertac.common.command.ShoutDoUpdateCmd</resource>
-    <resource>org.powertac.common.command.TariffDoRevokeCmd</resource>
-    <resource>org.powertac.common.command.TariffDoSubscribeCmd</resource>
+    <resource>org.powertac.common.msg.TariffExpire</resource>
+    <resource>org.powertac.common.msg.TariffRevoke</resource>
+    <resource>org.powertac.common.msg.TariffStatus</resource>
+    <resource>org.powertac.common.msg.VariableRateUpdate</resource>
     <resource>org.powertac.common.ClockDriveJob</resource>
     <resource>org.powertac.common.TimeService</resource>
   </resources>

@@ -52,7 +52,7 @@ class Broker implements Serializable {
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    username(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9])*/)
+    username(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9_])*/)
     password(nullable: true, blank: false, minSize: 2) // TODO: with nullable:false all tests fail?!
     apiKey(nullable: false, blank: false, unique: true, minSize: 32)
     cash(nullable: true)

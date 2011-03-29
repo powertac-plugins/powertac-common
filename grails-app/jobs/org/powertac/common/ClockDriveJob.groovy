@@ -23,6 +23,7 @@ package org.powertac.common
 class ClockDriveJob
 {
   def timeService
+  def concurrent = false // don't want two copies running
 
   // scheduler trigger support
   //static triggers = {simple name:'clockTrigger', group:'clockGroup'}

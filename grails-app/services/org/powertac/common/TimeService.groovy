@@ -58,7 +58,8 @@ class TimeService
 {
   static transactional = false
 
-  static final long HOUR = 1000l * 60 * 60
+  static final long MINUTE = 1000l * 60
+  static final long HOUR = MINUTE * 60
   static final long DAY = HOUR * 24
   static final long WEEK = DAY * 7
   
