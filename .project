@@ -22,10 +22,5 @@
 			<type>2</type>
 			<locationURI>GRAILS_ROOT/1.3.7/projects/powertac-common/plugins</locationURI>
 		</link>
-		<link>
-			<name>tomcat-1.3.7-src-groovy</name>
-			<type>2</type>
-			<locationURI>GRAILS_ROOT/1.3.7/projects/powertac-common/plugins/tomcat-1.3.7/src/groovy</locationURI>
-		</link>
 	</linkedResources>
 </projectDescription>

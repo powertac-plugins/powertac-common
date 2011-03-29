@@ -47,10 +47,10 @@ class MarketTransaction implements Serializable {
   /** the product for which this trade or quote information is created */
   //Product product // not clear what this means -- JEC
 
-  /** price of a trade, positive for a buy, negative for a sell */
+  /** price/mWh of a trade, positive for a buy, negative for a sell */
   BigDecimal price
 
-  /** quantity of trade, positive for buy, negative for sell */
+  /** quantity of trade in mWh, positive for buy, negative for sell */
   BigDecimal quantity
 
   /** trade property: buyer or seller of the products of this trade */

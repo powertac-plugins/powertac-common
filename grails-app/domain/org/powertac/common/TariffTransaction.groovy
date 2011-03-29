@@ -46,10 +46,12 @@ class TariffTransaction implements Serializable {
   /** The timeslot for which this meter reading is generated */
   Instant postedTime
 
-  /** The quantity of energy consumer (> 0) or produced (< 0) as metered */
+  /** The total quantity of energy consumed (> 0) or produced (< 0) in kWh.
+   *  Note that this is not per-individual in a population model, but rather
+   *  aggregate usage by customerCount individuals. */
   BigDecimal quantity = 0.0
   
-  /** The charge for this reading, according to the tariff:
+  /** The total charge for this reading, according to the tariff:
    *  positive for credit to broker, negative for debit from broker */
   BigDecimal charge = 0.0
 
