@@ -25,10 +25,10 @@ class CashPositionTests extends GrailsUnitTestCase {
 
   protected void setUp() {
     super.setUp()
-    timeService = new TimeService()
-    timeService.setCurrentTime(new DateTime())
-    registerMetaClass(CashPosition)
-    CashPosition.metaClass.getTimeService = {-> return timeService}
+    //timeService = new TimeService()
+    //timeService.setCurrentTime(new DateTime())
+    //registerMetaClass(CashPosition)
+    //CashPosition.metaClass.getTimeService = {-> return timeService}
   }
 
   protected void tearDown() {

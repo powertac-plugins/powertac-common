@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 the original author or authors.
+ * Copyright 2009-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ class CashPosition implements Serializable {
    * instance is deserialized rather than constructed.
    * Note: In the code below you can can still user timeService.xyzMethod()
    */
-  private getTimeService() {
-    ApplicationHolder.application.mainContext.timeService
-  }
+  //private getTimeService() {
+  //  ApplicationHolder.application.mainContext.timeService
+  //}
 
   String id = IdGenerator.createId()
 
@@ -48,7 +48,7 @@ class CashPosition implements Serializable {
   BigDecimal overallBalance = 0.0
 
   /** last update of this cash update in local competition time  */
-  Instant lastUpdate = timeService?.getCurrentTime()
+  //Instant lastUpdate = timeService?.getCurrentTime()
 
   //static auditable = true
   
@@ -60,7 +60,7 @@ class CashPosition implements Serializable {
     id(nullable: false, blank: false, unique: true)
     broker(nullable: false)
     overallBalance(nullable: false, scale: Constants.DECIMALS)
-    lastUpdate(nullable: true)
+    //lastUpdate(nullable: true)
   }
 
   static mapping = {
@@ -68,7 +68,7 @@ class CashPosition implements Serializable {
   }
 
   String toString() {
-    return "${broker}-${overallBalance}-${lastUpdate}"
+    return "${broker}-${overallBalance}" //-${lastUpdate}"
   }
   
   /**
@@ -79,7 +79,7 @@ class CashPosition implements Serializable {
   BigDecimal deposit (BigDecimal amount)
   {
     overallBalance += amount
-    lastUpdate = timeService.currentTime
+    //lastUpdate = timeService.currentTime
     return overallBalance
   }
 }
