@@ -43,7 +43,7 @@ class Broker implements Serializable {
   /** If true, the broker is local to the server and does not receive messages */
   Boolean local = false
 
-  /** Broker's current cash position    */
+  /** Broker's current cash position */
   CashPosition cash
 
   static auditable = true

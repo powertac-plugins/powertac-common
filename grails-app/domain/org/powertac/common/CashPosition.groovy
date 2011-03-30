@@ -60,6 +60,7 @@ class CashPosition implements Serializable {
     id(nullable: false, blank: false, unique: true)
     broker(nullable: false)
     overallBalance(nullable: false, scale: Constants.DECIMALS)
+    lastUpdate(nullable: true)
   }
 
   static mapping = {
