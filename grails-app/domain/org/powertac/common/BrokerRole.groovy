@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 class BrokerRole implements Serializable {
 
 	Broker broker
-	org.powertac.common.Role role
+	Role role
 
 	boolean equals(other) {
 		if (!(other instanceof BrokerRole)) {
