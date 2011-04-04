@@ -27,7 +27,7 @@ class TariffStatus implements Serializable
   enum Status {success, noSuchTariff, noSuchUpdate, illegalOperation,
                invalidTariff, invalidUpdate}
   String id = IdGenerator.createId()
-  String brokerId
+  String brokerUsername
   String tariffId
   String updateId
   String message
@@ -35,7 +35,7 @@ class TariffStatus implements Serializable
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    brokerId(nullable: false, blank: false)
+    brokerUsername(nullable: false, blank: false)
     tariffId(nullable: false, blank: false)
     updateId(nullable: true)
     message(nullable: true)

@@ -34,8 +34,8 @@ class TariffSpecification implements Serializable
 {
   String id = IdGenerator.createId()
   
-  /** ID of the Broker who offers this Tariff */
-  String brokerId
+  /** username of the Broker who offers this Tariff */
+  String brokerUsername
   
   /** Last date new subscriptions will be accepted */
   Instant expiration
@@ -64,7 +64,7 @@ class TariffSpecification implements Serializable
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    brokerId(nullable: false, blank: false)
+    brokerUsername(nullable: false, blank: false)
     expiration(nullable: true)
     minDuration(min: 24*60*60*1000l) // one day
     powerType(nullable: false)

@@ -111,7 +111,7 @@ class Tariff
   void init ()
   {
     id = tariffSpec.id
-    broker = Broker.findById(tariffSpec.getBrokerId())
+    broker = Broker.findByUsername(tariffSpec.brokerUsername)
     expiration = tariffSpec.getExpiration()
     tariffSpec.getSupersedes().each {
       Tariff.findById(it).isSupersededBy = this
