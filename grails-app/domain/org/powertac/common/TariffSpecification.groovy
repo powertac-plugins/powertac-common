@@ -16,8 +16,11 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.PowerType
+import org.powertac.common.transformer.InstantConverter
 import org.joda.time.Duration
 import org.joda.time.Instant
+import org.simpleframework.xml.*
+import org.simpleframework.xml.convert.Convert
 
 /**
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
@@ -30,35 +33,48 @@ import org.joda.time.Instant
  * associated HourlyCharge instances.</p>
  * @author John Collins
  */
-class TariffSpecification implements Serializable
+@Root
+class TariffSpecification //implements Serializable
 {
+  @Element
   String id = IdGenerator.createId()
   
   /** username of the Broker who offers this Tariff */
+  @Attribute
   String brokerUsername
   
   /** Last date new subscriptions will be accepted */
+  @Element
+  @Convert(InstantConverter.class)
   Instant expiration
   
   /** Minimum contract duration (in milliseconds) */
+  @Attribute
   Long minDuration = 0
   
   /** Type of power covered by this tariff */
+  @Attribute
   PowerType powerType = PowerType.CONSUMPTION
   
   /** One-time payment for subscribing to tariff, positive for payment
    *  from customer, negative for payment to customer. */
+  @Attribute
   BigDecimal signupPayment = 0.0
   
   /** Payment from customer to broker for canceling subscription before
    *  minDuration has elapsed. */
+  @Attribute
   BigDecimal earlyWithdrawPayment = 0.0
   
   /** Flat payment per period for two-part tariffs */
+  @Attribute
   BigDecimal periodicPayment = 0.0
   
-  //def rates
-  //def supersedes
+  @ElementList
+  List<Rate> rates
+
+  @ElementList(required=false)
+  List<String> supersedes
   
   static hasMany = [rates: Rate, supersedes: String]
   

@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.base.AbstractDateTime
 import org.joda.time.base.AbstractInstant
 import org.joda.time.*
+import org.simpleframework.xml.*
 
 /**
 * Tariffs are composed of Rates.
@@ -26,20 +27,33 @@ import org.joda.time.*
 * of day, or above some usage threshold. Rates may be fixed or variable. 
 * @author jcollins
 */
-class Rate implements Serializable
+@Root
+class Rate //implements Serializable
 {
+  @Element
   String id = IdGenerator.createId()
 
+  @Attribute(required=false)
   int weeklyBegin = -1 // weekly applicability
+  @Attribute(required=false)
   int weeklyEnd = -1
+  @Attribute(required=false)
   int dailyBegin = -1 // daily applicability
+  @Attribute(required=false)
   int dailyEnd = -1
+  @Attribute(required=false)
   BigDecimal tierThreshold = 0.0 // tier applicability
+  @Attribute
   boolean isFixed = true // if true, minValue is fixed rate
+  @Attribute
   BigDecimal minValue = 0.0 // min and max rate values
+  @Attribute
   BigDecimal maxValue = 0.0
+  @Attribute(required=false)
   int noticeInterval = 0 // notice interval for variable rate in hours
+  @Attribute(required=false)
   BigDecimal expectedMean = 0.0 // expected mean value for variable rate
+  @ElementList(required=false, type=java.util.List)
   TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
   static auditable = true
