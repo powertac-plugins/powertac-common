@@ -16,6 +16,7 @@
 package org.powertac.common
 
 import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Represents the cost of power during a specific timeslot in a variable
@@ -25,8 +26,10 @@ import org.joda.time.Instant
  * 
  * @author jcollins
  */
+@XStreamAlias("charge")
 class HourlyCharge implements Serializable, Comparable
 {
+  @XStreamAsAttribute
   BigDecimal value
   Instant atTime
 	

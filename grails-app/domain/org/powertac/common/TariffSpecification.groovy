@@ -19,8 +19,7 @@ import org.powertac.common.enumerations.PowerType
 import org.powertac.common.transformer.InstantConverter
 import org.joda.time.Duration
 import org.joda.time.Instant
-import org.simpleframework.xml.*
-import org.simpleframework.xml.convert.Convert
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
@@ -33,47 +32,42 @@ import org.simpleframework.xml.convert.Convert
  * associated HourlyCharge instances.</p>
  * @author John Collins
  */
-@Root
+@XStreamAlias("tariff-spec")
 class TariffSpecification //implements Serializable
 {
-  @Element
   String id = IdGenerator.createId()
   
   /** username of the Broker who offers this Tariff */
-  @Attribute
+  @XStreamAsAttribute
   String brokerUsername
   
   /** Last date new subscriptions will be accepted */
-  @Element
-  @Convert(InstantConverter.class)
   Instant expiration
   
   /** Minimum contract duration (in milliseconds) */
-  @Attribute
+  @XStreamAsAttribute
   Long minDuration = 0
   
   /** Type of power covered by this tariff */
-  @Attribute
+  @XStreamAsAttribute
   PowerType powerType = PowerType.CONSUMPTION
   
   /** One-time payment for subscribing to tariff, positive for payment
    *  from customer, negative for payment to customer. */
-  @Attribute
+  @XStreamAsAttribute
   BigDecimal signupPayment = 0.0
   
   /** Payment from customer to broker for canceling subscription before
    *  minDuration has elapsed. */
-  @Attribute
+  @XStreamAsAttribute
   BigDecimal earlyWithdrawPayment = 0.0
   
   /** Flat payment per period for two-part tariffs */
-  @Attribute
+  @XStreamAsAttribute
   BigDecimal periodicPayment = 0.0
   
-  @ElementList
   List<Rate> rates
 
-  @ElementList(required=false)
   List<String> supersedes
   
   static hasMany = [rates: Rate, supersedes: String]
