@@ -16,8 +16,10 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.PowerType
+import org.powertac.common.transformer.InstantConverter
 import org.joda.time.Duration
 import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
@@ -30,41 +32,49 @@ import org.joda.time.Instant
  * associated HourlyCharge instances.</p>
  * @author John Collins
  */
-class TariffSpecification implements Serializable
+@XStreamAlias("tariff-spec")
+class TariffSpecification //implements Serializable
 {
   String id = IdGenerator.createId()
   
-  /** ID of the Broker who offers this Tariff */
-  String brokerId
+  /** username of the Broker who offers this Tariff */
+  @XStreamAsAttribute
+  String brokerUsername
   
   /** Last date new subscriptions will be accepted */
   Instant expiration
   
   /** Minimum contract duration (in milliseconds) */
+  @XStreamAsAttribute
   Long minDuration = 0
   
   /** Type of power covered by this tariff */
+  @XStreamAsAttribute
   PowerType powerType = PowerType.CONSUMPTION
   
   /** One-time payment for subscribing to tariff, positive for payment
    *  from customer, negative for payment to customer. */
+  @XStreamAsAttribute
   BigDecimal signupPayment = 0.0
   
   /** Payment from customer to broker for canceling subscription before
    *  minDuration has elapsed. */
+  @XStreamAsAttribute
   BigDecimal earlyWithdrawPayment = 0.0
   
   /** Flat payment per period for two-part tariffs */
+  @XStreamAsAttribute
   BigDecimal periodicPayment = 0.0
   
-  //def rates
-  //def supersedes
+  List<Rate> rates
+
+  List<String> supersedes
   
   static hasMany = [rates: Rate, supersedes: String]
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    brokerId(nullable: false, blank: false)
+    brokerUsername(nullable: false, blank: false)
     expiration(nullable: true)
     minDuration(min: 24*60*60*1000l) // one day
     powerType(nullable: false)

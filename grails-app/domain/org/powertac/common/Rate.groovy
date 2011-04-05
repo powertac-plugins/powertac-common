@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.base.AbstractDateTime
 import org.joda.time.base.AbstractInstant
 import org.joda.time.*
+import com.thoughtworks.xstream.annotations.*
 
 /**
 * Tariffs are composed of Rates.
@@ -26,24 +27,35 @@ import org.joda.time.*
 * of day, or above some usage threshold. Rates may be fixed or variable. 
 * @author jcollins
 */
-class Rate implements Serializable
+@XStreamAlias("rate")
+class Rate //implements Serializable
 {
   String id = IdGenerator.createId()
 
+  @XStreamAsAttribute
   int weeklyBegin = -1 // weekly applicability
+  @XStreamAsAttribute
   int weeklyEnd = -1
+  @XStreamAsAttribute
   int dailyBegin = -1 // daily applicability
+  @XStreamAsAttribute
   int dailyEnd = -1
+  @XStreamAsAttribute
   BigDecimal tierThreshold = 0.0 // tier applicability
+  @XStreamAsAttribute
   boolean isFixed = true // if true, minValue is fixed rate
+  @XStreamAsAttribute
   BigDecimal minValue = 0.0 // min and max rate values
+  @XStreamAsAttribute
   BigDecimal maxValue = 0.0
+  @XStreamAsAttribute
   int noticeInterval = 0 // notice interval for variable rate in hours
+  @XStreamAsAttribute
   BigDecimal expectedMean = 0.0 // expected mean value for variable rate
   TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
   static auditable = true
-  static belongsTo = TariffSpecification
+  //static belongsTo = TariffSpecification
   static hasMany = [rateHistory:HourlyCharge]
   static transients = ["value"]
 

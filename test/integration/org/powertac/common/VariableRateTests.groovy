@@ -28,7 +28,6 @@ class VariableRateTests extends GroovyTestCase
 {
   // get ref to TimeService
   def timeService
-  def broker
 
   protected void setUp()
   {
@@ -46,7 +45,7 @@ class VariableRateTests extends GroovyTestCase
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
 
     TariffSpecification t1 =
-        new TariffSpecification(brokerId: "abc", expiration: new Instant(exp),
+        new TariffSpecification(brokerUsername: "abc", expiration: new Instant(exp),
                                 minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(value: 0.121)
     t1.addToRates(r1)
@@ -64,7 +63,7 @@ class VariableRateTests extends GroovyTestCase
   void testVariableRate ()
   {
     TariffSpecification t1 = 
-        new TariffSpecification(brokerId: "def", expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+        new TariffSpecification(brokerUsername: "def", expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                                 minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -89,7 +88,7 @@ class VariableRateTests extends GroovyTestCase
   {
     DateTime exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC)
     TariffSpecification t1 = 
-        new TariffSpecification(brokerId: "123", expiration: new Instant(exp),
+        new TariffSpecification(brokerUsername: "123", expiration: new Instant(exp),
                                 minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -116,7 +115,7 @@ class VariableRateTests extends GroovyTestCase
   void testVariableRateN3 ()
   {
     TariffSpecification t1 = 
-        new TariffSpecification(brokerId: "456", expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+        new TariffSpecification(brokerUsername: "456", expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                                 minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 3, expectedMean: 0.10)
