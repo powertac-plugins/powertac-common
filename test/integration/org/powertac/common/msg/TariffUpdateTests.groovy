@@ -20,7 +20,7 @@ class TariffUpdateTests extends GroovyTestCase
     broker = new Broker(username: "Bob", password: "password")
     assert (broker.validate() && broker.save())
     Instant exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
-    tariffSpec = new TariffSpecification(brokerUsername: broker.username, expiration: exp,
+    tariffSpec = new TariffSpecification(broker: broker, expiration: exp,
                                          minDuration: TimeService.WEEK * 8)
     Rate r1 = new Rate(value: 0.121)
     tariffSpec.addToRates(r1)

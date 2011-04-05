@@ -16,7 +16,7 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.PowerType
-import org.powertac.common.transformer.InstantConverter
+import org.powertac.common.transformer.BrokerConverter
 import org.joda.time.Duration
 import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
@@ -37,9 +37,9 @@ class TariffSpecification //implements Serializable
 {
   String id = IdGenerator.createId()
   
-  /** username of the Broker who offers this Tariff */
-  @XStreamAsAttribute
-  String brokerUsername
+  /** The Broker who offers this Tariff */
+  @XStreamConverter(BrokerConverter)
+  Broker broker
   
   /** Last date new subscriptions will be accepted */
   Instant expiration
@@ -74,7 +74,7 @@ class TariffSpecification //implements Serializable
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    brokerUsername(nullable: false, blank: false)
+    broker(nullable: false)
     expiration(nullable: true)
     minDuration(min: 24*60*60*1000l) // one day
     powerType(nullable: false)

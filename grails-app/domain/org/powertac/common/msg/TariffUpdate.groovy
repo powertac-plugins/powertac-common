@@ -32,7 +32,7 @@ class TariffUpdate implements Serializable
 {
   String id = IdGenerator.createId()
   String tariffId
-  String brokerUsername
+  Broker broker
   
   //no constraints with subclasses...
   

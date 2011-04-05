@@ -38,21 +38,12 @@ class TariffSpecificationTests extends GrailsUnitTestCase
 
   void testNullableValidationLogic() 
   {
-    TariffSpecification ts = new TariffSpecification(powerType: null)
+    TariffSpecification ts = new TariffSpecification(powerType: null, broker: null)
     assertFalse(ts.validate())
-    assertEquals('nullable', ts.errors.getFieldError('brokerUsername').getCode())
+    assertEquals('nullable', ts.errors.getFieldError('broker').getCode())
     assertEquals('nullable', ts.errors.getFieldError('powerType').getCode())
     assertEquals('nullable', ts.errors.getFieldError('rates').getCode())
   }
-
-  void testBlankValidationLogic() 
-  {
-    TariffSpecification cmd = new TariffSpecification(id: '', tariffId: '', brokerUsername: '')
-    assertFalse(cmd.validate())
-    assertEquals('blank', cmd.errors.getFieldError('id').getCode())
-    assertEquals('blank', cmd.errors.getFieldError('brokerUsername').getCode())
-  }
-
   
   void testValueValidationLogic() 
   {

@@ -40,7 +40,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
   // simple correct addition of an hourly rate
   void testZero() {
     TariffSpecification t1 =
-          new TariffSpecification(brokerUsername: broker.username, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+          new TariffSpecification(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                                   minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -64,7 +64,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
       hc.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
     }
-    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, brokerUsername: broker.username, tariffId: tf.id, rateId: r1.id)
+    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, broker: broker, tariffId: tf.id, rateId: r1.id)
     if (!vru.save()) {
       vru.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
@@ -79,7 +79,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
   // attempt to add hourly rate in the past.
   void testPast() {
     TariffSpecification t1 =
-          new TariffSpecification(brokerUsername: broker.username, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+          new TariffSpecification(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                                   minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -103,7 +103,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
       hc.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
     }
-    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, brokerUsername: broker.username, tariffId: tf.id, rateId: r1.id)
+    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, broker: broker, tariffId: tf.id, rateId: r1.id)
     if (!vru.save()) {
       vru.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
@@ -117,7 +117,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
   // overwrite an existing hourly rate
   void testOverwrite() {
     TariffSpecification t1 =
-          new TariffSpecification(brokerUsername: broker.username, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+          new TariffSpecification(broker: broker, expiration: new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant(),
                                   minDuration: TimeService.WEEK * 4)
     Rate r1 = new Rate(isFixed: false, minValue: 0.05, maxValue: 0.50,
                        noticeInterval: 0, expectedMean: 0.10)
@@ -143,7 +143,7 @@ class VariableRateUpdateTests extends GrailsUnitTestCase
       hc.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")
     }
-    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, brokerUsername: broker.username, tariffId: tf.id, rateId: r1.id)
+    VariableRateUpdate vru = new VariableRateUpdate(payload: hc, broker: broker, tariffId: tf.id, rateId: r1.id)
     if (!vru.save()) {
       vru.errors.each { println it.toString() }
       fail("Could not save VariableRateUpdate")

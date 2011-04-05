@@ -41,7 +41,7 @@ class TariffTests extends GrailsUnitTestCase
     broker = new Broker (username: 'testBroker', password: 'testPassword')
     assert broker.save()
     exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
-    tariffSpec = new TariffSpecification(brokerUsername: broker.username, expiration: exp,
+    tariffSpec = new TariffSpecification(broker: broker, expiration: exp,
                                          minDuration: TimeService.WEEK * 8)
   }
 
