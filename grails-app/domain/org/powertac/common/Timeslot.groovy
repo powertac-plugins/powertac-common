@@ -64,6 +64,10 @@ class Timeslot //implements Serializable
   @XStreamOmitField
   List<Orderbook> orderbooks
   
+  // explicit version so we can omit it
+  @XStreamOmitField
+  int version
+
   static auditable = true
   
   static transients = ['timeService']

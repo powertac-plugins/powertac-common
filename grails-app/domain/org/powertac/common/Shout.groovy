@@ -21,6 +21,9 @@ import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
+import org.powertac.common.transformer.ProductConverter
+import org.powertac.common.transformer.BrokerConverter
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A shout domain instance represents a market or a limit order in the PowerTAC wholesale
@@ -39,37 +42,47 @@ import org.powertac.common.enumerations.OrderType
  *
  * @author Carsten Block
  */
-class Shout implements Serializable {
+@XStreamAlias("shout")
+class Shout //implements Serializable 
+{
 
   //def timeService
   private getTimeService() {
     ApplicationHolder.application.mainContext.timeService
   }
 
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
 
   /** the broker who created this shout */
+  @XStreamConverter(BrokerConverter)
   Broker broker
 
   /** the product that should be bought or sold */
+  @XStreamConverter(ProductConverter)
   Product product
 
   /** the timeslot for which the product should be bought or sold */
   Timeslot timeslot
 
   /** flag that indicates if this shout is a buy or sell order */
+  @XStreamAsAttribute
   BuySellIndicator buySellIndicator
 
   /** the product quantity to buy or sell */
+  @XStreamAsAttribute
   BigDecimal quantity
 
   /** the limit price, i.e. the max. acceptable buy or min acceptable sell price */
+  @XStreamAsAttribute
   BigDecimal limitPrice
 
   /** the last executed quantity (if equal to {@code quantity} the shout is fully executed otherwise it is partially executed */
+  @XStreamAsAttribute
   BigDecimal executionQuantity
 
   /** the last execution price */
+  @XStreamAsAttribute
   BigDecimal executionPrice
 
   /** either MARKET or LIMIT order */
@@ -83,6 +96,7 @@ class Shout implements Serializable {
   Instant dateMod = this.dateCreated
 
   /** the reason for the latest modifcation to the shout instance */
+  @XStreamAsAttribute
   ModReasonCode modReasonCode = ModReasonCode.INSERT
 
   /** A transactionId is generated during the execution of the shout and marks all domain instances in all domain classes that were created or changed during this single transaction (e.g. corresponding transactionLog, CashUpdate, or MarketPosition instances). Later on this id allows for correlation of the different domain class instances during ex post analysis*/

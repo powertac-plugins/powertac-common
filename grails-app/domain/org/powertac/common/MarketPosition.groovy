@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 the original author or authors.
+ * Copyright 2009-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.powertac.common
 
 //import org.codehaus.groovy.grails.commons.ApplicationHolder
 //import org.joda.time.Instant
+import org.powertac.common.transformer.ProductConverter
+import org.powertac.common.transformer.BrokerConverter
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A {@code MarketPosition} domain instance represents the current position of a
@@ -27,12 +30,14 @@ package org.powertac.common
  *
  * @author Carsten Block, David Dauer, John Collins
  */
-
-class MarketPosition implements Serializable 
+@XStreamAlias("market-posn")
+class MarketPosition //implements Serializable 
 {
-  String id = IdGenerator.createId()
+  // This is server-generated, there is no need for the fancy ID
+  //String id = IdGenerator.createId()
   
   /** the broker this position update belongs to */
+  @XStreamConverter(BrokerConverter)
   Broker broker
   
   /** the timeslot this position belongs to */
@@ -40,25 +45,32 @@ class MarketPosition implements Serializable
   
   /** The running total position the broker owns (> 0) / owes (< 0) of the specified
    *  product in the specified timeslot */
+  @XStreamAlias("bal")
+  @XStreamAsAttribute
   BigDecimal overallBalance = 0.0
 
   /** the product this position update belongs to */
-  //Product product // not sure what this is for -- JEC
+  @XStreamConverter(ProductConverter)
+  Product product // not sure what this is for -- JEC
   
+  // explicit version so we can omit it
+  @XStreamOmitField
+  int version
+
   //static auditable = true
 
   static belongsTo = Broker
 
   static constraints = {
-    id (nullable: false, blank: false, unique: true)
+    //id (nullable: false, blank: false, unique: true)
     timeslot(nullable: false)
     broker(nullable: false)
     //overallBalance(nullable: false)
   }
 
-  static mapping = {
-    id (generator: 'assigned')
-  }
+  //static mapping = {
+  //  id (generator: 'assigned')
+  //}
 
   String toString() {
     return "${broker}-${timeslot}-${overallBalance}"

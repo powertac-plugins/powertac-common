@@ -46,12 +46,4 @@ class CashPositionTests extends GrailsUnitTestCase {
     //assertEquals('nullable', cashPosition.errors.getFieldError('overallBalance').getCode())
     //assertEquals('nullable', cashPosition.errors.getFieldError('dateCreated').getCode())
   }
-
-  void testBlankValidationLogic() {
-    CashPosition cashPosition = new CashPosition(id: '')
-    mockForConstraintsTests(CashPosition, [cashPosition])
-    assertFalse(cashPosition.validate())
-    assertEquals('blank', cashPosition.errors.getFieldError('id').getCode())
-    //assertEquals('blank', cashPosition.errors.getFieldError('transactionId').getCode())
-  }
 }

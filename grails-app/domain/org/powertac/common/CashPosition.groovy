@@ -42,8 +42,8 @@ class CashPosition //implements Serializable
   //private getTimeService() {
   //  ApplicationHolder.application.mainContext.timeService
   //}
-  @XStreamAsAttribute
-  String id = IdGenerator.createId()
+  // Server-generated type, don't need UUID
+  //String id = IdGenerator.createId()
 
   /** The broker who owns this cash account  */
   @XStreamConverter(BrokerConverter)
@@ -58,21 +58,25 @@ class CashPosition //implements Serializable
   
   @XStreamOmitField
   List<TariffTransaction> tariffTransactions
+  
+  // explicit version so we can omit it
+  @XStreamOmitField
+  int version
 
   static hasMany = [marketTransactions:MarketTransaction, tariffTransactions:TariffTransaction]
   
   static belongsTo = [broker: Broker]
 
   static constraints = {
-    id(nullable: false, blank: false, unique: true)
+    //id(nullable: false, blank: false, unique: true)
     broker(nullable: false)
     balance(nullable: false, scale: Constants.DECIMALS)
     //lastUpdate(nullable: true)
   }
 
-  static mapping = {
-    id(generator: 'assigned')
-  }
+  //static mapping = {
+  //  id(generator: 'assigned')
+  //}
 
   String toString() {
     return "${broker}-${balance}" //-${lastUpdate}"

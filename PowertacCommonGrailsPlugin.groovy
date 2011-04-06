@@ -26,7 +26,7 @@ This plugin provides common domain classes and command objects for powertac comp
     }
 
     def doWithSpring = {
-      domainClassTransformer(org.powertac.common.transformer.DomainClassTransformer)
+      //domainClassTransformer(org.powertac.common.transformer.DomainClassTransformer)
     }
 
     def doWithDynamicMethods = { ctx ->

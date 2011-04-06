@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 the original author or authors.
+ * Copyright 2009-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.MarketTransactionType
+import org.powertac.common.transformer.ProductConverter
+import org.powertac.common.transformer.BrokerConverter
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A MarketTransaction instance represents data commonly
@@ -37,23 +40,28 @@ import org.powertac.common.enumerations.MarketTransactionType
  * <p>
  * This an immutable value type, and therefore is not auditable.</p>
  *
- * @author Carsten Block
- * @version 1.1, 02/27/2011
+ * @author Carsten Block, John Collins
  */
-class MarketTransaction implements Serializable {
+@XStreamAlias("market-tx")
+class MarketTransaction //implements Serializable 
+{
+  // This is a server-generated type - just use the GORM id
+  //Integer id
 
-  Integer id
-
-  /** the product for which this trade or quote information is created */
-  //Product product // not clear what this means -- JEC
+  /** the product for which this information is created */
+  @XStreamConverter(ProductConverter)
+  Product product // not clear what this means -- JEC
 
   /** price/mWh of a trade, positive for a buy, negative for a sell */
+  @XStreamAsAttribute
   BigDecimal price
 
   /** quantity of trade in mWh, positive for buy, negative for sell */
+  @XStreamAsAttribute
   BigDecimal quantity
 
   /** trade property: buyer or seller of the products of this trade */
+  @XStreamConverter(BrokerConverter)
   Broker broker
   
   /** the timeslot for which this trade or quote information is created */
@@ -61,9 +69,12 @@ class MarketTransaction implements Serializable {
   
   /** when was this trade made */
   Instant postedTime
+  
+  // explicit version so we can omit it
+  @XStreamOmitField
+  int version
 
   static constraints = {
-    //id (nullable: false, unique: true)
     //product(nullable: false)
     postedTime (nullable: false)
     broker(nullable: false)
@@ -71,10 +82,6 @@ class MarketTransaction implements Serializable {
     price(nullable: false)
     quantity(nullable: false)
   }
-
-  //static mapping = {
-  //  id (generator: 'assigned')
-  //}
 
   String toString() {
     return "${timeslot}-${quantity}-${price}"
