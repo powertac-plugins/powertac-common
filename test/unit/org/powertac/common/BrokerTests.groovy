@@ -37,27 +37,27 @@ class BrokerTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Broker broker1 = new Broker(apiKey: null)
+    Broker broker1 = new Broker(id: null)
     assertFalse(broker1.validate())
-    //assertEquals('nullable', broker1.errors.getFieldError('id').getCode())
+    assertEquals('nullable', broker1.errors.getFieldError('id').getCode())
     assertEquals('nullable', broker1.errors.getFieldError('username').getCode())
     //assertEquals('nullable', broker1.errors.getFieldError('password').getCode())
-    assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
+    //assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
   }
 
   void testBlankValidationLogic() {
-    Broker broker1 = new Broker(username: '', password: '', apiKey: '')
+    Broker broker1 = new Broker(username: '', password: '', id: '')
     assertFalse(broker1.validate())
-    //assertEquals('blank', broker1.errors.getFieldError('id').getCode())
+    assertEquals('blank', broker1.errors.getFieldError('id').getCode())
     assertEquals('blank', broker1.errors.getFieldError('username').getCode())
     //assertEquals('blank', broker1.errors.getFieldError('password').getCode())
-    assertEquals('blank', broker1.errors.getFieldError('apiKey').getCode())
+    //assertEquals('blank', broker1.errors.getFieldError('apiKey').getCode())
   }
 
   void testIdUniqueness() {
-    Broker broker1 = new Broker(apiKey: broker.apiKey)
+    Broker broker1 = new Broker(id: broker.id)
     assertFalse(broker1.validate())
-    assertEquals('unique', broker1.errors.getFieldError('apiKey').getCode())
+    assertEquals('unique', broker1.errors.getFieldError('id').getCode())
   }
 
   void testUsernameSpecialCharConstraints() {

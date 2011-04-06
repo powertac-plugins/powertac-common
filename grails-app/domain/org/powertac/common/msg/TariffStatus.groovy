@@ -15,6 +15,7 @@
  */
 package org.powertac.common.msg
 
+import org.powertac.common.Broker
 import org.powertac.common.IdGenerator;
 
 /**
@@ -27,7 +28,7 @@ class TariffStatus implements Serializable
   enum Status {success, noSuchTariff, noSuchUpdate, illegalOperation,
                invalidTariff, invalidUpdate}
   String id = IdGenerator.createId()
-  String brokerUsername
+  Broker broker
   String tariffId
   String updateId
   String message
@@ -35,7 +36,7 @@ class TariffStatus implements Serializable
 
   static constraints = {
     id(nullable: false, blank: false, unique: true)
-    brokerUsername(nullable: false, blank: false)
+    broker(nullable: false)
     tariffId(nullable: false, blank: false)
     updateId(nullable: true)
     message(nullable: true)
