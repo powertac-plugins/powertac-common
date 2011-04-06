@@ -28,6 +28,11 @@ import org.powertac.common.msg.TariffStatus
 import org.powertac.common.enumerations.CustomerType
 import com.thoughtworks.xstream.*
 
+/**
+ * Tests for serialization and deserialization of Tariff-related
+ * types needed for broker communication.
+ * @author John Collins
+ */
 class TariffSerializationTests extends GroovyTestCase 
 {
   def timeService // dependency injection

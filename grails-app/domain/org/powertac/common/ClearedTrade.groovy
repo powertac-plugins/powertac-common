@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2011 the original author or authors.
+ * Copyright 2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.powertac.common
 
+import org.powertac.common.transformer.ProductConverter
+import com.thoughtworks.xstream.annotations.*
+
 /**
  * A clearedTrade instance reports public trade information, i.e. the execution price and quantity.
  *
@@ -26,20 +29,25 @@ package org.powertac.common
  *
  * @author Daniel Schnurr
  */
-class ClearedTrade implements Serializable {
-
+@XStreamAlias("trade")
+class ClearedTrade //implements Serializable 
+{
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
 
   /** underlying timeslot for the trade (e.g. for a future the timeslot when real-world exchanges happen)*/
   Timeslot timeslot
 
   /** related product that was traded*/
+  @XStreamConverter(ProductConverter)
   Product product
 
   /** clearing price of the trade */
+  @XStreamAsAttribute
   BigDecimal executionPrice
 
   /** traded quantity of the specified product */
+  @XStreamAsAttribute
   BigDecimal executionQuantity
 
   static constraints = {

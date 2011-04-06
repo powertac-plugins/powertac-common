@@ -32,9 +32,12 @@ import org.powertac.common.enumerations.ProductType
  * @author Carsten Block
  * @version 1.0, Feb 6, 2011
  */
-class Product implements Serializable {
-
-  String id = IdGenerator.createId()
+class Product
+{
+  // No need for UUID because these will not be serialized as
+  // long as the only content is an enumeration.
+  // See transformer.ProductConverter for details.
+  //String id = IdGenerator.createId()
 
   /** the product type, one of Future or Option - currently only Future is supported */
   ProductType productType
@@ -42,7 +45,6 @@ class Product implements Serializable {
   static hasMany = [orderbooks: Orderbook, transactionLogs: MarketTransaction]
 
   static constraints = {
-    id (nullable: false, blank: false, unique: true)
     productType(nullable: false)
   }
 

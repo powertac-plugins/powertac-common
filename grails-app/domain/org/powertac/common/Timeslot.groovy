@@ -18,6 +18,7 @@ package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
  /**
  * A timeslot instance describes a duration in time (slot). Time slots are used (i) to
@@ -29,29 +30,39 @@ import org.joda.time.Instant
  * @author Carsten Block
  * @version 1.0 - Feb,6,2011
  */
-class Timeslot implements Serializable 
+@XStreamAlias("slot")
+class Timeslot //implements Serializable 
 {
   static TimeService getTimeService()
   {
     ApplicationHolder.application.mainContext.timeService
   }
-
+  
+  @XStreamOmitField
   String id = IdGenerator.createId()
 
   /**
    * used to find succeeding / preceding timeslot instances
    * @see {@code Timeslot.next()} {@code Timeslot.previous()}
    */
+  @XStreamAsAttribute
   Integer serialNumber
 
-  /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
+  /** flag that determines enabled state of the slot. 
+   * E.g. in the market only orders for enabled timeslots 
+   * are accepted. */
+  @XStreamOmitField
   Boolean enabled = false
 
   /** start date and time of the timeslot */
   Instant startInstant
 
   /** end date and time of the timeslot */
+  @XStreamOmitField
   Instant endInstant
+  
+  @XStreamOmitField
+  List<Orderbook> orderbooks
   
   static auditable = true
   

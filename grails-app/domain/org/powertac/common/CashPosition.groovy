@@ -16,8 +16,10 @@
 
 package org.powertac.common
 
+import org.powertac.common.transformer.BrokerConverter
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A {@code CashPosition} domain instance represents the current state of
@@ -26,7 +28,9 @@ import org.joda.time.Instant
  * @author Carsten Block, David Dauer
  * @version 1.1 - 02/27/2011
  */
-class CashPosition implements Serializable {
+@XStreamAlias("cash")
+class CashPosition //implements Serializable 
+{
 
   //def timeService
   /**
@@ -38,20 +42,23 @@ class CashPosition implements Serializable {
   //private getTimeService() {
   //  ApplicationHolder.application.mainContext.timeService
   //}
-
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
 
   /** The broker who owns this cash account  */
+  @XStreamConverter(BrokerConverter)
   Broker broker
 
   /** The new running total for the broker's cash account  */
-  BigDecimal overallBalance = 0.0
+  @XStreamAsAttribute
+  BigDecimal balance = 0.0
 
-  /** last update of this cash update in local competition time  */
-  //Instant lastUpdate = timeService?.getCurrentTime()
-
-  //static auditable = true
+  @XStreamOmitField
+  List<MarketTransaction> marketTransactions
   
+  @XStreamOmitField
+  List<TariffTransaction> tariffTransactions
+
   static hasMany = [marketTransactions:MarketTransaction, tariffTransactions:TariffTransaction]
   
   static belongsTo = [broker: Broker]
@@ -59,7 +66,7 @@ class CashPosition implements Serializable {
   static constraints = {
     id(nullable: false, blank: false, unique: true)
     broker(nullable: false)
-    overallBalance(nullable: false, scale: Constants.DECIMALS)
+    balance(nullable: false, scale: Constants.DECIMALS)
     //lastUpdate(nullable: true)
   }
 
@@ -68,7 +75,7 @@ class CashPosition implements Serializable {
   }
 
   String toString() {
-    return "${broker}-${overallBalance}" //-${lastUpdate}"
+    return "${broker}-${balance}" //-${lastUpdate}"
   }
   
   /**
@@ -78,8 +85,8 @@ class CashPosition implements Serializable {
    */
   BigDecimal deposit (BigDecimal amount)
   {
-    overallBalance += amount
+    balance += amount
     //lastUpdate = timeService.currentTime
-    return overallBalance
+    return balance
   }
 }
