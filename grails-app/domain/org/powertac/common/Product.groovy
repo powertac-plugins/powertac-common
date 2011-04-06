@@ -48,10 +48,6 @@ class Product
     productType(nullable: false)
   }
 
-  static mapping = {
-    id (generator: 'assigned')
-  }
-
   public String toString() {
     return productType.toString()
   }

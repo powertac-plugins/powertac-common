@@ -51,7 +51,7 @@ class ShoutTests extends GroovyTestCase {
   }
 
   void testNullableValidationLogic() {
-    Shout shout = new Shout(competition: null, orderType: null)
+    Shout shout = new Shout(orderType: null)
     assertFalse(shout.validate())
     assertEquals('nullable', shout.errors.getFieldError('broker').getCode())
     //assertEquals('nullable', shout.errors.getFieldError('product').getCode())
