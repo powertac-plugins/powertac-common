@@ -16,22 +16,36 @@
 package org.powertac.common.msg
 
 import org.powertac.common.Broker
-import org.powertac.common.IdGenerator;
+import org.powertac.common.transformer.BrokerConverter
+import org.powertac.common.IdGenerator
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Represents a response from server to broker to publication or update
  * of a tariff.
  * @author jcollins
  */
-class TariffStatus implements Serializable
+@XStreamAlias("tariff-status")
+class TariffStatus //implements Serializable
 {
   enum Status {success, noSuchTariff, noSuchUpdate, illegalOperation,
                invalidTariff, invalidUpdate}
+
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
+
+  @XStreamConverter(BrokerConverter)
   Broker broker
+
+  @XStreamAsAttribute
   String tariffId
+  
+  @XStreamAsAttribute
   String updateId
+  
   String message
+  
+  @XStreamAsAttribute
   Status status = Status.success
 
   static constraints = {

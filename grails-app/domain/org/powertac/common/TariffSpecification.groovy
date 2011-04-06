@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.annotations.*
 @XStreamAlias("tariff-spec")
 class TariffSpecification //implements Serializable
 {
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
   
   /** The Broker who offers this Tariff */

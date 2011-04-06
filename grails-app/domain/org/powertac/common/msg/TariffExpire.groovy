@@ -15,7 +15,8 @@
  */
 package org.powertac.common.msg
 
-import org.joda.time.Instant;
+import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Request to change expiration date on an existing tariff. There are no
@@ -23,7 +24,9 @@ import org.joda.time.Instant;
  * have retroactive effect.
  * @author jcollins
  */
+@XStreamAlias("tariff-exp")
 class TariffExpire extends TariffUpdate
 {
+  @XStreamAsAttribute
   Instant newExpiration
 }

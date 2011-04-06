@@ -18,6 +18,10 @@ package org.powertac.common
 
 import org.joda.time.Instant
 import org.powertac.common.enumerations.TariffTransactionType
+import org.powertac.common.transformer.BrokerConverter
+import org.powertac.common.transformer.CustomerConverter
+import org.powertac.common.transformer.TariffConverter
+import com.thoughtworks.xstream.annotations.*
 
 /**
  *  A {@code TariffTransaction} instance represents the quantity of energy consumed
@@ -27,20 +31,26 @@ import org.powertac.common.enumerations.TariffTransactionType
  *
  * @author Carsten Block, John Collins
  */
-class TariffTransaction implements Serializable {
-
+@XStreamAlias("tariff-tx")
+class TariffTransaction //implements Serializable 
+{
+  @XStreamAsAttribute
   Integer id
   
   /** Whose transaction is this? */
+  @XStreamConverter(BrokerConverter)
   Broker broker
   
   /** Purpose of this transaction */
+  @XStreamAsAttribute
   TariffTransactionType txType = TariffTransactionType.CONSUME
 
   /** The customerInfo or more precisely his meter that is being read */
+  @XStreamConverter(CustomerConverter)
   CustomerInfo customerInfo
   
   /** Number of individual customers involved */
+  @XStreamAsAttribute
   Integer customerCount = 0
 
   /** The timeslot for which this meter reading is generated */
@@ -49,17 +59,22 @@ class TariffTransaction implements Serializable {
   /** The total quantity of energy consumed (> 0) or produced (< 0) in kWh.
    *  Note that this is not per-individual in a population model, but rather
    *  aggregate usage by customerCount individuals. */
+  @XStreamAsAttribute
   BigDecimal quantity = 0.0
   
   /** The total charge for this reading, according to the tariff:
    *  positive for credit to broker, negative for debit from broker */
+  @XStreamAsAttribute
   BigDecimal charge = 0.0
+  
+  @XStreamConverter(TariffConverter)
+  Tariff tariff
 
   /** The Tariff that applies to this billing */
-  static belongsTo = [tariff:Tariff]
+  static belongsTo = Tariff
 
   static constraints = {
-    id (nullable: false, unique: true)
+    //id (nullable: false, unique: true)
     broker(nullable: false)
     customerInfo (nullable: true) // no customer for publication
     tariff (nullable: false)
@@ -68,9 +83,9 @@ class TariffTransaction implements Serializable {
     charge (nullable: false, scale: Constants.DECIMALS)
   }
 
-  static mapping = {
-    id (generator: 'assigned')
-  }
+  //static mapping = {
+  //  id (generator: 'assigned')
+  //}
 
   public String toString() {
     return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${quantity}"

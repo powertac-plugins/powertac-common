@@ -20,6 +20,12 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
+import org.powertac.common.msg.TariffUpdate
+import org.powertac.common.msg.TariffExpire
+import org.powertac.common.msg.TariffRevoke
+import org.powertac.common.msg.VariableRateUpdate
+import org.powertac.common.msg.TariffStatus
+import org.powertac.common.enumerations.CustomerType
 import com.thoughtworks.xstream.*
 
 class TariffSerializationTests extends GroovyTestCase 
@@ -31,6 +37,7 @@ class TariffSerializationTests extends GroovyTestCase
   Instant start
   Instant exp
   Broker broker
+  CustomerInfo customerInfo
   XStream xstream
 
   protected void setUp() 
@@ -40,6 +47,8 @@ class TariffSerializationTests extends GroovyTestCase
     timeService.setCurrentTime(start)
     broker = new Broker (username: 'Sally', password: 'testPassword')
     assert broker.save()
+    customerInfo = new CustomerInfo(name:"Charley", customerType: CustomerType.CustomerHousehold)
+    assert customerInfo.save()
     exp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
     tariffSpec = new TariffSpecification(broker: broker, expiration: exp,
                                          minDuration: TimeService.WEEK * 8)
@@ -48,6 +57,12 @@ class TariffSerializationTests extends GroovyTestCase
     xstream.processAnnotations(Rate.class)
     xstream.processAnnotations(TariffSpecification.class)
     xstream.processAnnotations(HourlyCharge.class)
+    xstream.processAnnotations(TariffStatus.class)
+    xstream.processAnnotations(TariffTransaction.class)
+    xstream.processAnnotations(TariffUpdate.class)
+    xstream.processAnnotations(TariffExpire.class)
+    xstream.processAnnotations(TariffRevoke.class)
+    xstream.processAnnotations(VariableRateUpdate.class)
   }
 
   protected void tearDown() 
@@ -137,5 +152,102 @@ class TariffSerializationTests extends GroovyTestCase
     assertEquals("4 hourly charges", 4, xr1.rateHistory.size())
     assertEquals("correct 1st charge", 0.09, xr1.rateHistory.first().value, 1e-6)
     assert xts.save()
+  }
+  
+  void testSerializeStatus ()
+  {
+    TariffStatus status = 
+        new TariffStatus(broker: broker, tariffId: "xyz", updateId: "abc",
+                         status: TariffStatus.Status.success,
+                         message: "This is a dummy tariff status instance")
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(status))
+    println serialized.toString()
+    def xts = xstream.fromXML(serialized.toString())
+    assertNotNull("got something", xts)
+    assertTrue("correct type", xts instanceof TariffStatus)
+    assertEquals("correct ID", status.id, xts.id)
+    assertEquals("correct tariff ID", 'xyz', xts.tariffId)
+  }
+  
+  void testSerializeTransaction ()
+  {
+    Rate r1 = new Rate(value: 0.15, dailyBegin: 7, dailyEnd: 17)
+    tariffSpec.addToRates(r1)
+    tariffSpec.save()
+    Tariff tariff = new Tariff(tariffSpec: tariffSpec)
+    tariff.init()
+    tariff.save()
+
+    def txTime = new DateTime(2011, 1, 1, 14, 0, 0, 0, DateTimeZone.UTC).toInstant()
+    TariffTransaction ttx =
+        new TariffTransaction(broker: broker, customerInfo:customerInfo,
+                              customerCount: 4, postedTime: txTime,
+                              quantity: 56.7, charge: 67.8, tariff: tariff)
+    assert ttx.save()
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(ttx))
+    println serialized.toString()
+    def xttx = xstream.fromXML(serialized.toString())
+    assertNotNull("got something", xttx)
+    assertTrue("correct type", xttx instanceof TariffTransaction)
+    //assertEquals("correct ID", 3, xttx.id)
+    assertEquals("correct tariff", tariff, xttx.tariff)
+    assertEquals("correct broker", broker, xttx.broker)
+    assertEquals("correct customer", customerInfo, xttx.customerInfo)
+    assertEquals("correct quantity", 56.7, xttx.quantity, 1e-6)
+  }
+  
+  void testTariffExpire ()
+  {
+    def newExp = new DateTime(2011, 3, 1, 12, 0, 0, 0, DateTimeZone.UTC).toInstant()
+    TariffExpire tex = 
+      new TariffExpire(tariffId: tariffSpec.id, broker: broker,
+                       newExpiration: newExp)
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(tex))
+    println serialized.toString()
+    def xtex = xstream.fromXML(serialized.toString())
+    assertNotNull("got something", xtex)
+    assertTrue("correct type", xtex instanceof TariffExpire)
+    assertEquals("correct tariff ID", tariffSpec.id, xtex.tariffId)
+    assertEquals("correct broker", broker, xtex.broker)
+    assertEquals("correct time", newExp, xtex.newExpiration)
+  }
+  
+  void testTariffRevoke ()
+  {
+    TariffRevoke trv = 
+      new TariffRevoke(tariffId: tariffSpec.id, broker: broker)
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(trv))
+    println serialized.toString()
+    def xtrv = xstream.fromXML(serialized.toString())
+    assertNotNull("got something", xtrv)
+    assertTrue("correct type", xtrv instanceof TariffRevoke)
+    assertEquals("correct tariff ID", tariffSpec.id, xtrv.tariffId)
+    assertEquals("correct broker", broker, xtrv.broker)
+  }
+  
+  void testVariableRateUpdate ()
+  {
+    Rate r1 = new Rate(value: 0.15, dailyBegin: 7, dailyEnd: 17)
+    tariffSpec.addToRates(r1)
+    tariffSpec.save()
+    HourlyCharge hc = 
+      new HourlyCharge(value: 0.09, 
+                       atTime: new DateTime(2011, 1, 26, 12, 0, 0, 0, DateTimeZone.UTC).toInstant())
+    VariableRateUpdate vru = 
+      new VariableRateUpdate(tariffId: tariffSpec.id, broker: broker,
+                             payload: hc, rateId: r1.id)
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(vru))
+    println serialized.toString()
+    def xvru = xstream.fromXML(serialized.toString())
+    assertNotNull("got something", xvru)
+    assertTrue("correct type", xvru instanceof VariableRateUpdate)
+    assertEquals("correct tariff ID", tariffSpec.id, xvru.tariffId)
+    assertEquals("correct broker", broker, xvru.broker)
+    assertEquals("correct value", 0.09, xvru.payload.value, 1e-6)
   }
 }

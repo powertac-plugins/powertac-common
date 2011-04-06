@@ -16,6 +16,7 @@
 package org.powertac.common.msg
 
 import org.powertac.common.HourlyCharge
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Conveys an HourlyCharge instance, labeled by its Tariff and
@@ -23,8 +24,11 @@ import org.powertac.common.HourlyCharge
  * needs to be added to its Rate.
  * @author jcollins
  */
+@XStreamAlias("tariff-vru")
 class VariableRateUpdate extends TariffUpdate
 {
   HourlyCharge payload
+  
+  @XStreamAsAttribute
   String rateId
 }

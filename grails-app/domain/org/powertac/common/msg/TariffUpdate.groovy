@@ -18,6 +18,8 @@ package org.powertac.common.msg
 
 import org.joda.time.Instant
 import org.powertac.common.*
+import org.powertac.common.transformer.BrokerConverter
+import com.thoughtworks.xstream.annotations.*
 
  /**
  * Command object that represents a broker's request to update a tariff, either
@@ -28,10 +30,14 @@ import org.powertac.common.*
  *
  * @author Carsten Block, John Collins
  */
-class TariffUpdate implements Serializable 
+@XStreamAlias("tariff-up")
+class TariffUpdate //implements Serializable 
 {
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
+  @XStreamAsAttribute
   String tariffId
+  @XStreamConverter(BrokerConverter)
   Broker broker
   
   //no constraints with subclasses...

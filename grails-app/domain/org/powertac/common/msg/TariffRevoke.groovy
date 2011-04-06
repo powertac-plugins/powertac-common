@@ -15,10 +15,13 @@
  */
 package org.powertac.common.msg
 
+import com.thoughtworks.xstream.annotations.*
+
 /**
  * Message to request revocation of an existing tariff.
  * @author jcollins
  */
+@XStreamAlias("tariff-rev")
 class TariffRevoke extends TariffUpdate
 {
 }

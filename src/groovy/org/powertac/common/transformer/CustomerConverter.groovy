@@ -1,26 +1,26 @@
 package org.powertac.common.transformer
 
 import com.thoughtworks.xstream.converters.SingleValueConverter
-import org.powertac.common.Broker
+import org.powertac.common.CustomerInfo
 
-class BrokerConverter implements SingleValueConverter
+class CustomerConverter implements SingleValueConverter
 {
 
   @Override
   public boolean canConvert (Class type)
   {
-    return type.equals(Broker.class)
+    return type.equals(CustomerInfo.class)
   }
 
   @Override
   public Object fromString (String id)
   {
-    return Broker.get(id)
+    return CustomerInfo.get(id)
   }
 
   @Override
-  public String toString (Object broker)
+  public String toString (Object customer)
   {
-    return broker.id
+    return customer.id
   }
 }

@@ -30,6 +30,7 @@ import com.thoughtworks.xstream.annotations.*
 @XStreamAlias("rate")
 class Rate //implements Serializable
 {
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
 
   @XStreamAsAttribute

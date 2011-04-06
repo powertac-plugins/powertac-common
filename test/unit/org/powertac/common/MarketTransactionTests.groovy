@@ -40,11 +40,10 @@ class MarketTransactionTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    MarketTransaction transactionLog = new MarketTransaction(id: null)
+    MarketTransaction transactionLog = new MarketTransaction()
     assertNull(transactionLog.id)
     mockForConstraintsTests(MarketTransaction, [transactionLog])
     assertFalse(transactionLog.validate())
-    assertEquals('nullable', transactionLog.errors.getFieldError('id').getCode())
     //assertEquals('nullable', transactionLog.errors.getFieldError('product').getCode())
     assertEquals('nullable', transactionLog.errors.getFieldError('timeslot').getCode())
     //assertEquals('nullable', transactionLog.errors.getFieldError('transactionType').getCode())
