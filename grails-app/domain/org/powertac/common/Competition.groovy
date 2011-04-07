@@ -16,6 +16,8 @@
 
 package org.powertac.common
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
 
@@ -71,7 +73,7 @@ class Competition //implements Serializable
 
   /** the start time of the simulation scenario, in sim time. */
   @XStreamAsAttribute
-  Instant simulationBaseTime
+  Instant simulationBaseTime = new DateTime(2010, 6, 21, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
 
   /** the time-compression ratio for the simulation. So if we are running one-hour timeslots every 5 seconds, the rate would be 720 (=default).    */
   @XStreamAsAttribute
