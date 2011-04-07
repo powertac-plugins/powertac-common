@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 the original author or authors.
+ * Copyright 2009-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.CustomerType
-import org.powertac.common.enumerations.PowerType;
+import org.powertac.common.enumerations.PowerType
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A {@code CustomerInfo} instance represents a customer model (i.e. a consumer or a producer)
@@ -25,28 +26,37 @@ import org.powertac.common.enumerations.PowerType;
  * the respective competition in order to provide them with an brief overview on what type
  * of customers participate in the specific competition.
  *
- * @author Carsten Block, KIT
- * @version 1.0 - 04/Feb/2011
+ * @author Carsten Block, KIT; John Collins, U of Minnesota
  */
-class CustomerInfo implements Serializable {
+@XStreamAlias("cust-info")
+class CustomerInfo //implements Serializable 
+{
 
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
 
   /** Name of the customer model */
   String name
 
   /** gives a "rough" classification what type of customer to expect based on an enumeration, i.e. a fixed set of customer types */
+  @XStreamAsAttribute
   CustomerType customerType
 
   /** gives the power classification of the customer */
-  PowerType powerType
+  // this makes no sense - a customer model potentially has all types - JEC
+  //PowerType powerType
   
   /** describes whether or not this customer engages in multiple contracts at the same time */
+  @XStreamAsAttribute
   Boolean multiContracting = false
 
   /** describes whether or not this customer negotiates over contracts */
+  @XStreamAsAttribute
   Boolean canNegotiate = false
 
+  // explicit version so we can ignore it
+  @XStreamOmitField
+  int version
    
   static auditable = true
 
@@ -54,7 +64,7 @@ class CustomerInfo implements Serializable {
     id (nullable: false, blank: false, unique: true)
     name (blank: false, unique: true)
     customerType(nullable: false)
-    powerType(nullable: true)
+    //powerType(nullable: true)
     multiContracting (nullable: false)
     canNegotiate (nullable: false)
  //   upperPowerCap (nullable: false, scale: Constants.DECIMALS)
