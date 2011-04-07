@@ -104,4 +104,12 @@ class Broker
   public String toQueueName() {
     return "brokers.${this.username}.outputQueue";
   }
+
+  /**
+   * default implementation does nothing.
+   * brokers shipping within the server can overwrite this method to receive messages from BrokerProxy
+   * @param object the message object received from BrokerProxy
+   */
+  void receiveMessage(Object object) {
+  }
 }
