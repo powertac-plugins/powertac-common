@@ -115,7 +115,10 @@ class Competition //implements Serializable
     id(generator: 'assigned')
   }
 
-  public static currentCompetition() {return Competition.list().first()}
+  public static currentCompetition() {
+    def competitionList = Competition.list()
+    return competitionList.size() ? competitionList.first() : null
+  }
 
   public String toString() 
   {
