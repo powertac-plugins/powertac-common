@@ -16,6 +16,7 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.CustomerType
+import org.powertac.common.msg.SimStart
 import grails.test.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -53,7 +54,7 @@ class AdminSerializationTestTests extends GroovyTestCase
 
     xstream = new XStream()
     xstream.processAnnotations(Competition.class)
-    xstream.processAnnotations(Broker.class)
+    xstream.processAnnotations(SimStart.class)
     xstream.processAnnotations(CustomerInfo.class)
   }
 
@@ -89,5 +90,17 @@ class AdminSerializationTestTests extends GroovyTestCase
     assertNotNull("deserialized something", xc)
     assertTrue("correct type", xc instanceof CustomerInfo)
     assertEquals("correct id", customerInfo.id, xc.id)
+  }
+  
+  void testSimStart ()
+  {
+    SimStart start = new SimStart(start: new DateTime(2011, 4, 10, 15, 25, 30, 0, DateTimeZone.UTC).toInstant())
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(start))
+    println serialized.toString()
+    def xs = xstream.fromXML(serialized.toString())
+    assertNotNull("deserialized something", xs)
+    assertTrue("correct type", xs instanceof SimStart)
+    assertEquals("correct id", start.id, xs.id)
   }
 }
