@@ -42,9 +42,9 @@ class CustomerInfo //implements Serializable
   @XStreamAsAttribute
   CustomerType customerType
 
-  /** gives the power classification of the customer */
+  /** gives the available power classifications of the customer */
   // this makes no sense - a customer model potentially has all types - JEC
-  //PowerType powerType
+  List<PowerType> powerTypes = [PowerType.CONSUMPTION, PowerType.PRODUCTION]
   
   /** describes whether or not this customer engages in multiple contracts at the same time */
   @XStreamAsAttribute
@@ -64,7 +64,7 @@ class CustomerInfo //implements Serializable
     id (nullable: false, blank: false, unique: true)
     name (blank: false, unique: true)
     customerType(nullable: false)
-    //powerType(nullable: true)
+    powerTypes(nullable: true)
     multiContracting (nullable: false)
     canNegotiate (nullable: false)
  //   upperPowerCap (nullable: false, scale: Constants.DECIMALS)

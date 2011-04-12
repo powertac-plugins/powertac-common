@@ -65,6 +65,7 @@ class MarketPosition //implements Serializable
     //id (nullable: false, blank: false, unique: true)
     timeslot(nullable: false)
     broker(nullable: false)
+    product(nullable: true)
     //overallBalance(nullable: false)
   }
 

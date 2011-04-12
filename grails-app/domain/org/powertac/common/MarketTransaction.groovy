@@ -79,6 +79,7 @@ class MarketTransaction //implements Serializable
     postedTime (nullable: false)
     broker(nullable: false)
     timeslot(nullable: false)
+    product(nullable: true)
     price(nullable: false)
     quantity(nullable: false)
   }
