@@ -75,7 +75,6 @@ class MarketTransaction //implements Serializable
   int version
 
   static constraints = {
-    //product(nullable: false)
     postedTime (nullable: false)
     broker(nullable: false)
     timeslot(nullable: false)
