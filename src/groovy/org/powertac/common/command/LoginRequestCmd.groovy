@@ -6,5 +6,10 @@ package org.powertac.common.command
  */
 class LoginRequestCmd implements Serializable {
   String username
-  String apiKey
+  String password
 }
+
+
+
+
+
