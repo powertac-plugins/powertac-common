@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.*
  * associated HourlyCharge instances.</p>
  * @author John Collins
  */
-@XStreamAlias("tariff-spec")
+@XStreamAlias("tariffSpecification")
 class TariffSpecification //implements Serializable
 {
   @XStreamAsAttribute
