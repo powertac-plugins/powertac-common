@@ -42,6 +42,7 @@ class Broker {
 
   /** If true, the broker is local to the server and does not receive messages  */
   Boolean local = false
+  def testProxy = null // redirect incoming messages for testing
 
   /** Broker's current cash position  */
   CashPosition cash
@@ -49,7 +50,7 @@ class Broker {
   static auditable = true
 
   static hasMany = [shouts: Shout, tariffs: Tariff, marketPositions: MarketPosition]
-  static transients = ['apiKey']
+  static transients = ['apiKey', 'testProxy']
   static constraints = {
     id(nullable: false, blank: false, unique: true)
     username(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9_])*/)
@@ -111,5 +112,6 @@ class Broker {
     if (!local) {
       log.error "receiveMessage() should only be called for local brokers"
     }
+    testProxy?.receive(object)
   }
 }
