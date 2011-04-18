@@ -48,7 +48,7 @@ class Tariff
 
   def timeService
 
-  String id
+  String specId
 
   /** The Tariff spec*/
   TariffSpecification tariffSpec
@@ -92,7 +92,7 @@ class Tariff
   //static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
-    id(nullable: false, blank: false)
+    specId(nullable: false, blank: false)
     broker(nullable:false)
     expiration(nullable: true)
     state(nullable: false)
@@ -100,9 +100,9 @@ class Tariff
     maxHorizon(nullable:true)
  }
   
-  static mapping = {
-    id (generator: 'assigned')
-  }
+  //static mapping = {
+  //  id (generator: 'assigned')
+  //}
 
   /**
    * Initializes the Tariff, setting the publication date and running
@@ -110,11 +110,11 @@ class Tariff
    */
   void init ()
   {
-    id = tariffSpec.id
+    specId = tariffSpec.id
     broker = (tariffSpec.broker)
     expiration = tariffSpec.getExpiration()
     tariffSpec.getSupersedes().each {
-      Tariff.findById(it).isSupersededBy = this
+      Tariff.findBySpecId(it).isSupersededBy = this
     }
     offerDate = timeService.getCurrentTime()
     analyze()
