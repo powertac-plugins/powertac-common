@@ -48,7 +48,7 @@ class Tariff
 
   def timeService
 
-  String id
+  String id = IdGenerator.createId()
 
   /** The Tariff spec*/
   TariffSpecification tariffSpec
@@ -110,7 +110,7 @@ class Tariff
    */
   void init ()
   {
-    id = tariffSpec.id
+    // id = tariffSpec.id
     broker = (tariffSpec.broker)
     expiration = tariffSpec.getExpiration()
     tariffSpec.getSupersedes().each {
