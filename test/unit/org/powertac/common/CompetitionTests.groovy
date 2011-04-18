@@ -24,19 +24,23 @@ class CompetitionTests extends GrailsUnitTestCase {
 
   Competition competition
   
-  protected void setUp() {
+  protected void setUp() 
+  {
     super.setUp()
     competition = new Competition()
     mockForConstraintsTests(Competition, [competition])
   }
 
-  protected void tearDown() {
+  protected void tearDown() 
+  {
     super.tearDown()
   }
 
-  void testNullableValidationLogic() {
+  void testNullableValidationLogic() 
+  {
     Competition competition1 = 
-        new Competition(id: null, name: null, timeslotLength: null, minimumTimeslotCount: null, 
+        new Competition(id: null, name: null, timeslotLength: null, minimumTimeslotCount: null,
+                        expectedTimeslotCount: null,
                         timeslotsOpen: null, deactivateTimeslotsAhead: null, 
                         simulationBaseTime: null, simulationModulo: null, simulationRate: null)
     assertFalse(competition1.validate())
@@ -44,6 +48,7 @@ class CompetitionTests extends GrailsUnitTestCase {
     assertEquals('nullable', competition1.errors.getFieldError('name').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('timeslotLength').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('minimumTimeslotCount').getCode())
+    assertEquals('nullable', competition1.errors.getFieldError('expectedTimeslotCount').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('timeslotsOpen').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('deactivateTimeslotsAhead').getCode())
     assertEquals('nullable', competition1.errors.getFieldError('simulationBaseTime').getCode())
@@ -51,28 +56,42 @@ class CompetitionTests extends GrailsUnitTestCase {
     assertEquals('nullable', competition1.errors.getFieldError('simulationModulo').getCode())
   }
 
-  void testBlankValidationLogic() {
+  void testBlankValidationLogic() 
+  {
     competition = new Competition(id: '', name: '')
     assertFalse(competition.validate())
     assertEquals('blank', competition.errors.getFieldError('id').getCode())
     assertEquals('blank', competition.errors.getFieldError('name').getCode())
   }
 
-  void testIdUniqueness() {
+  void testIdUniqueness() 
+  {
     Competition competition1 = new Competition(id: competition.id)
     assertFalse(competition1.validate())
     assertEquals('unique', competition1.errors.getFieldError('id').getCode())
   }
 
-  void testTimeslotsOpen() {
+  void testTimeslotsOpen() 
+  {
     Competition competition1 = new Competition(timeslotsOpen: 1, minimumTimeslotCount: 3, deactivateTimeslotsAhead: 3)
     assertFalse(competition1.validate())
-    assertEquals('timeslotsOpen.greater.timeslotsAhead', competition1.errors.getFieldError('timeslotsOpen').getCode())
-    assertEquals('deactivateTimeslotsAhead.greater.timeslotsOpen', competition1.errors.getFieldError('deactivateTimeslotsAhead').getCode())
+    assertEquals('timeslotsOpen.greater.timeslotsAhead', 
+                 competition1.errors.getFieldError('timeslotsOpen').getCode())
+    assertEquals('deactivateTimeslotsAhead.greater.timeslotsOpen', 
+                 competition1.errors.getFieldError('deactivateTimeslotsAhead').getCode())
 
     competition1.deactivateTimeslotsAhead = 2
     competition1.validate()
     assertNull(competition1.errors.getFieldError('timeslotsOpen'))
     assertNull(competition1.errors.getFieldError('deactivateTimeslotsAhead'))
+  }
+  
+  void testExpectedTimeslotCount ()
+  {
+    Competition competition1 = new Competition(minimumTimeslotCount: 48, expectedTimeslotCount: 47)
+    assertFalse(competition1.validate())
+    competition1.validate()
+    assertEquals('expectedTimeslotCount.less.minimumTimeslotCount', 
+                 competition1.errors.getFieldError('expectedTimeslotCount').getCode())
   }
 }
