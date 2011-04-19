@@ -15,12 +15,12 @@ class BrokerConverter implements SingleValueConverter
   @Override
   public Object fromString (String id)
   {
-    return Broker.get(id)
+    return Broker.findByUsername(id)
   }
 
   @Override
   public String toString (Object broker)
   {
-    return broker.id
+    return broker.username
   }
 }
