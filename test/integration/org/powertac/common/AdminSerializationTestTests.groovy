@@ -65,12 +65,11 @@ class AdminSerializationTestTests extends GroovyTestCase
 
   void testCompetition () 
   {
+    Instant base = new DateTime(2010, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
     Competition comp =
         new Competition(name: "testing", description: "more testing",
-                        simulationBaseTime: new DateTime(2010, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant())
+                        simulationBaseTime: base)
 
-    comp.parameterMap['tariffPublicationFee'] = 3.45
-    comp.parameterMap['distributionRate'] = 0.015
     StringWriter serialized = new StringWriter ()
     serialized.write(xstream.toXML(comp))
     println serialized.toString()
@@ -78,7 +77,32 @@ class AdminSerializationTestTests extends GroovyTestCase
     assertNotNull("deserialized something", xc)
     assertTrue("correct type", xc instanceof Competition)
     assertEquals("correct id", comp.id, xc.id)
-    assertEquals("correct publication fee", 3.45, xc.parameterMap['tariffPublicationFee'])
+    assertEquals("correct base time", base, xc.simulationBaseTime)
+  }
+  
+  void testCompetitionWithPlugins ()
+  {
+    Competition comp =
+        new Competition(name: "testing", description: "more testing",
+                        simulationBaseTime: new DateTime(2010, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant())
+    PluginConfig pc1 = new PluginConfig(pluginRoleName: 'Test1',
+                                        configuration: ['a':'1', 'value':'42.3'])
+    comp.addToPlugins(pc1)
+    PluginConfig pc2 = new PluginConfig(pluginRoleName: 'Test2', pluginName: 'MyPlugin',
+                                        configuration: ['answer':'42', 'question':'why'])
+    comp.addToPlugins(pc2)
+
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(comp))
+    println serialized.toString()
+    def xc = xstream.fromXML(serialized.toString())
+    assertNotNull("deserialized something", xc)
+    assertTrue("correct type", xc instanceof Competition)
+    assertEquals("correct id", comp.id, xc.id)
+    assertEquals("correct number of plugin configs", 2, xc.plugins.size())
+    PluginConfig xt2 = xc.plugins.find { it.pluginRoleName == 'Test2' }
+    assertNotNull("found second config", xt2)
+    assertEquals("correct answer", '42', xt2.configuration['answer'])
   }
 
   void testCustomerInfo ()
