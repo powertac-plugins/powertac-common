@@ -47,9 +47,6 @@ class Competition //implements Serializable
 
   /** Optional text that further describes the competition    */
   String description
-  
-  /** Parameter map */
-  Map parameterMap = [:]
 
   /** length of a timeslot in simulation minutes    */
   @XStreamAsAttribute
@@ -71,8 +68,8 @@ class Competition //implements Serializable
   Integer deactivateTimeslotsAhead = 1
   
   /** Bank interest rate on debt (interest on positive balance is half this value) */
-  @XStreamAsAttribute
-  BigDecimal bankInterest = 0.0
+  //@XStreamAsAttribute
+  //BigDecimal bankInterest = 0.0
 
   /** the start time of the simulation scenario, in wall-clock time */
   // This will need to be communicated separately -- JEC
@@ -85,18 +82,19 @@ class Competition //implements Serializable
   @XStreamAsAttribute
   Long simulationRate = 720l
 
-/** controls the values of simulation time values reported. If
- *  we are running one-hour timeslots, then the modulo should be one hour, expressed
- *  in milliseconds. If we are running one-hour timeslots but want to update time every
- *  30 minutes of simulated time, then the modulo would be 30*60*1000. Note that
- *  this will not work correctly unless the calls to updateTime() are made at
- *  modulo/rate intervals. Also note that the reported time is computed as
- *  rawTime - rawTime % modulo, which means it will never be ahead of the raw
- *  simulation time. Note that values other than the length of a timeslot have
- *  not been tested.
- */
+  /** controls the values of simulation time values reported. If
+   *  we are running one-hour timeslots, then the modulo should be one hour, expressed
+   *  in milliseconds. If we are running one-hour timeslots but want to update time every
+   *  30 minutes of simulated time, then the modulo would be 30*60*1000. Note that
+   *  this will not work correctly unless the calls to updateTime() are made at
+   *  modulo/rate intervals. Also note that the reported time is computed as
+   *  rawTime - rawTime % modulo, which means it will never be ahead of the raw
+   *  simulation time. Note that values other than the length of a timeslot have
+   *  not been tested. */
   @XStreamAsAttribute
   Long simulationModulo = 60*60*1000
+  
+  static hasMany = [plugins:PluginConfig]
 
   static constraints = {
     id(nullable: false, unique: true, blank: false)
