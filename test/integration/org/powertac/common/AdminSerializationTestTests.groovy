@@ -23,6 +23,7 @@ import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
 import com.thoughtworks.xstream.*
+import org.powertac.common.transformer.BrokerConverter
 
 /**
  * Tests for serialization and deserialization of basic admin types, including
@@ -32,7 +33,9 @@ import com.thoughtworks.xstream.*
 class AdminSerializationTestTests extends GroovyTestCase 
 {
   def timeService // dependency injection
-  
+  def static final LOG = org.apache.commons.logging.LogFactory.getLog(AdminSerializationTestTests.class)
+
+
   Broker broker
   CustomerInfo customerInfo
   Timeslot timeslot
@@ -56,6 +59,7 @@ class AdminSerializationTestTests extends GroovyTestCase
     xstream.processAnnotations(Competition.class)
     xstream.processAnnotations(SimStart.class)
     xstream.processAnnotations(CustomerInfo.class)
+    xstream.registerConverter(new BrokerConverter())
   }
 
   protected void tearDown () 
@@ -115,16 +119,20 @@ class AdminSerializationTestTests extends GroovyTestCase
     assertTrue("correct type", xc instanceof CustomerInfo)
     assertEquals("correct id", customerInfo.id, xc.id)
   }
-  
+
   void testSimStart ()
   {
-    SimStart start = new SimStart(start: new DateTime(2011, 4, 10, 15, 25, 30, 0, DateTimeZone.UTC).toInstant())
+    SimStart start = new SimStart(start: new DateTime(2011, 4, 10, 15, 25, 30, 0, DateTimeZone.UTC).toInstant(),
+                                  brokers: Broker.list().collect { it.username })
     StringWriter serialized = new StringWriter ()
     serialized.write(xstream.toXML(start))
-    println serialized.toString()
+
+    println "SimStart serialized string: " + serialized.toString()
+
     def xs = xstream.fromXML(serialized.toString())
     assertNotNull("deserialized something", xs)
     assertTrue("correct type", xs instanceof SimStart)
     assertEquals("correct id", start.id, xs.id)
+    assertEquals("correct broker", broker.username, xs.brokers[0])
   }
 }

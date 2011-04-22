@@ -17,6 +17,8 @@ package org.powertac.common.msg
 
 import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
+import org.powertac.common.Broker
+import org.powertac.common.transformer.BrokerConverter
 
 /**
  * This message is used to communicate the simulation start time from server
@@ -28,6 +30,9 @@ import com.thoughtworks.xstream.annotations.*
 class SimStart 
 {
   Instant start
+
+  @XStreamImplicit(itemFieldName = 'broker')
+  List<String> brokers
 
   static constraints = {
     start (nullable: false)
