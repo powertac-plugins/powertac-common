@@ -13,9 +13,9 @@ class BrokerConverter implements SingleValueConverter
   }
 
   @Override
-  public Object fromString (String id)
+  public Object fromString (String username)
   {
-    return Broker.findByUsername(id)
+    return Broker.findByUsername(username)
   }
 
   @Override
