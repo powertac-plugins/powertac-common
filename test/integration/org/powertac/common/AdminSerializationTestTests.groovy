@@ -89,10 +89,10 @@ class AdminSerializationTestTests extends GroovyTestCase
     Competition comp =
         new Competition(name: "testing", description: "more testing",
                         simulationBaseTime: new DateTime(2010, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant())
-    PluginConfig pc1 = new PluginConfig(pluginRoleName: 'Test1',
+    PluginConfig pc1 = new PluginConfig(roleName: 'Test1',
                                         configuration: ['a':'1', 'value':'42.3'])
     comp.addToPlugins(pc1)
-    PluginConfig pc2 = new PluginConfig(pluginRoleName: 'Test2', pluginName: 'MyPlugin',
+    PluginConfig pc2 = new PluginConfig(roleName: 'Test2', name: 'MyPlugin',
                                         configuration: ['answer':'42', 'question':'why'])
     comp.addToPlugins(pc2)
 
@@ -104,7 +104,7 @@ class AdminSerializationTestTests extends GroovyTestCase
     assertTrue("correct type", xc instanceof Competition)
     assertEquals("correct id", comp.id, xc.id)
     assertEquals("correct number of plugin configs", 2, xc.plugins.size())
-    PluginConfig xt2 = xc.plugins.find { it.pluginRoleName == 'Test2' }
+    PluginConfig xt2 = xc.plugins.find { it.roleName == 'Test2' }
     assertNotNull("found second config", xt2)
     assertEquals("correct answer", '42', xt2.configuration['answer'])
   }

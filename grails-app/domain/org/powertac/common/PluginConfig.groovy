@@ -30,12 +30,12 @@ class PluginConfig
 {
   /** Role name for this plugin. */
   @XStreamAsAttribute
-  String pluginRoleName
+  String roleName
   
   /** Instance name for this plugin, in case there are (or could be)
    *  multiple plugins in the same role. */
   @XStreamAsAttribute
-  String pluginName = ''
+  String name = ''
   
   /** Attribute-value pairs representing the configuration settings. */
   Map configuration
