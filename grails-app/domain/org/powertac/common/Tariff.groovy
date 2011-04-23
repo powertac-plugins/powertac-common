@@ -119,6 +119,8 @@ class Tariff
     offerDate = timeService.getCurrentTime()
     analyze()
     this.save()
+    broker.addToTariffs(this)
+    broker.save()
   }
   
   /**

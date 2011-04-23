@@ -77,7 +77,7 @@ class TariffSpecification //implements Serializable
     id (nullable: false, blank: false, unique: true)
     broker(nullable: false)
     expiration(nullable: true)
-    minDuration(min: 24*60*60*1000l) // one day
+    minDuration(min: 0l) 
     powerType(nullable: false)
     rates(nullable: false, minSize: 1)
   }

@@ -48,7 +48,7 @@ class TariffSpecificationTests extends GrailsUnitTestCase
   void testValueValidationLogic() 
   {
     TariffSpecification cmd = new TariffSpecification(tariffId: 'abc', brokerUsername: 'def', 
-                                                      minDuration: 42l, rates: [])
+                                                      minDuration: -2l, rates: [])
     assertFalse(cmd.validate())
     cmd.errors.allErrors.each { println it }
     assertEquals('min.notmet', cmd.errors.getFieldError('minDuration').getCode())
