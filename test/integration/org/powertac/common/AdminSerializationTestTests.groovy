@@ -39,7 +39,6 @@ class AdminSerializationTestTests extends GroovyTestCase
   Broker broker
   CustomerInfo customerInfo
   Timeslot timeslot
-  Product product
   XStream xstream
   
   protected void setUp ()

@@ -25,7 +25,7 @@ import org.powertac.common.enumerations.ProductType
 class ShoutTests extends GroovyTestCase {
 
   TimeService timeService
-  Product product
+  ProductType product
   Timeslot timeslot
   Broker broker
   String username
@@ -40,8 +40,7 @@ class ShoutTests extends GroovyTestCase {
     timeService.setCurrentTime(new Instant())
     broker = new Broker(username: username, password: password, apiKey: apiKey)
     assert (broker.validate() && broker.save())
-    product = new Product(productType: ProductType.Future)
-    assert (product.validate() && product.save())
+    product = ProductType.Future
     timeslot = new Timeslot(serialNumber: 0, startInstant: new Instant(), endInstant: new Instant())
     assert (timeslot.validate() && timeslot.save())
   }
@@ -132,7 +131,7 @@ class ShoutTests extends GroovyTestCase {
   }
 
   void testShoutCreateByNestedIds() {
-    Shout shout1 = new Shout('product.id': product.id, 'timeslot.id': timeslot.id, 
+    Shout shout1 = new Shout(product: product, 'timeslot.id': timeslot.id, 
                              'broker.id': broker.id, quantity: 1.0, 
                              buySellIndicator: BuySellIndicator.SELL, 
                              orderType: OrderType.MARKET, transactionId: 'testTransaction2', 

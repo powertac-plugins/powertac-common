@@ -18,6 +18,7 @@ package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
+import org.powertac.common.enumerations.ProductType
 
 /**
  * An orderbook instance captures a snapshot of the PowerTAC wholesale market's orderbook
@@ -58,7 +59,7 @@ class Orderbook implements Serializable {
   String transactionId
 
   /** the product this orderbook is generated for  */
-  Product product
+  ProductType product
 
   /** the timeslot this orderbook is generated for  */
   Timeslot timeslot
@@ -148,7 +149,7 @@ class Orderbook implements Serializable {
   
   static transients = ['timeService', 'orderbookArray']
 
-  static belongsTo = [product: Product, timeslot: Timeslot]
+  static belongsTo = [timeslot: Timeslot]
 
   static mapping = {
     id(generator: 'assigned')

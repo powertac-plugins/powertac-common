@@ -20,7 +20,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.MarketTransactionType
-import org.powertac.common.transformer.ProductConverter
+import org.powertac.common.enumerations.ProductType
 import org.powertac.common.transformer.BrokerConverter
 import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
@@ -50,8 +50,8 @@ class MarketTransaction //implements Serializable
   //Integer id
 
   /** the product for which this information is created */
-  @XStreamConverter(ProductConverter)
-  Product product // not clear what this means -- JEC
+  @XStreamAsAttribute
+  ProductType product // not clear what this means -- JEC
 
   /** price/mWh of a trade, positive for a buy, negative for a sell */
   @XStreamAsAttribute

@@ -37,7 +37,7 @@ class MarketSerializationTests extends GroovyTestCase
   Broker broker
   CustomerInfo customerInfo
   Timeslot timeslot
-  Product product
+  ProductType product
   XStream xstream
 
   protected void setUp() 
@@ -52,8 +52,7 @@ class MarketSerializationTests extends GroovyTestCase
     timeslot = new Timeslot(serialNumber: 1, current: true,
         startInstant: now, endInstant: new Instant(now.millis + TimeService.HOUR))
     assert timeslot.save()
-    product = new Product(productType: ProductType.Future)
-    assert product.save()
+    product = ProductType.Future
 
     xstream = new XStream()
     xstream.processAnnotations(CashPosition.class)

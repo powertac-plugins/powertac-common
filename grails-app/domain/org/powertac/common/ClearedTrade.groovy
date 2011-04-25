@@ -16,8 +16,8 @@
 
 package org.powertac.common
 
-import org.powertac.common.transformer.ProductConverter
 import com.thoughtworks.xstream.annotations.*
+import org.powertac.common.enumerations.ProductType
 
 /**
  * A clearedTrade instance reports public trade information, i.e. the execution price and quantity.
@@ -40,8 +40,8 @@ class ClearedTrade //implements Serializable
   Timeslot timeslot
 
   /** related product that was traded*/
-  @XStreamConverter(ProductConverter)
-  Product product
+  @XStreamAsAttribute
+  ProductType product
 
   /** clearing price of the trade */
   @XStreamAsAttribute

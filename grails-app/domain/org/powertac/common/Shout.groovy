@@ -21,7 +21,7 @@ import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
-import org.powertac.common.transformer.ProductConverter
+import org.powertac.common.enumerations.ProductType
 import org.powertac.common.transformer.BrokerConverter
 import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
@@ -60,8 +60,8 @@ class Shout //implements Serializable
   Broker broker
 
   /** the product that should be bought or sold */
-  @XStreamConverter(ProductConverter)
-  Product product
+  @XStreamAsAttribute
+  ProductType product
 
   /** the timeslot for which the product should be bought or sold */
   @XStreamAsAttribute
@@ -110,7 +110,7 @@ class Shout //implements Serializable
   
   static auditable = true
 
-  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot]
+  static belongsTo = [broker: Broker, timeslot: Timeslot]
 
   static transients = ['timeService']
 

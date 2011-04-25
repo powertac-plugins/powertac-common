@@ -66,10 +66,6 @@ class Competition //implements Serializable
   /** # timeslots a timeslot gets deactivated ahead of the now timeslot (default: 1 timeslot, which (given default length of 60 min) means that e.g. trading is disabled 60 minutes ahead of time    */
   @XStreamAsAttribute
   Integer deactivateTimeslotsAhead = 1
-  
-  /** Bank interest rate on debt (interest on positive balance is half this value) */
-  //@XStreamAsAttribute
-  //BigDecimal bankInterest = 0.0
 
   /** the start time of the simulation scenario, in wall-clock time */
   // This will need to be communicated separately -- JEC

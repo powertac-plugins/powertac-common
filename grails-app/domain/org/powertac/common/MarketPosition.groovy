@@ -18,7 +18,7 @@ package org.powertac.common
 
 //import org.codehaus.groovy.grails.commons.ApplicationHolder
 //import org.joda.time.Instant
-import org.powertac.common.transformer.ProductConverter
+import org.powertac.common.enumerations.ProductType
 import org.powertac.common.transformer.BrokerConverter
 import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
@@ -53,8 +53,8 @@ class MarketPosition //implements Serializable
   BigDecimal overallBalance = 0.0
 
   /** the product this position update belongs to */
-  @XStreamConverter(ProductConverter)
-  Product product // not sure what this is for -- JEC
+  @XStreamAsAttribute
+  ProductType product // not sure what this is for -- JEC
   
   // explicit version so we can omit it
   @XStreamOmitField
