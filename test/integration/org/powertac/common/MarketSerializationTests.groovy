@@ -210,5 +210,6 @@ class MarketSerializationTests extends GroovyTestCase
     def xs = xstream.fromXML(serialized.toString())
     assertNotNull("deserialized something", xs)
     assertTrue("correct type", xs instanceof Shout)
+    assertEquals("correct timeslot", timeslot, xs.timeslot)
   }
 }

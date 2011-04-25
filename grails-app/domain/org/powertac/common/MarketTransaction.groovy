@@ -22,6 +22,7 @@ import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.MarketTransactionType
 import org.powertac.common.transformer.ProductConverter
 import org.powertac.common.transformer.BrokerConverter
+import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
@@ -65,6 +66,8 @@ class MarketTransaction //implements Serializable
   Broker broker
   
   /** the timeslot for which this trade or quote information is created */
+  @XStreamAsAttribute
+  @XStreamConverter(TimeslotConverter)
   Timeslot timeslot
   
   /** when was this trade made */

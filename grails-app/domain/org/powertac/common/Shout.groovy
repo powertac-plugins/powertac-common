@@ -23,6 +23,7 @@ import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
 import org.powertac.common.transformer.ProductConverter
 import org.powertac.common.transformer.BrokerConverter
+import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
@@ -63,6 +64,8 @@ class Shout //implements Serializable
   Product product
 
   /** the timeslot for which the product should be bought or sold */
+  @XStreamAsAttribute
+  @XStreamConverter(TimeslotConverter)
   Timeslot timeslot
 
   /** flag that indicates if this shout is a buy or sell order */

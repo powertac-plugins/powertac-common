@@ -20,6 +20,7 @@ package org.powertac.common
 //import org.joda.time.Instant
 import org.powertac.common.transformer.ProductConverter
 import org.powertac.common.transformer.BrokerConverter
+import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
@@ -41,6 +42,8 @@ class MarketPosition //implements Serializable
   Broker broker
   
   /** the timeslot this position belongs to */
+  @XStreamAsAttribute
+  @XStreamConverter(TimeslotConverter)
   Timeslot timeslot
   
   /** The running total position the broker owns (> 0) / owes (< 0) of the specified
