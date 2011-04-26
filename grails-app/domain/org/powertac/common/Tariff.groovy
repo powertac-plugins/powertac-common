@@ -43,7 +43,7 @@ class Tariff
   
   enum State
   {
-    OFFERED, ACTIVE, WITHDRAWN, KILLED, INACTIVE
+    PENDING, OFFERED, ACTIVE, WITHDRAWN, KILLED, INACTIVE
   }
 
   def timeService
@@ -60,7 +60,7 @@ class Tariff
   Instant expiration
   
   /** Current state of this Tariff */
-  State state = State.OFFERED
+  State state = State.PENDING
   
   /** ID of Tariff that supersedes this Tariff */
   Tariff isSupersededBy
