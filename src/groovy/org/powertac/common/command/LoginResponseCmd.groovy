@@ -17,4 +17,5 @@ class LoginResponseCmd implements Serializable {
 
   StatusCode status
   String serverAddress
+  String queueName
 }
