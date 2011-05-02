@@ -19,6 +19,8 @@ package org.powertac.common
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 import org.powertac.common.enumerations.ProductType
+import com.thoughtworks.xstream.annotations.*
+import org.powertac.common.transformer.TimeslotConverter
 
 /**
  * An orderbook instance captures a snapshot of the PowerTAC wholesale market's orderbook
@@ -28,6 +30,7 @@ import org.powertac.common.enumerations.ProductType
  * @author Daniel Schnurr
  * @version 1.2 , 05/02/2011
  */
+@XStreamAlias("orderbook-entry")
 class Orderbook {
 
   //def timeService
@@ -41,23 +44,26 @@ class Orderbook {
     ApplicationHolder.application.mainContext.timeService
   }
 
-  String id = IdGenerator.createId()
-
+  @XStreamAsAttribute
   Instant dateExecuted = timeService?.currentTime
 
   /** the transactionId is generated during the execution of a trade in market and
    * marks all domain instances in all domain classes that were created or changed
    * during this transaction. Like this the orderbookInstance with transactionId=1
    * can be correlated to shout instances with transactionId=1 in ex-post analysis  */
+  @XStreamAsAttribute
   String transactionId
 
   /** the product this orderbook is generated for  */
+  @XStreamAsAttribute
   ProductType product
 
   /** the timeslot this orderbook is generated for  */
+  @XStreamConverter(TimeslotConverter)
   Timeslot timeslot
 
   /** midpoint between bids and asks; if there is no bid (ask) the min ask (max bid) will be returned*/
+  @XStreamOmitField
   BigDecimal midPoint
 
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
@@ -66,7 +72,7 @@ class Orderbook {
   /** sorted set of OrderbookEntries with buySellIndicator = sell (ascending)*/
   SortedSet<OrderbookEntry> asks
 
-  //static auditable = true
+  static auditable = true
   
   static transients = ['timeService', 'midPoint']
 
@@ -74,12 +80,7 @@ class Orderbook {
 
   static hasMany = [bids: OrderbookEntry, asks: OrderbookEntry]
 
-  static mapping = {
-    id(generator: 'assigned')
-  }
-
   static constraints = {
-    id(nullable: false, blank: false, unique: true)
     dateExecuted(nullable: false)
     transactionId(nullable: false)
     product(nullable: false)

@@ -16,11 +16,18 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.BuySellIndicator
+import com.thoughtworks.xstream.annotations.*
 
+@XStreamAlias("orderbook-entry")
 class OrderbookEntry {
 
+  @XStreamAsAttribute
   BigDecimal limitPrice
+
+  @XStreamAsAttribute
   BigDecimal quantity
+
+  @XStreamAsAttribute
   BuySellIndicator buySellIndicator
 
   static belongsTo = [orderbook: Orderbook]
