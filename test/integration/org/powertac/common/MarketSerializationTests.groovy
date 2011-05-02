@@ -61,6 +61,8 @@ class MarketSerializationTests extends GroovyTestCase
     xstream.processAnnotations(MarketPosition.class)
     xstream.processAnnotations(MarketTransaction.class)
     xstream.processAnnotations(Shout.class)
+    xstream.processAnnotations(Orderbook.class)
+    xstream.processAnnotations(OrderbookEntry.class)
   }
 
   protected void tearDown() 
@@ -210,5 +212,43 @@ class MarketSerializationTests extends GroovyTestCase
     assertNotNull("deserialized something", xs)
     assertTrue("correct type", xs instanceof Shout)
     assertEquals("correct timeslot", timeslot, xs.timeslot)
+  }
+  
+  void testEmptyOrderbook ()
+  {
+    Orderbook ob =
+        new Orderbook(dateExecuted: timeService.currentTime, transactionId: '2',
+                      product: product, timeslot: timeslot)
+
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(ob))
+    println serialized.toString()
+    def xob = xstream.fromXML(serialized.toString())
+    assertNotNull("deserialized something", xob)
+    assertTrue("correct type", xob instanceof Orderbook)
+    assertEquals("correct timeslot", timeslot, xob.timeslot)
+    assertEquals("correct transaction", '2', xob.transactionId)
+  }
+  
+  void testOrderbook ()
+  {
+    Orderbook ob =
+        new Orderbook(dateExecuted: timeService.currentTime, transactionId: 'ab',
+                      product: product, timeslot: timeslot)
+    ob.addToBids(new OrderbookEntry(limitPrice: 22.0, quantity: 42.0,
+                                    buySellIndicator: BuySellIndicator.BUY))     
+    ob.addToBids(new OrderbookEntry(limitPrice: 19.0, quantity: 22.0,
+                                    buySellIndicator: BuySellIndicator.BUY))
+    ob.addToAsks(new OrderbookEntry(limitPrice: 25.0, quantity: 12.0,
+                                    buySellIndicator: BuySellIndicator.SELL))
+
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(ob))
+    println serialized.toString()
+    def xob = xstream.fromXML(serialized.toString())
+    assertNotNull("deserialized something", xob)
+    assertTrue("correct type", xob instanceof Orderbook)
+    assertEquals("correct timeslot", timeslot, xob.timeslot)
+    assertEquals("correct transaction", 'ab', xob.transactionId)
   }
 }

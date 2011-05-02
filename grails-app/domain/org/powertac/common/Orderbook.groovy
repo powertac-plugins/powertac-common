@@ -30,7 +30,7 @@ import org.powertac.common.transformer.TimeslotConverter
  * @author Daniel Schnurr
  * @version 1.2 , 05/02/2011
  */
-@XStreamAlias("orderbook-entry")
+@XStreamAlias("orderbook")
 class Orderbook {
 
   /**
@@ -40,7 +40,7 @@ class Orderbook {
    * Note: In the code below you can can still user timeService.xyzMethod()
    */
 
-  @XStreamAsAttribute
+  //@XStreamAsAttribute
   Instant dateExecuted
 
   /** the transactionId is generated during the execution of a trade in market and
