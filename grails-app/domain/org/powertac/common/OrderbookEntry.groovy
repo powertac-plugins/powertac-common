@@ -17,9 +17,10 @@ package org.powertac.common
 
 import org.powertac.common.enumerations.BuySellIndicator
 import com.thoughtworks.xstream.annotations.*
+import org.apache.commons.lang.builder.CompareToBuilder
 
 @XStreamAlias("orderbook-entry")
-class OrderbookEntry {
+class OrderbookEntry implements Comparable {
 
   @XStreamAsAttribute
   BigDecimal limitPrice
@@ -36,5 +37,16 @@ class OrderbookEntry {
     limitPrice(nullable: false, blank: false)
     quantity(nullable: false, blank: false)
     buySellIndicator(nullable: false, blank: false)
+  }
+
+  int compareTo(Object o) {
+    if (!o instanceof OrderbookEntry) return 1
+    OrderbookEntry other = (OrderbookEntry) o
+    if (buySellIndicator == BuySellIndicator.BUY) {
+      return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? -1 : 1
+    } else {
+      return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? 1 : -1
+    }
+
   }
 }

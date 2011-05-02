@@ -40,13 +40,14 @@ class Orderbook {
    * instance is deserialized rather than constructed.
    * Note: In the code below you can can still user timeService.xyzMethod()
    */
+  /* DSC commented out since timeService seems to crash integration tests
   private getTimeService() {
     ApplicationHolder.application.mainContext.timeService
   }
 
   @XStreamAsAttribute
   Instant dateExecuted = timeService?.currentTime
-
+  */
   /** the transactionId is generated during the execution of a trade in market and
    * marks all domain instances in all domain classes that were created or changed
    * during this transaction. Like this the orderbookInstance with transactionId=1
@@ -67,10 +68,10 @@ class Orderbook {
   BigDecimal midPoint
 
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
-  SortedSet<OrderbookEntry> bids
+  SortedSet<OrderbookEntry> bids = new TreeSet<OrderbookEntry>()
 
   /** sorted set of OrderbookEntries with buySellIndicator = sell (ascending)*/
-  SortedSet<OrderbookEntry> asks
+  SortedSet<OrderbookEntry> asks = new TreeSet<OrderbookEntry>()
 
   static auditable = true
   
