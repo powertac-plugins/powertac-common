@@ -41,9 +41,12 @@ class CustomerInfo //implements Serializable
   /** gives a "rough" classification what type of customer to expect based on an enumeration, i.e. a fixed set of customer types */
   @XStreamAsAttribute
   CustomerType customerType
+  
+  /** population represented by this model */
+  @XStreamAsAttribute
+  Integer population = 1
 
   /** gives the available power classifications of the customer */
-  // this makes no sense - a customer model potentially has all types - JEC
   List<PowerType> powerTypes = [PowerType.CONSUMPTION, PowerType.PRODUCTION]
   
   /** describes whether or not this customer engages in multiple contracts at the same time */
