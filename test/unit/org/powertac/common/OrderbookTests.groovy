@@ -38,7 +38,7 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
   void testAskOrder() {
-    Orderbook ob = new Orderbook()
+    Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant())
     ob.asks.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
     ob.asks.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
     ob.asks.add(new OrderbookEntry(limitPrice: 11, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
@@ -48,7 +48,7 @@ class OrderbookTests extends GrailsUnitTestCase {
   }
 
    void testBidOrder() {
-    Orderbook ob = new Orderbook()
+    Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant())
     ob.asks.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
     ob.asks.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
     ob.asks.add(new OrderbookEntry(limitPrice: 11, quantity: 1, buySellIndicator: BuySellIndicator.SELL))

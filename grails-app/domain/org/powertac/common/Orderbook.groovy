@@ -33,21 +33,16 @@ import org.powertac.common.transformer.TimeslotConverter
 @XStreamAlias("orderbook-entry")
 class Orderbook {
 
-  //def timeService
   /**
    * Retrieves the timeService (Singleton) reference from the main application context
    * This is necessary as DI by name (i.e. def timeService) stops working if a class
    * instance is deserialized rather than constructed.
    * Note: In the code below you can can still user timeService.xyzMethod()
    */
-  /* DSC commented out since timeService seems to crash integration tests
-  private getTimeService() {
-    ApplicationHolder.application.mainContext.timeService
-  }
 
   @XStreamAsAttribute
-  Instant dateExecuted = timeService?.currentTime
-  */
+  Instant dateExecuted
+
   /** the transactionId is generated during the execution of a trade in market and
    * marks all domain instances in all domain classes that were created or changed
    * during this transaction. Like this the orderbookInstance with transactionId=1
