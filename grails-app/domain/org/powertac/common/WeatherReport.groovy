@@ -16,13 +16,11 @@
 
 package org.powertac.common
 
-import org.powertac.common.Timeslot;
-
 /**
 * A weather report instance that describes the weather data for one hour of the
 * simulation
 *
-* @author Carsten Block
+* @author Erik Onarheim, Josh Edeen
 *
 * @version 1.0 - 03/May/2011
 */

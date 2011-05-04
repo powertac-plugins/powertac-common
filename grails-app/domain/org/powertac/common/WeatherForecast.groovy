@@ -16,8 +16,6 @@
 
 package org.powertac.common
 
-import org.powertac.common.Timeslot;
-
 /**
 * A collection of weatherReports for a current timeslot
 *
