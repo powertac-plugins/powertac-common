@@ -21,6 +21,7 @@ import org.joda.time.DateTimeZone
 import org.joda.time.Duration
 import org.joda.time.Instant
 import org.powertac.common.enumerations.PowerType
+import com.thoughtworks.xstream.annotations.XStreamOmitField
 
 /**
  * Entity wrapper for TariffSpecification that supports Tariff evaluation 
@@ -46,6 +47,7 @@ class Tariff
     PENDING, OFFERED, ACTIVE, WITHDRAWN, KILLED, INACTIVE
   }
 
+  @XStreamOmitField
   def timeService
 
   String specId
