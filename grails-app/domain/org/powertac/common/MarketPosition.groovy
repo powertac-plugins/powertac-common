@@ -54,7 +54,7 @@ class MarketPosition //implements Serializable
 
   /** the product this position update belongs to */
   @XStreamAsAttribute
-  ProductType product // not sure what this is for -- JEC
+  ProductType product = ProductType.Future // not sure what this is for -- JEC
   
   // explicit version so we can omit it
   @XStreamOmitField
