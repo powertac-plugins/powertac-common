@@ -83,9 +83,10 @@ class TariffTransaction //implements Serializable
     charge (nullable: false, scale: Constants.DECIMALS)
   }
 
-  //static mapping = {
-  //  id (generator: 'assigned')
-  //}
+  static mapping = {
+    // id (generator: 'assigned')
+    tariff fetch: 'join'
+  }
 
   public String toString() {
     return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${quantity}"
