@@ -34,6 +34,7 @@ class ClearedTradeTests extends GrailsUnitTestCase {
   }
 
   void testNullableConstraint() {
+    ct.transactionId = "123"
     ct.product = ProductType.Future
     ct.timeslot = new Timeslot(serialNumber: 1, startInstant: new Instant(), endInstant: new Instant())
     mockForConstraintsTests(ClearedTrade, [ct])
