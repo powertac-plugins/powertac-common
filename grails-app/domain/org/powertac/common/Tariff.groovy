@@ -22,7 +22,6 @@ import org.joda.time.Duration
 import org.joda.time.Instant
 import org.powertac.common.enumerations.PowerType
 
-
 /**
  * Entity wrapper for TariffSpecification that supports Tariff evaluation 
  * and billing. Instances of this class are not intended to be serialized.
@@ -46,7 +45,6 @@ class Tariff
   {
     PENDING, OFFERED, ACTIVE, WITHDRAWN, KILLED, INACTIVE
   }
-
 
   def timeService
 
@@ -118,6 +116,7 @@ class Tariff
     tariffSpec.getSupersedes().each {
       Tariff.findBySpecId(it).isSupersededBy = this
     }
+    log.info "${timeService.getCurrentTime().toString}"
     offerDate = timeService.getCurrentTime()
     analyze()
     this.save()
