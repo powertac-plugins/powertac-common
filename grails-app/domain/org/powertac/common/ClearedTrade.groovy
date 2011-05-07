@@ -43,6 +43,13 @@ class ClearedTrade //implements Serializable
   @XStreamAsAttribute
   ProductType product
 
+  /** the transactionId is generated during the execution of a trade in market and
+   * relates corresponding domain instances that were created or changed during
+   * this transaction. Like this the clearedTradeInstance with transactionId=1
+   * can be correlated to shout instances with transactionId=1 in ex-post analysis  */
+  @XStreamAsAttribute
+  String transactionId
+
   /** clearing price of the trade */
   @XStreamAsAttribute
   BigDecimal executionPrice
@@ -58,6 +65,7 @@ class ClearedTrade //implements Serializable
   static constraints = {
     timeslot(nullable: false, blank: false)
     product(nullable: false)
+    transactionId(nullable: false)
 
     /** price and quantity have to be both not null (regular case) or both null (no execution) */
     executionPrice(nullable: true, validator: { price, ct ->

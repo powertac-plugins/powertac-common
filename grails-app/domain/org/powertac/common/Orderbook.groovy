@@ -58,9 +58,9 @@ class Orderbook {
   @XStreamConverter(TimeslotConverter)
   Timeslot timeslot
 
-  /** midpoint between bids and asks; if there is no bid (ask) the min ask (max bid) will be returned*/
+  /** last clearing price; if there is no last clearing price the min ask (max bid) will be returned*/
   @XStreamOmitField
-  BigDecimal midPoint
+  BigDecimal clearingPrice
 
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
   SortedSet<OrderbookEntry> bids = new TreeSet<OrderbookEntry>()
@@ -70,7 +70,7 @@ class Orderbook {
 
   static auditable = true
   
-  static transients = ['timeService', 'midPoint']
+  static transients = ['timeService']
 
   static belongsTo = [timeslot: Timeslot]
 
@@ -81,20 +81,19 @@ class Orderbook {
     transactionId(nullable: false)
     product(nullable: false)
     timeslot(nullable: false)
+    clearingPrice(nullable: true)
     asks(nullable: true)
     bids(nullable: true)
   }
 
-  private void setMidPoint(BigDecimal executableVolume) {
-    //do nothing, method just prevents generation of a public setter
-  }
+  public BigDecimal determineClearingPrice() {
+    OrderbookEntry bestBid
+    OrderbookEntry bestAsk
+    if (this.bids?.size() != 0) bestBid = this.bids?.first()
+    if (this.asks?.size() != 0) bestAsk = this.asks?.first()
 
-  public BigDecimal getMidPoint() {
-    OrderbookEntry bestBid = bids.first()
-    OrderbookEntry bestAsk = asks.first()
-
-    if (bestBid && bestAsk) {
-      return ((bestBid.limitPrice+bestAsk.limitPrice)/2)
+    if (this.clearingPrice) {
+      return this.clearingPrice
     } else {
       if (bestBid && !bestAsk) return bestBid.limitPrice
       if (bestAsk && !bestBid) return bestAsk.limitPrice

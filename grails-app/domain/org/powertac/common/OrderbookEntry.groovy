@@ -43,9 +43,9 @@ class OrderbookEntry implements Comparable {
     if (!o instanceof OrderbookEntry) return 1
     OrderbookEntry other = (OrderbookEntry) o
     if (buySellIndicator == BuySellIndicator.BUY) {
-      return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? -1 : 1
-    } else {
       return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? 1 : -1
+    } else {
+      return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? -1 : 1
     }
 
   }

@@ -116,7 +116,6 @@ class Tariff
     tariffSpec.getSupersedes().each {
       Tariff.findBySpecId(it).isSupersededBy = this
     }
-    log.info "${timeService.getCurrentTime().toString}"
     offerDate = timeService.getCurrentTime()
     analyze()
     this.save()
@@ -269,7 +268,12 @@ class Tariff
    */
   boolean isExpired ()
   {
-    return timeService.getCurrentTime().millis >= expiration.millis
+    if (expiration == null) {
+      return false
+    }
+    else {
+      return timeService.getCurrentTime().millis >= expiration.millis
+    }
   }
   
   /**

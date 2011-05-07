@@ -37,24 +37,48 @@ class OrderbookTests extends GrailsUnitTestCase {
     super.tearDown()
   }
 
-  void testAskOrder() {
+  void testBidOrder() {
     Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant())
-    ob.asks.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
-    ob.asks.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
-    ob.asks.add(new OrderbookEntry(limitPrice: 11, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
+    ob.bids.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
+    ob.bids.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
+    ob.bids.add(new OrderbookEntry(limitPrice: 11, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
 
-    assertEquals(10, ob.asks.first().limitPrice)
-    assertEquals(12, ob.asks.last().limitPrice)
+    assertEquals(12, ob.bids.first().limitPrice)
+    assertEquals(10, ob.bids.last().limitPrice)
   }
 
-   void testBidOrder() {
+   void testAskOrder() {
     Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant())
     ob.asks.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
     ob.asks.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
     ob.asks.add(new OrderbookEntry(limitPrice: 11, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
 
-    assertEquals(12, ob.asks.first().limitPrice)
-    assertEquals(10, ob.asks.last().limitPrice)
+    assertEquals(10, ob.asks.first().limitPrice)
+    assertEquals(12, ob.asks.last().limitPrice)
+  }
+
+  void testClearingPriceForExistingClearingPrice() {
+    Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant(), clearingPrice: 11)
+    ob.asks.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
+    ob.bids.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
+
+    assertEquals(11, ob.determineClearingPrice())
+  }
+
+  void testClearingPriceForExistingBid() {
+    Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant())
+    ob.bids.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
+    ob.bids.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.BUY))
+
+    assertEquals(12, ob.determineClearingPrice())
+  }
+
+   void testClearingPriceForExistingAsk() {
+    Orderbook ob = new Orderbook(dateExecuted: new DateTime().toInstant())
+    ob.asks.add(new OrderbookEntry(limitPrice: 12, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
+    ob.asks.add(new OrderbookEntry(limitPrice: 10, quantity: 1, buySellIndicator: BuySellIndicator.SELL))
+
+    assertEquals(10, ob.determineClearingPrice())
   }
 
 
