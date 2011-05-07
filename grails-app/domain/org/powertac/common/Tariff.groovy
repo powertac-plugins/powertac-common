@@ -222,7 +222,11 @@ class Tariff
 
     // Then work out the tier index. Keep in mind that the kwh value could
     // cross a tier boundary
-    if (tiers.size() == 1) {
+    if (tiers == null || tiers.size() < 1) {
+      log.error("uninitialized tariff ${this}")
+      return 0.0
+    }
+    else if (tiers.size() == 1) {
       return kwh * rateMap[0][di].getValue(when)
     }
     else {
