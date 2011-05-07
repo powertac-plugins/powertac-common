@@ -268,7 +268,12 @@ class Tariff
    */
   boolean isExpired ()
   {
-    return timeService.getCurrentTime().millis >= expiration.millis
+    if (expiration == null) {
+      return false
+    }
+    else {
+      return timeService.getCurrentTime().millis >= expiration.millis
+    }
   }
   
   /**
