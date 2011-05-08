@@ -214,15 +214,23 @@ class Tariff
    */
   double getUsageCharge (Instant when, double kwh = 1.0, double cumulativeUsage = 0.0)
   {
+    
+    log.info "Test 1:${when.toString()}"
+    log.info "Rate: ${rateMap.toString()}"
+    
     // first, get the time index
     DateTime dt = new DateTime(when, DateTimeZone.UTC)
     int di = dt.getHourOfDay()
     if (isWeekly)
       di += 24 * (dt.getDayOfWeek() - 1)
-
+      
     // Then work out the tier index. Keep in mind that the kwh value could
     // cross a tier boundary
-    if (tiers.size() == 1) {
+    if (tiers == null || tiers.size() < 1) {
+      log.error("uninitialized tariff ${this}")
+      return 0.0
+    }
+    else if (tiers.size() == 1) {
       return kwh * rateMap[0][di].getValue(when)
     }
     else {

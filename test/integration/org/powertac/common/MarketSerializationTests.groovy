@@ -19,6 +19,7 @@ import grails.test.*
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.CustomerType
 import org.powertac.common.enumerations.ProductType
+import org.powertac.common.msg.TimeslotUpdate
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Duration
@@ -33,6 +34,7 @@ import com.thoughtworks.xstream.*
 class MarketSerializationTests extends GroovyTestCase 
 {
   def timeService // dependency injection
+  Instant now
   
   Broker broker
   CustomerInfo customerInfo
@@ -43,7 +45,7 @@ class MarketSerializationTests extends GroovyTestCase
   protected void setUp() 
   {
     super.setUp()
-    Instant now = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
+    now = new DateTime(2011, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
     timeService.currentTime = now
     broker = new Broker (username: 'Sally', password: 'testPassword')
     assert broker.save()
@@ -57,6 +59,7 @@ class MarketSerializationTests extends GroovyTestCase
     xstream = new XStream()
     xstream.processAnnotations(CashPosition.class)
     xstream.processAnnotations(Timeslot.class)
+    xstream.processAnnotations(TimeslotUpdate.class)
     xstream.processAnnotations(ClearedTrade.class)
     xstream.processAnnotations(MarketPosition.class)
     xstream.processAnnotations(MarketTransaction.class)
@@ -120,6 +123,25 @@ class MarketSerializationTests extends GroovyTestCase
     assertTrue("correct type", xts instanceof Timeslot)
     assertEquals("correct sn", timeslot.serialNumber, xts.serialNumber)
     assertEquals("correct start", timeslot.startInstant, xts.startInstant)
+  }
+  
+  void testTimeslotUpdate ()
+  {
+    Timeslot s2 = new Timeslot(serialNumber: 2, current: false,
+        startInstant: new Instant(now.millis + TimeService.HOUR), 
+        endInstant: new Instant(now.millis + TimeService.HOUR * 2))
+    assert s2.save()
+    TimeslotUpdate tu = new TimeslotUpdate(enabled: [s2], disabled: [timeslot])
+    StringWriter serialized = new StringWriter ()
+    serialized.write(xstream.toXML(tu))
+    println serialized.toString()
+    def xtu = xstream.fromXML(serialized.toString())
+    assertNotNull("deserialized something", xtu)
+    assertTrue("correct type", xtu instanceof TimeslotUpdate)
+    assertEquals("correct enabled size", 1, xtu.enabled.size())
+    assertEquals("correct enabled sn", 2, xtu.enabled[0].serialNumber)
+    assertEquals("correct disabled size", 1, xtu.disabled.size())
+    assertEquals("correct disabled sn", 1, xtu.disabled[0].serialNumber)
   }
   
   void testClearedTrade ()

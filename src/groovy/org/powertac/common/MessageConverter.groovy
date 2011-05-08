@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2011 by the original author or authors.
  *
@@ -33,6 +34,7 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
     xstream.processAnnotations(CustomerInfo.class)
     xstream.processAnnotations(CashPosition.class)
     xstream.processAnnotations(Timeslot.class)
+    xstream.processAnnotations(TimeslotUpdate.class)
     xstream.processAnnotations(ClearedTrade.class)
     xstream.processAnnotations(MarketPosition.class)
     xstream.processAnnotations(MarketTransaction.class)
