@@ -65,6 +65,9 @@ class TimeService
   long start
   long rate = 720l
   long modulo = 15*60*1000l
+  
+  // busy flag, to prevent overlap
+  boolean busy = false
 
   // simulation action queue
   SortedSet<SimulationAction> actions
@@ -78,11 +81,19 @@ class TimeService
    */
   void updateTime () 
   {
+    if (busy) {
+      log.info "Timer busy"
+      start += HOUR / modulo
+      // TODO: broadcast to brokers
+      return
+    }
+    busy = true
     long systemTime = new Instant().getMillis()
     long raw = base + (systemTime - start) * rate
     currentTime = new Instant(raw - raw % modulo)
-    //println "updateTime: sys=${systemTime}, raw=${raw}, cooked=${cooked} => ${currentTime}"
+    log.info "updateTime: sys=${systemTime}, raw=${raw}, current = ${currentTime}"
     runActions()
+    busy = false
   }
   
   /**
