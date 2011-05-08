@@ -17,10 +17,14 @@
 package org.powertac.common
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.joda.time.DateTime
+import org.joda.time.Instant
 import org.powertac.common.enumerations.BuySellIndicator
 import org.powertac.common.enumerations.ModReasonCode
 import org.powertac.common.enumerations.OrderType
+import org.powertac.common.enumerations.ProductType
+import org.powertac.common.transformer.BrokerConverter
+import org.powertac.common.transformer.TimeslotConverter
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A shout domain instance represents a market or a limit order in the PowerTAC wholesale
@@ -38,142 +42,115 @@ import org.powertac.common.enumerations.OrderType
  * "order" being a reserved word in most SQL dialects.
  *
  * @author Carsten Block
- * @version 1.0, Feb, 6 2011
  */
-class Shout implements Serializable {
+@XStreamAlias("shout")
+class Shout //implements Serializable 
+{
 
   //def timeService
   private getTimeService() {
     ApplicationHolder.application.mainContext.timeService
   }
 
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
 
-  /** the competition this shout belongs to */
-  Competition competition = Competition.currentCompetition()
-
   /** the broker who created this shout */
+  @XStreamConverter(BrokerConverter)
   Broker broker
 
   /** the product that should be bought or sold */
-  Product product
+  @XStreamAsAttribute
+  ProductType product
 
   /** the timeslot for which the product should be bought or sold */
+  @XStreamAsAttribute
+  @XStreamConverter(TimeslotConverter)
   Timeslot timeslot
 
   /** flag that indicates if this shout is a buy or sell order */
+  @XStreamAsAttribute
   BuySellIndicator buySellIndicator
 
   /** the product quantity to buy or sell */
+  @XStreamAsAttribute
   BigDecimal quantity
 
   /** the limit price, i.e. the max. acceptable buy or min acceptable sell price */
+  @XStreamAsAttribute
   BigDecimal limitPrice
 
   /** the last executed quantity (if equal to {@code quantity} the shout is fully executed otherwise it is partially executed */
+  @XStreamAsAttribute
   BigDecimal executionQuantity
 
   /** the last execution price */
+  @XStreamAsAttribute
   BigDecimal executionPrice
 
   /** either MARKET or LIMIT order */
-  OrderType orderType = OrderType.MARKET
+  // not needed - presence of limit price indicates limit order
+  //OrderType orderType = OrderType.MARKET
 
   /** the simulation time when the original shout instance was first created */
-  DateTime dateCreated = timeService.getCurrentTime().toDateTime()
+  Instant dateCreated = timeService.getCurrentTime()
 
   /** the latest modification time of the shout */
-  DateTime dateMod = this.dateCreated
+  Instant dateMod = this.dateCreated
 
   /** the reason for the latest modifcation to the shout instance */
+  @XStreamAsAttribute
   ModReasonCode modReasonCode = ModReasonCode.INSERT
 
-  /** A transactionId is generated during the execution of the shout and marks all domain instances in all domain classes that were created or changed during this single transaction (e.g. corresponding transactionLog, CashUpdate, or PositionUpdate instances). Later on this id allows for correlation of the different domain class instances during ex post analysis*/
+  /** A transactionId is generated during the execution of the shout and marks all domain instances in all domain classes that were created or changed during this single transaction (e.g. corresponding transactionLog, CashUpdate, or MarketPosition instances). Later on this id allows for correlation of the different domain class instances during ex post analysis*/
   String transactionId
-
-  /** marks all shout instances that belong to the same original shout. On every shout change a new clone of the domain instance is generated and shoutId serves as common identifier among all these clones.*/
-  String shoutId
 
   /** optional comment that can be used for example to further describe why a shout was deleted by system (e.g. during deactivaton of a timeslot) */
   String comment
+  
+  static auditable = true
 
-  /** flag that marks the latest shout instance: Purpose: speed up db queries */
-  Boolean latest
-
-  static belongsTo = [broker: Broker, product: Product, timeslot: Timeslot, competition: Competition]
+  static belongsTo = [broker: Broker, timeslot: Timeslot]
 
   static transients = ['timeService']
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false, validator: {val ->
-      val?.current ? true : [Constants.COMPETITION_INACTIVE]
-    })
     broker(nullable: false)
-    product(nullable: false)
+    product(nullable: true)
     timeslot(nullable: false)
     buySellIndicator(nullable: false)
     quantity(nullable: false, min: 0.0, scale: Constants.DECIMALS)
-    limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS, validator: {val, obj ->
-      if (obj.orderType == OrderType.LIMIT && val == null) return [Constants.SHOUT_LIMITORDER_NULL_LIMIT]
-      if (obj.orderType == OrderType.MARKET && val != null) return [Constants.SHOUT_MARKETORDER_WITH_LIMIT]
-      return true
-    })
+    limitPrice(nullable: true, min: 0.0, Scale: Constants.DECIMALS)
     executionQuantity(nullable: true, min: 0.0, scale: Constants.DECIMALS)
 
     executionPrice(nullable: true, min: 0.0, scale: Constants.DECIMALS)
-    orderType(nullable: false)
-    dateCreated(nullable: false)
-    dateMod(nullable: false)
-    modReasonCode(nullable: false)
-    transactionId(nullable: false)
-    shoutId(nullable: false)
+    //orderType(nullable: true)
+    dateCreated(nullable: true)
+    dateMod(nullable: true)
+    modReasonCode(nullable: true)
+    transactionId(nullable: true)
     comment(nullable: true)
-    latest (nullable: false)
   }
 
   static mapping = {
     id (generator: 'assigned')
-    shoutId (index: 'shout_id_idx,shout_id_latest_idx')
-    latest (index: 'shout_id_latest_idx')
   }
 
+  // JEC -- do we need this at all?
   /**
-   * Special type of cloning for shout instances. This method clones the shout instance and...
+   * Updates shout instance:
    * 1) updates the modReasonCode field in the cloned instance to the value provided as method param
-   * 2) sets the 'latest' property in the original instance to false (and persists the change to the db)
-   * 3) sets the 'latest' property in the cloned instance to true
-   * 4) keeps the 'dateCreated' property in the cloned instance unchanged
-   * 5) sets 'dateMod' property in the cloned instance to *now* (in simulation time)
-   * 6) sets 'transactionId' property in the cloned instance to null
-   *
-   * Note: the original shout instance is saved (in order to persist the
-   * updated 'latest' field property while the cloned shout instance *is not saved*!!
+   * 2) keeps the 'dateCreated' property in the cloned instance unchanged
+   * 3) sets 'dateMod' property in the cloned instance to *now* (in simulation time)
+   * 4) (does not) sets 'transactionId' property in the cloned instance to null
    *
    * @param newModReasonCode new modReasonCode to use in the cloned shout instance
    * @return cloned shout instance where the cloned instance is changed as described above
    */
   public Shout initModification(ModReasonCode newModReasonCode) {
-    def newShout = new Shout()
-    newShout.competition = this.competition
-    newShout.broker = this.broker
-    newShout.product = this.product
-    newShout.timeslot = this.timeslot
-    newShout.buySellIndicator = this.buySellIndicator
-    newShout.quantity = this.quantity
-    newShout.limitPrice = this.limitPrice
-    newShout.executionQuantity = this.executionQuantity
-    newShout.executionPrice = this.executionPrice
-    newShout.orderType = this.orderType
-    newShout.dateCreated = this.dateCreated
-    newShout.dateMod = timeService.currentTime.toDateTime()
-    newShout.modReasonCode = newModReasonCode
-    newShout.transactionId = null
-    newShout.shoutId = this.shoutId
-    newShout.comment = this.comment
-    newShout.latest = true
-    this.latest = false
-    this.save()
-    return newShout
+    this.dateMod = timeService.currentTime
+    this.modReasonCode = newModReasonCode
+    return this
   }
 }

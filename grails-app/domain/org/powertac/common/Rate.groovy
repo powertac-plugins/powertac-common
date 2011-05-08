@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.base.AbstractDateTime
 import org.joda.time.base.AbstractInstant
 import org.joda.time.*
+import com.thoughtworks.xstream.annotations.*
 
 /**
 * Tariffs are composed of Rates.
@@ -26,27 +27,46 @@ import org.joda.time.*
 * of day, or above some usage threshold. Rates may be fixed or variable. 
 * @author jcollins
 */
-class Rate implements Serializable
+@XStreamAlias("rate")
+class Rate //implements Serializable
 {
+  @XStreamAsAttribute
+  String id = IdGenerator.createId()
+
+  @XStreamAsAttribute
   int weeklyBegin = -1 // weekly applicability
+  @XStreamAsAttribute
   int weeklyEnd = -1
+  @XStreamAsAttribute
   int dailyBegin = -1 // daily applicability
+  @XStreamAsAttribute
   int dailyEnd = -1
+  @XStreamAsAttribute
   BigDecimal tierThreshold = 0.0 // tier applicability
+  @XStreamAsAttribute
   boolean isFixed = true // if true, minValue is fixed rate
+  @XStreamAsAttribute
   BigDecimal minValue = 0.0 // min and max rate values
+  @XStreamAsAttribute
   BigDecimal maxValue = 0.0
+  @XStreamAsAttribute
   int noticeInterval = 0 // notice interval for variable rate in hours
+  @XStreamAsAttribute
   BigDecimal expectedMean = 0.0 // expected mean value for variable rate
   TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
-  static belongsTo = TariffSpecification
+  static auditable = true
+  //static belongsTo = TariffSpecification
   static hasMany = [rateHistory:HourlyCharge]
   static transients = ["value"]
 
   static constraints = {
     minValue(min:0.0)
     maxValue(min:0.0)
+  }
+  
+  static mapping = {
+    id (generator: 'assigned')
   }
 
   // introduce dependency on TimeService
@@ -207,6 +227,50 @@ class Rate implements Serializable
   }
   
   /**
+   * Adds a new HourlyCharge to a variable rate. If this
+   * Rate is not variable, or if the HourlyCharge arrives
+   * past its noticeInterval, then we log an error and
+   * drop it on the floor. If the update is valid but there's
+   * already an HourlyCharge in the specified timeslot, then
+   * the update must replace the existing HourlyCharge.
+   * Returns true just in case the new charge was added successfully.
+   */
+  boolean addHourlyCharge (HourlyCharge newCharge)
+  {
+    boolean result = false
+    if (isFixed) {
+      // cannot change this rate
+      log.error "Cannot change Rate $this"
+      //println "Cannot change Rate $this"
+    }
+    else {
+      Instant now = timeService.getCurrentTime()
+      int warning = newCharge.atTime.millis - now.millis
+      if (warning < noticeInterval) {
+        // too late
+        //println "Too late (${now.millis}) to change rate for ${newCharge.atTime.millis}"
+        log.error "Too late (${now.millis}) to change rate for ${newCharge.atTime.millis}"
+      }
+      else {
+        // first, remove the existing charge for the specified time
+        HourlyCharge probe = new HourlyCharge(atTime: newCharge.atTime.plus(1000l), value: 0)
+        SortedSet<HourlyCharge> head = rateHistory.headSet(probe)
+        if (head != null || head.size() > 0) {
+          HourlyCharge item = head.last()
+          if (item.atTime == newCharge.atTime)
+            rateHistory.remove(item)
+        }  
+        log.info "Adding $newCharge to $this"
+        //println "Adding $newCharge to $this"
+        rateHistory.add(newCharge)
+        assert this.save()
+        result = true
+      }
+    }
+    return result
+  }
+  
+  /**
    * True just in case this Rate applies at this moment, ignoring the
    * tier.
    */
@@ -322,7 +386,7 @@ class Rate implements Serializable
         return expectedMean
       }
       // otherwise, return the most recent price announcement for the given time
-      HourlyCharge probe = new HourlyCharge(when: inst.plus(1000l), value: 0)
+      HourlyCharge probe = new HourlyCharge(atTime: inst.plus(1000l), value: 0)
       SortedSet<HourlyCharge> head = rateHistory.headSet(probe)
       if (head == null || head.size() == 0) {
         return expectedMean // default

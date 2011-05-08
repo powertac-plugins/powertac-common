@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an
+ * "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package org.powertac.common
 
 import org.joda.time.DateTime
@@ -5,6 +20,10 @@ import org.joda.time.DateTimeZone
 
 import grails.test.*
 
+/**
+ * Scheduling tests for the TimeService 
+ * @author John Collins
+ */
 class TimeServiceSchedTests extends GroovyTestCase
 {
   def clockDriveJob    // import the clock-drive job
@@ -48,9 +67,8 @@ class TimeServiceSchedTests extends GroovyTestCase
     add = { timeService.addAction(timeService.currentTime.plus(interval), { action(); add() }) }
     add()
 
-    ClockDriveJob.schedule(2500l, 3) // run 7 times, including once immediately
+    ClockDriveJob.schedule(2500l, 3) // run 3 times, including once immediately
     
-    //Thread.sleep(8000)
     synchronized(monitor) {
       monitor.wait()
     }

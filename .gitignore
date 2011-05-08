@@ -7,6 +7,8 @@
 # Deployment directories
 target/
 web-app/WEB-INF/classes/
+grails-app/i18n/
+
 
 # OS generated files 
 .DS_Store?
@@ -14,6 +16,7 @@ web-app/WEB-INF/classes/
 ehthumbs.db
 Icon?
 Thumbs.db
+*.log
 
 # Compiled source
 *.class

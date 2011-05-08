@@ -43,31 +43,31 @@ class Tariff
   
   enum State
   {
-    OFFERED, ACTIVE, WITHDRAWN, INACTIVE
+    PENDING, OFFERED, ACTIVE, WITHDRAWN, KILLED, INACTIVE
   }
 
   def timeService
 
-  String id
+  String specId
 
   /** The Tariff spec*/
   TariffSpecification tariffSpec
   
-  /** The broker who offers the tariff */
+  /** The broker behind this tariff */
   Broker broker
-
+  
   /** Last date new subscriptions will be accepted */
   Instant expiration
   
   /** Current state of this Tariff */
-  State state = State.OFFERED
+  State state = State.PENDING
   
   /** ID of Tariff that supersedes this Tariff */
   Tariff isSupersededBy
 
   /** Tracks the realized price for variable-rate tariffs. */
-  double totalCost = 0.0
-  double totalUsage = 0.0
+  Double totalCost = 0.0
+  Double totalUsage = 0.0
   
   /** Records the date when the Tariff was first offered */
   Instant offerDate
@@ -76,31 +76,33 @@ class Tariff
   Duration maxHorizon // TODO lazy instantiation?
   
   /** True if the maps are keyed by hour-in-week rather than hour-in-day */
-  boolean isWeekly = false
-  boolean analyzed = false
+  Boolean isWeekly = false
+  Boolean analyzed = false
   
   // map is an array, indexed by tier-threshold and hour-in-day/week
   def tiers = []
   def rateMap = []
 
-  static transients = ["realizedPrice", "usageCharge", "expired", "timeService",
-                       "minDuration", "powerType", "signupPayment", 
+  static transients = ["realizedPrice", "usageCharge", "expired", "revoked", "timeService",
+                       "covered", "minDuration", "powerType", "signupPayment", 
                        "earlyWithdrawPayment", "periodicPayment"]
   
-  static hasMany = [subscriptions:TariffSubscription]
+  static auditable = true
+  
+  //static hasMany = [subscriptions:TariffSubscription]
   
   static constraints = {
-    id(nullable: false, blank: false)
+    specId(nullable: false, blank: false)
     broker(nullable:false)
     expiration(nullable: true)
     state(nullable: false)
     isSupersededBy(nullable: true)
     maxHorizon(nullable:true)
-  }
+ }
   
-  static mapping = {
-    id (generator: 'assigned')
-  }
+  //static mapping = {
+  //  id (generator: 'assigned')
+  //}
 
   /**
    * Initializes the Tariff, setting the publication date and running
@@ -108,14 +110,27 @@ class Tariff
    */
   void init ()
   {
-    id = tariffSpec.id
-    broker = Broker.findById(tariffSpec.getBrokerId())
+    specId = tariffSpec.id
+    broker = (tariffSpec.broker)
     expiration = tariffSpec.getExpiration()
     tariffSpec.getSupersedes().each {
-      Tariff.findById(it).isSupersededBy = this
+      Tariff.findBySpecId(it).isSupersededBy = this
     }
     offerDate = timeService.getCurrentTime()
     analyze()
+    this.save()
+    broker.addToTariffs(this)
+    broker.save()
+  }
+  
+  /**
+   * Adds a new HourlyCharge to its Rate. Returns true just
+   * in case the operation was successful.
+   */
+  boolean addHourlyCharge (HourlyCharge newCharge, String rateId)
+  {
+    Rate theRate = Rate.get(rateId)
+    return theRate.addHourlyCharge(newCharge)
   }
 
   /** Returns the actual realized price, or 0.0 if information unavailable */
@@ -158,9 +173,18 @@ class Tariff
   {
     tariffSpec.periodicPayment
   }
+  
+  /**
+   * Adds periodic payments to the total cost, so realized price includes it.
+   */
+  void addPeriodicPayment ()
+  {
+    totalCost += periodicPayment
+  }
 
   /** 
-   * Returns the usage charge for the current timeslot. The kwh parameter
+   * Returns the usage charge for a single customer in the current timeslot. 
+   * The kwh parameter
    * defaults to 1.0, in which case you get the per-kwh value. If you supply
    * the cumulativeUsage parameter, then the charge may be affected by the
    * rate tier structure.
@@ -174,16 +198,19 @@ class Tariff
     if (recordUsage) {
       totalUsage += kwh
       totalCost += amt
+      this.save()
     }
     return amt
   }
   
   /** 
-   * Returns the usage charge for an amount of energy at some time in 
+   * Returns the usage charge for a single customer using an amount of 
+   * energy at some time in 
    * the past or future. If the requested time is farther in the future 
-   * than maxHorizon, then the result will be a default value, which 
+   * than maxHorizon, then the result will may be a default value, which 
    * may not be useful. The cumulativeUsage parameter sets the base for
-   * probing the rate tier structure.
+   * probing the rate tier structure. Do not use this method for billing,
+   * because it does not update the realized-price data.
    */
   double getUsageCharge (Instant when, double kwh = 1.0, double cumulativeUsage = 0.0)
   {
@@ -195,7 +222,11 @@ class Tariff
 
     // Then work out the tier index. Keep in mind that the kwh value could
     // cross a tier boundary
-    if (tiers.size() == 1) {
+    if (tiers == null || tiers.size() < 1) {
+      log.error("uninitialized tariff ${this}")
+      return 0.0
+    }
+    else if (tiers.size() == 1) {
       return kwh * rateMap[0][di].getValue(when)
     }
     else {
@@ -207,26 +238,26 @@ class Tariff
         if (tiers.size() > ti + 1) {
           // still tiers remaining
           if (accumulatedAmount >= tiers[ti+1]) {
-            println "accumulatedAmount ${accumulatedAmount} above threshold ${ti+1}: ${tiers[ti+1]}"
+            log.debug "accumulatedAmount ${accumulatedAmount} above threshold ${ti+1}: ${tiers[ti+1]}"
             ti += 1
           }
           else if (remainingAmount + accumulatedAmount > tiers[ti+1]) {
             double amt = tiers[ti+1] - accumulatedAmount
-            println "split off ${amt} below ${tiers[ti+1]}"
+            log.debug "split off ${amt} below ${tiers[ti+1]}"
             result += amt * rateMap[ti++][di].getValue(when)
             remainingAmount -= amt
             accumulatedAmount += amt
           }
           else {
             // it all fits in the current tier
-            println "amount ${remainingAmount} fits in tier ${ti}"
+            log.debug "amount ${remainingAmount} fits in tier ${ti}"
             result += remainingAmount * rateMap[ti][di].getValue(when)
             remainingAmount = 0.0
           }
         }
         else {
           // last tier
-          println "remainder ${remainingAmount} fits in top tier"
+          log.debug "remainder ${remainingAmount} fits in top tier"
           result += remainingAmount * rateMap[ti][di].getValue(when)
           remainingAmount = 0.0
         }
@@ -236,32 +267,44 @@ class Tariff
   }
   
   /**
-   * Subscribes a block of Customers from a single Customer model to
-   * this Tariff, as long as this Tariff has not expired. If the
-   * subscription succeeds, then the TariffSubscription instance is
-   * return, otherwise null.
-   */
-  TariffSubscription subscribe (CustomerInfo customer, int customerCount)
-  {
-    if (isExpired())
-      return null
-    
-    TariffSubscription sub = subscriptions?.findByCustomer(customer)
-    if (sub == null) {
-      sub = new TariffSubscription(customerInfo: customer,
-                                   tariff: this)
-    }
-    sub.subscribe(customerCount)
-    return sub
-  }
-  
-  /**
    * True just in case the current time is past the expiration date
    * of this Tariff.
    */
   boolean isExpired ()
   {
-    return timeService.getCurrentTime().millis > expiration.millis
+    if (expiration == null) {
+      return false
+    }
+    else {
+      return timeService.getCurrentTime().millis >= expiration.millis
+    }
+  }
+  
+  /**
+   * True just in case the set of Rates cover all the possible hour
+   * and tier slots. If false, then there is some combination of hour
+   * and tier for which no Rate is specified.
+   */
+  boolean isCovered ()
+  {
+    for (tier in 0..<tiers.size()) {
+      for (hour in 0..<(isWeekly? 24 * 7: 24)) {
+        def cell = rateMap[tier][hour]
+        //println "cell: ${cell}" 
+        if (cell == null) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+  
+  /**
+   * True just in case this tariff has been revoked.
+   */
+  boolean isRevoked ()
+  {
+    return state == State.KILLED
   }
 
   /**
@@ -289,7 +332,7 @@ class Tariff
         tiers.add rate.tierThreshold
     }
     tiers = tiers.sort()
-    println "${tiers}"
+    log.info "tiers: ${tiers}"
     
     // Next, fill in the tierIndexMap, which maps tier thresholds to
     // array indices. Remember that there's always a 0.0 tier.
@@ -313,7 +356,7 @@ class Tariff
       if (rate.tierThreshold > 0.0) {
         value += tierIndexMap[rate.tierThreshold] * 7 * 24
       }
-      println "inserting ${value}, ${rate}"
+      log.debug "inserting ${value}, ${rate}"
       annotatedRates[(value)] = rate
     }
 
@@ -334,6 +377,9 @@ class Tariff
           day1 = rate.weeklyBegin - 1 // days start at 1
           dayn = rate.weeklyBegin - 1
         }
+        else {
+          dayn = 6 // no days specified for weekly rate
+        }
         if (rate.weeklyEnd >= 0) {
           dayn = rate.weeklyEnd - 1
         }
@@ -344,29 +390,29 @@ class Tariff
         hr1 = rate.dailyBegin
         hrn = rate.dailyEnd
       }
-      println "day1=${day1}, dayn=${dayn}, hr1=${hr1}, hrn=${hrn}"
+      log.debug "day1=${day1}, dayn=${dayn}, hr1=${hr1}, hrn=${hrn}"
       // now we can fill in the array
-      for (day in day1..(Math.max(dayn, isWeekly? 6 : 0))) {
-        for (hour in hr1..(Math.max(hrn, 23))) {
-          rateMap[ti][hour + (day * 24)] = rate
-        }
+      for (day in (dayn < day1? 0 : day1)..dayn) {
         // handle daily wrap-arounds
+        for (hour in (hrn < hr1? 0 : hr1)..hrn) {
+          rateMap[ti][hour + day * 24] = rate
+        }
         if (hrn < hr1) {
-          for (hour in 0..(hrn - 1)) {
-            rateMap[ti][hour + day * 24] = rate
+          for (hour in hr1..23) {
+            rateMap[ti][hour + (day * 24)] = rate
           }
         }
       }
       // handle weekly wrap-arounds
       if (dayn < day1) {
-        for (day in 0..dayn) {
-          for (hour in hr1..(Math.max(hrn, 23))) {
+        for (day in day1..6) {
+          // handle daily wrap-arounds
+          for (hour in (hrn < hr1? 0 : hr1)..hrn) {
             rateMap[ti][hour + day * 24] = rate
           }
-          // handle daily wrap-arounds
           if (hrn < hr1) {
-            for (hour in 0..(hrn - 1)) {
-              rateMap[ti][hour + day * 24] = rate
+            for (hour in hr1..23) {
+              rateMap[ti][hour + (day * 24)] = rate
             }
           }
         }

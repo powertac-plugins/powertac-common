@@ -16,7 +16,9 @@
 
 package org.powertac.common
 
-import org.joda.time.DateTime
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
  /**
  * A timeslot instance describes a duration in time (slot). Time slots are used (i) to
@@ -28,67 +30,88 @@ import org.joda.time.DateTime
  * @author Carsten Block
  * @version 1.0 - Feb,6,2011
  */
-class Timeslot implements Serializable {
-
+@XStreamAlias("slot")
+class Timeslot //implements Serializable 
+{
+  static TimeService getTimeService()
+  {
+    ApplicationHolder.application.mainContext.timeService
+  }
+  
+  @XStreamOmitField
   String id = IdGenerator.createId()
 
   /**
    * used to find succeeding / preceding timeslot instances
    * @see {@code Timeslot.next()} {@code Timeslot.previous()}
    */
-  Long serialNumber
+  @XStreamAsAttribute
+  Integer serialNumber
 
-  /** competition for which this timeslot is valid */
-  Competition competition = Competition.currentCompetition()
-
-  /** flag that determines enabled state of the slot. E.g. in the market only orders for enabled timeslots are accepted. */
+  /** flag that determines enabled state of the slot. 
+   * E.g. in the market only orders for enabled timeslots 
+   * are accepted. */
+  @XStreamOmitField
   Boolean enabled = false
 
-  /** indicates that this timeslot is the present / now() timeslot in the competition */
-  Boolean current = false
-
   /** start date and time of the timeslot */
-  DateTime startDateTime
+  Instant startInstant
 
   /** end date and time of the timeslot */
-  DateTime endDateTime
+  @XStreamOmitField
+  Instant endInstant
+  
+  @XStreamOmitField
+  List<Orderbook> orderbooks
+  
+  // explicit version so we can omit it
+  @XStreamOmitField
+  int version
 
-  static belongsTo = [competition: Competition]
+  static auditable = true
+  
+  static transients = ['timeService']
 
-  static hasMany = [meterReadings: MeterReading, orderbooks: Orderbook, transactionLogs: TransactionLog, shouts: Shout]
+  static hasMany = [orderbooks: Orderbook]
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     serialNumber(nullable: false)
-    competition(nullable: false)
     enabled(nullable: false)
-    current(nullable: false)
-    startDateTime(nullable: false)
-    endDateTime(nullable: false)
+    startInstant(nullable: false)
+    endInstant(nullable: false)
   }
 
   static mapping = {
     id (generator: 'assigned')
-    competition(index:'ts_competition_current_idx')
-    current(index:'ts_competition_current_idx')
+    enabled(index:'ts_enabled_idx')
   }
 
   public String toString() {
-    return "$startDateTime - $endDateTime";
+    return "${serialNumber}: ${startInstant} - ${endInstant} (${enabled})";
   }
 
-  public static Timeslot currentTimeslot() {
-    def competition = Competition.currentCompetition()
-    if (!competition) return null
-    return Timeslot.findByCompetitionAndCurrent(competition, true, [cache: true])
+  /**
+   * Note that this scheme for finding the current timeslot relies on the
+   * time granularity reported by the timeService being the same as the length
+   * of a timeslot.
+   */
+  public static Timeslot currentTimeslot () 
+  {
+    return Timeslot.findByStartInstant(timeService.currentTime)
+  }
+  
+  public static List<Timeslot> enabledTimeslots ()
+  {
+    return Timeslot.findAllByEnabled(true)
   }
 
   public Timeslot next() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber + 1l)
+    return Timeslot.findBySerialNumber(this.serialNumber + 1)
   }
 
   public Timeslot previous() {
-    return Timeslot.findByCompetitionAndSerialNumber(this.competition, this.serialNumber - 1l)
+    return Timeslot.findBySerialNumber(this.serialNumber - 1)
   }
 
 }

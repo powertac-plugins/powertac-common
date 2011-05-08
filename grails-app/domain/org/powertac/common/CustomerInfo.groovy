@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 the original author or authors.
+ * Copyright 2009-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.powertac.common
 
 import org.powertac.common.enumerations.CustomerType
+import org.powertac.common.enumerations.PowerType
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * A {@code CustomerInfo} instance represents a customer model (i.e. a consumer or a producer)
@@ -24,71 +26,56 @@ import org.powertac.common.enumerations.CustomerType
  * the respective competition in order to provide them with an brief overview on what type
  * of customers participate in the specific competition.
  *
- * @author Carsten Block, KIT
- * @version 1.0 - 04/Feb/2011
+ * @author Carsten Block, KIT; John Collins, U of Minnesota
  */
-class CustomerInfo implements Serializable {
+@XStreamAlias("cust-info")
+class CustomerInfo //implements Serializable 
+{
 
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
-
-  /** Competition this customer is defined for */
-  Competition competition = Competition.currentCompetition()
 
   /** Name of the customer model */
   String name
 
   /** gives a "rough" classification what type of customer to expect based on an enumeration, i.e. a fixed set of customer types */
+  @XStreamAsAttribute
   CustomerType customerType
+  
+  /** population represented by this model */
+  @XStreamAsAttribute
+  Integer population = 1
 
+  /** gives the available power classifications of the customer */
+  List<PowerType> powerTypes = [PowerType.CONSUMPTION, PowerType.PRODUCTION]
+  
   /** describes whether or not this customer engages in multiple contracts at the same time */
-  Boolean multiContracting
+  @XStreamAsAttribute
+  Boolean multiContracting = false
 
   /** describes whether or not this customer negotiates over contracts */
-  Boolean canNegotiate
+  @XStreamAsAttribute
+  Boolean canNegotiate = false
 
-  /** >0: max power consumption (think consumer with fuse limit); <0: min power production (think nuclear power plant with min output) */
-  BigDecimal upperPowerCap
-
-  /** >0: min power consumption (think refrigerator); <0: max power production (think power plant with max capacity) */
-  BigDecimal lowerPowerCap
-
-  /** >=0 - gram CO2 per kW/h */
-  BigDecimal carbonEmissionRate
-
-  /** measures how wind changes translate into load / generation changes of the customer */
-  BigDecimal windToPowerConversion
-
-  /** measures how temperature changes translate into load / generation changes of the customer */
-  BigDecimal tempToPowerConversion
-
-  /** measures how sun intensity changes translate into load /generation changes of the customer */
-  BigDecimal sunToPowerConversion
-
-  //TODO: Possibly add parameters as the ones below that provide descriptive statistical information on historic power consumption / production of the customer
-  /*
-  BigDecimal annualPowerAvg // >0: customer is on average a consumer; <0 customer is on average a producer
-  private BigDecimal minResponsiveness // define factor characterizing minimal responsiveness to price signals, i.e. "elasticity"
-
-  private BigDecimal maxResponsiveness;   // define factor characterizing max responsiveness to price signals, i.e. "elasticity"
-  */
-
-  static belongsTo = [competition: Competition]
-
-  static hasMany = [meterReadings: MeterReading] //, tariffs: Tariff]
+  // explicit version so we can ignore it
+  @XStreamOmitField
+  int version
+   
+  static auditable = true
 
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    competition(nullable: false)
     name (blank: false, unique: true)
     customerType(nullable: false)
+    powerTypes(nullable: true)
     multiContracting (nullable: false)
     canNegotiate (nullable: false)
-    upperPowerCap (nullable: false, scale: Constants.DECIMALS)
-    lowerPowerCap (nullable: false, scale: Constants.DECIMALS)
-    carbonEmissionRate (nullable: false, scale: Constants.DECIMALS)
-    windToPowerConversion (nullable: false, scale: Constants.DECIMALS)
-    tempToPowerConversion (nullable: false, scale: Constants.DECIMALS)
-    sunToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+ //   upperPowerCap (nullable: false, scale: Constants.DECIMALS)
+ //   lowerPowerCap (nullable: false, scale: Constants.DECIMALS)
+ //   carbonEmissionRate (nullable: false, scale: Constants.DECIMALS)
+ //   windToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+ //   tempToPowerConversion (nullable: false, scale: Constants.DECIMALS)
+ //   sunToPowerConversion (nullable: false, scale: Constants.DECIMALS)
   }
 
   static mapping = {

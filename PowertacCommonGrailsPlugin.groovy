@@ -2,17 +2,17 @@ class PowertacCommonGrailsPlugin {
     // the plugin version
     def version = "0.9"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "1.3.6 > *"
+    def grailsVersion = "1.3.7 > *"
     // the other plugins this plugin depends on
-    def dependsOn = [jodaTime:1.1]
+    def dependsOn = ['jodaTime':'1.1 > *']
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
             "grails-app/views/error.gsp"
     ]
 
     // TODO Fill in these fields
-    def author = "Carsten Block"
-    def authorEmail = "" //"powertac@carstenblock.org"
+    def author = "John Collins"
+    def authorEmail = ""
     def title = "Common domain classes and command objects for powertac competition"
     def description = '''\\
 This plugin provides common domain classes and command objects for powertac competition.
@@ -26,7 +26,7 @@ This plugin provides common domain classes and command objects for powertac comp
     }
 
     def doWithSpring = {
-      domainClassTransformer(org.powertac.common.transformer.DomainClassTransformer)
+      //domainClassTransformer(org.powertac.common.transformer.DomainClassTransformer)
     }
 
     def doWithDynamicMethods = { ctx ->

@@ -22,16 +22,13 @@ import grails.test.GrailsUnitTestCase
 
 class BrokerTests extends GrailsUnitTestCase {
 
-  Competition competition
   Broker broker
-  String userName = 'testName'
+  String username = 'testName'
+  String password = 'password'
   
   protected void setUp() {
     super.setUp()
-    competition = new Competition(name: 'testCompetition')
-    registerMetaClass(Competition)
-    Competition.metaClass.'static'.currentCompetition = {-> return competition }
-    broker = new Broker(competition: competition, userName: userName)
+    broker = new Broker(username: username, password: password)
     mockForConstraintsTests(Broker, [broker])
   }
 
@@ -40,21 +37,21 @@ class BrokerTests extends GrailsUnitTestCase {
   }
 
   void testNullableValidationLogic() {
-    Broker broker1 = new Broker(id: null, apiKey: null)
-    broker1.competition = null
+    Broker broker1 = new Broker(id: null)
     assertFalse(broker1.validate())
     assertEquals('nullable', broker1.errors.getFieldError('id').getCode())
-    assertEquals('nullable', broker1.errors.getFieldError('competition').getCode())
-    assertEquals('nullable', broker1.errors.getFieldError('userName').getCode())
-    assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
+    assertEquals('nullable', broker1.errors.getFieldError('username').getCode())
+    //assertEquals('nullable', broker1.errors.getFieldError('password').getCode())
+    //assertEquals('nullable', broker1.errors.getFieldError('apiKey').getCode())
   }
 
   void testBlankValidationLogic() {
-    Broker broker1 = new Broker(id: '', userName: '', apiKey: '')
+    Broker broker1 = new Broker(username: '', password: '', id: '')
     assertFalse(broker1.validate())
     assertEquals('blank', broker1.errors.getFieldError('id').getCode())
-    assertEquals('blank', broker1.errors.getFieldError('userName').getCode())
-    assertEquals('blank', broker1.errors.getFieldError('apiKey').getCode())
+    assertEquals('blank', broker1.errors.getFieldError('username').getCode())
+    //assertEquals('blank', broker1.errors.getFieldError('password').getCode())
+    //assertEquals('blank', broker1.errors.getFieldError('apiKey').getCode())
   }
 
   void testIdUniqueness() {
@@ -64,14 +61,15 @@ class BrokerTests extends GrailsUnitTestCase {
   }
 
   void testUsernameSpecialCharConstraints() {
-    Broker broker1 = new Broker (userName: 'SpecialChars_!?')
+    Broker broker1 = new Broker (username: 'SpecialChars_!?', password:'test')
     assertFalse(broker1.validate())
-    assertEquals('matches.invalid', broker1.errors.getFieldError('userName').getCode())
+    assertEquals('matches.invalid', broker1.errors.getFieldError('username').getCode())
   }
 
   void testUsernameTooShortConstraint() {
-    Broker broker1 = new Broker (userName: '1')
+    Broker broker1 = new Broker (username: '1', password: '1')
     assertFalse(broker1.validate())
-    assertEquals('minSize.notmet', broker1.errors.getFieldError('userName').getCode())
+    assertEquals('minSize.notmet', broker1.errors.getFieldError('username').getCode())
+    assertEquals('minSize.notmet', broker1.errors.getFieldError('password').getCode())
   }
 }

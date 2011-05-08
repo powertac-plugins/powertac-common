@@ -16,6 +16,8 @@
 
 package org.powertac.common
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import org.joda.time.base.AbstractDateTime
 
@@ -56,7 +58,8 @@ class TimeService
 {
   static transactional = false
 
-  static final long HOUR = 1000l * 60 * 60
+  static final long MINUTE = 1000l * 60
+  static final long HOUR = MINUTE * 60
   static final long DAY = HOUR * 24
   static final long WEEK = DAY * 7
   
@@ -70,10 +73,11 @@ class TimeService
   boolean busy = false
 
   // simulation action queue
-  SortedSet<SimulationAction> actions
+  TreeSet<SimulationAction> actions
 
   // the current time
   private Instant currentTime
+  private DateTime currentDateTime
 
   /**
    * Updates simulation time when called as specified by clock
@@ -91,7 +95,8 @@ class TimeService
     long systemTime = new Instant().getMillis()
     long raw = base + (systemTime - start) * rate
     currentTime = new Instant(raw - raw % modulo)
-    log.info "updateTime: sys=${systemTime}, raw=${raw}, current = ${currentTime}"
+    currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
+    log.info "updateTime: sys=${systemTime}, simTime=${currentTime}"
     runActions()
     busy = false
   }
@@ -105,8 +110,25 @@ class TimeService
     return new Instant(ms - ms % mod)
   }
 
-  public getCurrentTime() {
-    return this.currentTime
+  /**
+   * Returns the current time as an Instant
+   */
+  Instant getCurrentTime() 
+  {
+    return currentTime
+  }
+  
+  DateTime getCurrentDateTime()
+  {
+    return currentDateTime
+  }
+  
+  /**
+   * Returns the current hour-of-day
+   */
+  int getHourOfDay()
+  {
+    return currentDateTime.getHourOfDay()
   }
 
   /**
@@ -115,6 +137,7 @@ class TimeService
   protected void setCurrentTime (Instant time)
   {
     currentTime = time
+    currentDateTime = new DateTime(time, DateTimeZone.UTC)
   }
   
   /**
@@ -123,6 +146,7 @@ class TimeService
   protected void setCurrentTime (AbstractDateTime time)
   {
     currentTime = new Instant(time)
+    currentDateTime = new DateTime(time, DateTimeZone.UTC)
   }
 
   /**
@@ -132,7 +156,7 @@ class TimeService
   {
     if (actions == null)
       actions = new TreeSet<SimulationAction>()
-    actions.add(new SimulationAction(when:time, action:act))
+    actions.add(new SimulationAction(atTime:time, action:act))
   }
   
   /**
@@ -142,7 +166,7 @@ class TimeService
   {
     if (actions == null)
       return
-    while (!actions.isEmpty() && actions.first().when <= currentTime) {
+    while (!actions.isEmpty() && actions.first().atTime <= currentTime) {
       SimulationAction act = actions.first()
       act.action.call(currentTime)
       actions.remove(act)

@@ -15,11 +15,11 @@
  */
 package org.powertac.common
 
-import java.math.BigDecimal;
-
 import org.powertac.common.enumerations.PowerType
+import org.powertac.common.transformer.BrokerConverter
 import org.joda.time.Duration
 import org.joda.time.Instant
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * Represents a Tariff offered by a Broker to customers. A Tariff specifies
@@ -32,52 +32,58 @@ import org.joda.time.Instant
  * associated HourlyCharge instances.</p>
  * @author John Collins
  */
-class TariffSpecification implements Serializable
+@XStreamAlias("tariff-spec")
+class TariffSpecification //implements Serializable
 {
+  @XStreamAsAttribute
   String id = IdGenerator.createId()
   
-  /** ID of the specified Tariff */
-  //String tariffId // same as TariffSpecification id?
-  
-  /** ID of the Broker who offers this Tariff */
-  String brokerId
+  /** The Broker who offers this Tariff */
+  @XStreamConverter(BrokerConverter)
+  Broker broker
   
   /** Last date new subscriptions will be accepted */
   Instant expiration
   
   /** Minimum contract duration (in milliseconds) */
-  long minDuration = 0
+  @XStreamAsAttribute
+  Long minDuration = 0
   
   /** Type of power covered by this tariff */
+  @XStreamAsAttribute
   PowerType powerType = PowerType.CONSUMPTION
   
   /** One-time payment for subscribing to tariff, positive for payment
    *  from customer, negative for payment to customer. */
+  @XStreamAsAttribute
   BigDecimal signupPayment = 0.0
   
   /** Payment from customer to broker for canceling subscription before
    *  minDuration has elapsed. */
+  @XStreamAsAttribute
   BigDecimal earlyWithdrawPayment = 0.0
   
   /** Flat payment per period for two-part tariffs */
+  @XStreamAsAttribute
   BigDecimal periodicPayment = 0.0
   
-  //def rates
-  //def supersedes
+  List<Rate> rates
 
+  List<String> supersedes
+  
   static hasMany = [rates: Rate, supersedes: String]
   
   static constraints = {
     id (nullable: false, blank: false, unique: true)
-    //tariffId(nullable: false, blank: false)
-    brokerId(nullable: false, blank: false)
+    broker(nullable: false)
     expiration(nullable: true)
-    minDuration(min: 24*60*60*1000l) // one day
+    minDuration(min: 0l) 
     powerType(nullable: false)
     rates(nullable: false, minSize: 1)
   }
 
   static mapping = {
     id (generator: 'assigned')
+    rates lazy: false
   }
 }
