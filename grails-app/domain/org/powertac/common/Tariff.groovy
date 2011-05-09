@@ -80,8 +80,8 @@ class Tariff
   Boolean analyzed = false
   
   // map is an array, indexed by tier-threshold and hour-in-day/week
-  def tiers = []
-  def rateMap = []
+  List< BigDecimal > tiers = []
+  List< List< BigDecimal > > rateMap = []
 
   static transients = ["realizedPrice", "usageCharge", "expired", "revoked", "timeService",
                        "covered", "minDuration", "powerType", "signupPayment", 

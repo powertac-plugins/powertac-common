@@ -57,6 +57,8 @@ import org.joda.time.base.AbstractDateTime
 class TimeService 
 {
   static transactional = false
+  
+  //def log // autowire
 
   static final long MINUTE = 1000l * 60
   static final long HOUR = MINUTE * 60
@@ -67,7 +69,7 @@ class TimeService
   long base
   long start
   long rate = 720l
-  long modulo = 15*60*1000l
+  long modulo = HOUR
   
   // busy flag, to prevent overlap
   boolean busy = false
@@ -87,7 +89,7 @@ class TimeService
   {
     if (busy) {
       log.info "Timer busy"
-      start += HOUR / modulo
+      start += HOUR / rate
       // TODO: broadcast to brokers
       return
     }
