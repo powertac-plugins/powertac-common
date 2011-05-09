@@ -115,6 +115,7 @@ class Competition //implements Serializable
   static mapping = {
     cache true
     id(generator: 'assigned')
+    plugins lazy: false
   }
 
   public static currentCompetition() {

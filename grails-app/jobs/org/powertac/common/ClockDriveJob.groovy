@@ -33,7 +33,7 @@ class ClockDriveJob
    */
   def execute ()
   {
-    log.info("Clock Updated " + timeService.getCurrentTime())
     timeService.updateTime()
+    log.info("Clock Update " + timeService.getCurrentTime())
   }
 }
