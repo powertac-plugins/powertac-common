@@ -47,6 +47,7 @@ class Tariff
   }
 
   def timeService
+  def tariffRateService // offload complex data structures
 
   String specId
 
@@ -80,8 +81,8 @@ class Tariff
   Boolean analyzed = false
   
   // map is an array, indexed by tier-threshold and hour-in-day/week
-  List< BigDecimal > tiers = []
-  List< List< BigDecimal > > rateMap = []
+  //List< BigDecimal > tiers = []
+  //List< List< BigDecimal > > rateMap = []
 
   static transients = ["realizedPrice", "usageCharge", "expired", "revoked", "timeService",
                        "covered", "minDuration", "powerType", "signupPayment", 
@@ -113,10 +114,13 @@ class Tariff
     specId = tariffSpec.id
     broker = (tariffSpec.broker)
     expiration = tariffSpec.getExpiration()
-    tariffSpec.getSupersedes().each {
-      Tariff.findBySpecId(it).isSupersededBy = this
-    }
     offerDate = timeService.getCurrentTime()
+    this.save()
+    tariffSpec.getSupersedes().each {
+      Tariff supersededTariff = Tariff.findBySpecId(it) 
+      supersededTariff.isSupersededBy = this
+      supersededTariff.save()
+    }
     analyze()
     this.save()
     broker.addToTariffs(this)
@@ -214,6 +218,9 @@ class Tariff
    */
   double getUsageCharge (Instant when, double kwh = 1.0, double cumulativeUsage = 0.0)
   {
+    // start by retrieving the rate map
+    //def rateMap = tariffRateService.getRateMap(this)
+    
     // first, get the time index
     DateTime dt = new DateTime(when, DateTimeZone.UTC)
     int di = dt.getHourOfDay()
@@ -222,12 +229,14 @@ class Tariff
 
     // Then work out the tier index. Keep in mind that the kwh value could
     // cross a tier boundary
+    def tiers = tariffRateService.getTiers(this)
     if (tiers == null || tiers.size() < 1) {
       log.error("uninitialized tariff ${this}")
       return 0.0
     }
     else if (tiers.size() == 1) {
-      return kwh * rateMap[0][di].getValue(when)
+      //return kwh * rateMap[0][di].getValue(when)
+      return kwh * tariffRateService.rateValue(this, 0, di, when)
     }
     else {
       double remainingAmount = kwh
@@ -244,21 +253,24 @@ class Tariff
           else if (remainingAmount + accumulatedAmount > tiers[ti+1]) {
             double amt = tiers[ti+1] - accumulatedAmount
             log.debug "split off ${amt} below ${tiers[ti+1]}"
-            result += amt * rateMap[ti++][di].getValue(when)
+            //result += amt * rateMap[ti++][di].getValue(when)
+            result += amt * tariffRateService.rateValue(this, ti++, di, when)
             remainingAmount -= amt
             accumulatedAmount += amt
           }
           else {
             // it all fits in the current tier
             log.debug "amount ${remainingAmount} fits in tier ${ti}"
-            result += remainingAmount * rateMap[ti][di].getValue(when)
+            //result += remainingAmount * rateMap[ti][di].getValue(when)
+            result += remainingAmount * tariffRateService.rateValue(this, ti, di, when)
             remainingAmount = 0.0
           }
         }
         else {
           // last tier
           log.debug "remainder ${remainingAmount} fits in top tier"
-          result += remainingAmount * rateMap[ti][di].getValue(when)
+          //result += remainingAmount * rateMap[ti][di].getValue(when)
+          result += remainingAmount * tariffRateService.rateValue(this, ti, di, when)
           remainingAmount = 0.0
         }
       }
@@ -287,11 +299,15 @@ class Tariff
    */
   boolean isCovered ()
   {
+    def tiers = tariffRateService.getTiers(this)
     for (tier in 0..<tiers.size()) {
       for (hour in 0..<(isWeekly? 24 * 7: 24)) {
-        def cell = rateMap[tier][hour]
+        //def cell = rateMap[tier][hour]
         //println "cell: ${cell}" 
-        if (cell == null) {
+        //if (cell == null) {
+        //  return false
+        //}
+        if (!tariffRateService.hasRate(this, tier, hour)) {
           return false
         }
       }
@@ -324,15 +340,21 @@ class Tariff
   {
     // Start by computing tier indices, and array width
     def tierIndexMap = [:]
-    tiers.add 0.0
+    //tiers.add 0.0
+    tariffRateService.addTier(this, 0.0)
     tariffSpec.rates.each { rate ->
-      if (rate.weeklyBegin >= 0)
+      if (rate.weeklyBegin >= 0) {
         isWeekly = true
-      if (rate.tierThreshold > 0.0)
-        tiers.add rate.tierThreshold
+      }
+      if (rate.tierThreshold > 0.0) {
+        //tiers.add rate.tierThreshold
+        tariffRateService.addTier(this, rate.tierThreshold)
+      }
     }
-    tiers = tiers.sort()
-    log.info "tiers: ${tiers}"
+    //tiers = tiers.sort()
+    tariffRateService.sortTiers(this)
+    def tiers = tariffRateService.getTiers(this)
+    log.info "tariff ${this.id}, tiers: ${tiers}"
     
     // Next, fill in the tierIndexMap, which maps tier thresholds to
     // array indices. Remember that there's always a 0.0 tier.
@@ -361,7 +383,8 @@ class Tariff
     }
 
     // Next, we create the rateMap
-    rateMap = new Rate[tierIndexMap.size()][isWeekly ? 7*24 : 24]
+    //rateMap = new Rate[tierIndexMap.size()][isWeekly ? 7*24 : 24]
+    tariffRateService.createRateMap(this, tierIndexMap.size(), isWeekly ? 7*24 : 24)
 
     // Finally, we step through the sorted Rates and fill in the
     // array. For each Rate, we add it to the array everywhere it
@@ -395,11 +418,13 @@ class Tariff
       for (day in (dayn < day1? 0 : day1)..dayn) {
         // handle daily wrap-arounds
         for (hour in (hrn < hr1? 0 : hr1)..hrn) {
-          rateMap[ti][hour + day * 24] = rate
+          //rateMap[ti][hour + day * 24] = rate
+          tariffRateService.setRate(this, ti, hour + day * 24, rate)
         }
         if (hrn < hr1) {
           for (hour in hr1..23) {
-            rateMap[ti][hour + (day * 24)] = rate
+            //rateMap[ti][hour + (day * 24)] = rate
+            tariffRateService.setRate(this, ti, hour + day * 24, rate)
           }
         }
       }
@@ -408,11 +433,13 @@ class Tariff
         for (day in day1..6) {
           // handle daily wrap-arounds
           for (hour in (hrn < hr1? 0 : hr1)..hrn) {
-            rateMap[ti][hour + day * 24] = rate
+            //rateMap[ti][hour + day * 24] = rate
+            tariffRateService.setRate(this, ti, hour + day * 24, rate)
           }
           if (hrn < hr1) {
             for (hour in hr1..23) {
-              rateMap[ti][hour + (day * 24)] = rate
+              //rateMap[ti][hour + (day * 24)] = rate
+              tariffRateService.setRate(this, ti, hour + day * 24, rate)
             }
           }
         }

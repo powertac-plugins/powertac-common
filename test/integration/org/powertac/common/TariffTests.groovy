@@ -98,8 +98,8 @@ class TariffTests extends GrailsUnitTestCase
     assertEquals("correct charge tomorrow", 12.1, te.getUsageCharge(now + TimeService.DAY, 100.0))
     assertEquals("correct charge an hour ago", 3.63, te.getUsageCharge(now - TimeService.HOUR, 30.0))
     assertEquals("correct charge an hour from now", 1.21, te.getUsageCharge(now + TimeService.HOUR, 10.0))
-    assertEquals("daily rate map", 1, te.rateMap.size())
-    assertEquals("rate map has 24 entries", 24, te.rateMap[0].size())
+    //assertEquals("daily rate map", 1, te.rateMap.size())
+    //assertEquals("rate map has 24 entries", 24, te.rateMap[0].size())
     assertTrue("covered", te.isCovered())
   }
   
@@ -187,7 +187,7 @@ class TariffTests extends GrailsUnitTestCase
     assertEquals("noon price Sat", 1.2, te.getUsageCharge(20.0, 200.0, true))
     assertEquals("realized price", 0.06, te.realizedPrice, 1e-6)
     assertTrue("weekly map", te.isWeekly)
-    assertEquals("rate map row has 168 entries", 168, te.rateMap[0].size())
+    //assertEquals("rate map row has 168 entries", 168, te.rateMap[0].size())
     assertTrue("covered", te.isCovered())
     timeService.currentTime = new DateTime(2011, 1, 1, 18, 0, 0, 0, DateTimeZone.UTC).toInstant()
     assertEquals("18:00 price Sat", 0.6, te.getUsageCharge(10.0, 220.0, true))
