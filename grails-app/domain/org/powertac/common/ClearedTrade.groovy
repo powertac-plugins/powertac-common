@@ -63,7 +63,7 @@ class ClearedTrade //implements Serializable
   int version
 
   static constraints = {
-    timeslot(nullable: false, blank: false)
+    timeslot(nullable: false)
     product(nullable: false)
     transactionId(nullable: false)
 
