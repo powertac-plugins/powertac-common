@@ -34,9 +34,9 @@ class OrderbookEntry implements Comparable {
   static belongsTo = [orderbook: Orderbook]
 
   static constraints = {
-    limitPrice(nullable: false, blank: false)
-    quantity(nullable: false, blank: false)
-    buySellIndicator(nullable: false, blank: false)
+    limitPrice(nullable: false)
+    quantity(nullable: false)
+    buySellIndicator(nullable: false)
   }
 
   int compareTo(Object o) {
