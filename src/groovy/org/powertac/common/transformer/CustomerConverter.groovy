@@ -9,7 +9,7 @@ class CustomerConverter implements SingleValueConverter
   @Override
   public boolean canConvert (Class type)
   {
-    return type.equals(CustomerInfo.class)
+    return CustomerInfo.class.isAssignableFrom(type)
   }
 
   @Override

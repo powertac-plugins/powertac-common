@@ -9,7 +9,7 @@ class TariffConverter implements SingleValueConverter
   @Override
   public boolean canConvert (Class type)
   {
-    return type.equals(Tariff.class)
+    return Tariff.class.isAssignableFrom(type)
   }
 
   @Override

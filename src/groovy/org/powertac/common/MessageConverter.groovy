@@ -22,7 +22,14 @@ import org.powertac.common.msg.*
 import org.hibernate.proxy.HibernateProxy;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.alias.ClassMapper;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentCollectionConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentMapConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentSortedMapConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentSortedSetConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernateProxyConverter;
+import com.thoughtworks.xstream.hibernate.mapper.HibernateMapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.javabean.JavaBeanConverter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
@@ -31,37 +38,30 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
+import org.apache.commons.logging.LogFactory
 
 class MessageConverter implements org.springframework.beans.factory.InitializingBean
 {
 
   XStream xstream
+  private static final log = LogFactory.getLog(this)
+
 
   void afterPropertiesSet ()
   {
-    xstream = new XStream()
-    xstream.processAnnotations(Competition.class)
-    xstream.processAnnotations(SimStart.class)
-    xstream.processAnnotations(CustomerInfo.class)
-    xstream.processAnnotations(CashPosition.class)
-    xstream.processAnnotations(Timeslot.class)
-    xstream.processAnnotations(ClearedTrade.class)
-    xstream.processAnnotations(MarketPosition.class)
-    xstream.processAnnotations(MarketTransaction.class)
-    xstream.processAnnotations(Shout.class)
-    xstream.processAnnotations(TariffStatus.class)
-    xstream.processAnnotations(TariffTransaction.class)
-    xstream.processAnnotations(TariffSpecification.class)
-    xstream.processAnnotations(Rate.class)
-    xstream.processAnnotations(HourlyCharge.class)
-    xstream.processAnnotations(TariffUpdate.class)
-    xstream.processAnnotations(TariffExpire.class)
-    xstream.processAnnotations(TariffRevoke.class)
-    xstream.processAnnotations(VariableRateUpdate.class)
-    xstream.processAnnotations(BankTransaction.class)
-    xstream.processAnnotations(CashPosition.class)
+    xstream = new XStream() {
+        protected MapperWrapper wrapMapper(final MapperWrapper next) {
+          return new HibernateMapper(next);
+        }
+    };
 
-    xstream.registerConverter(new HibernateProxyConverter(xstream.getMapper(),new PureJavaReflectionProvider()),XStream.PRIORITY_VERY_HIGH);
+    xstream.registerConverter(new HibernateProxyConverter());
+    xstream.registerConverter(new HibernatePersistentCollectionConverter(xstream.getMapper()));
+    xstream.registerConverter(new HibernatePersistentMapConverter(xstream.getMapper()));
+    xstream.registerConverter(new HibernatePersistentSortedMapConverter(xstream.getMapper()));
+    xstream.registerConverter(new HibernatePersistentSortedSetConverter(xstream.getMapper()));
+
+    xstream.autodetectAnnotations(true);
   }
 
   String toXML(Object message) {
