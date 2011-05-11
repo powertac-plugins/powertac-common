@@ -9,7 +9,7 @@ class BrokerConverter implements SingleValueConverter
   @Override
   public boolean canConvert (Class type)
   {
-    if (type.equals(Broker.class)) {
+    if (Broker.class.isAssignableFrom(type)) {
       return true
     }
     else {

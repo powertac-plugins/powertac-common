@@ -9,7 +9,7 @@ class TimeslotConverter implements SingleValueConverter
   @Override
   public boolean canConvert (Class type)
   {
-    return type.equals(Timeslot.class)
+    return Timeslot.class.isAssignableFrom(type)
   }
 
   @Override
