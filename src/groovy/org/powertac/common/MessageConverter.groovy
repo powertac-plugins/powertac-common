@@ -71,5 +71,4 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
   Object fromXML(String xml) {
     xstream.fromXML(xml)
   }
-
 }
