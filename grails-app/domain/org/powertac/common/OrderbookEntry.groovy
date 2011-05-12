@@ -19,7 +19,7 @@ import org.powertac.common.enumerations.BuySellIndicator
 import com.thoughtworks.xstream.annotations.*
 
 @XStreamAlias("orderbook-entry")
-class OrderbookEntry implements Serializable, Comparable {
+class OrderbookEntry implements Comparable {
 
   @XStreamAsAttribute
   BigDecimal limitPrice
