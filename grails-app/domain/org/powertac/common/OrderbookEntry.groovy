@@ -17,7 +17,6 @@ package org.powertac.common
 
 import org.powertac.common.enumerations.BuySellIndicator
 import com.thoughtworks.xstream.annotations.*
-import org.apache.commons.lang.builder.CompareToBuilder
 
 @XStreamAlias("orderbook-entry")
 class OrderbookEntry implements Comparable {
