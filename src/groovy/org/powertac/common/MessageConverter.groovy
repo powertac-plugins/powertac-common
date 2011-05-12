@@ -20,7 +20,6 @@ import org.powertac.common.transformer.BrokerConverter
 import org.powertac.common.msg.*
 
 import org.hibernate.proxy.HibernateProxy;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentCollectionConverter;
 import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentMapConverter;
@@ -46,6 +45,11 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
   XStream xstream
   private static final log = LogFactory.getLog(this)
 
+  private static final List<Class> classes =
+      [Competition, SimStart, CustomerInfo, CashPosition, Timeslot, ClearedTrade, MarketPosition, Shout, TariffStatus,
+       TariffTransaction, TariffSpecification, Rate, HourlyCharge, TariffUpdate, TariffExpire, TariffRevoke,
+       VariableRateUpdate, BankTransaction, CashPosition, TimeslotUpdate, PluginConfig]
+
 
   void afterPropertiesSet ()
   {
@@ -54,6 +58,11 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
           return new HibernateMapper(next);
         }
     };
+
+    for (clazz in classes) {
+      xstream.processAnnotations(clazz)
+      xstream.omitField(clazz, 'version')
+    }
 
     xstream.registerConverter(new HibernateProxyConverter());
     xstream.registerConverter(new HibernatePersistentCollectionConverter(xstream.getMapper()));
