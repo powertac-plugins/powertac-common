@@ -71,24 +71,4 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
   Object fromXML(String xml) {
     xstream.fromXML(xml)
   }
-
-  class HibernateProxyConverter extends ReflectionConverter {
-    public HibernateProxyConverter(Mapper arg0, ReflectionProvider arg1) {
-      super(arg0, arg1);
-    }
-
-    /**
-     * be responsible for hibernate proxy
-     */
-    public boolean canConvert(Class clazz) {
-      println("converter says can convert " + clazz + ":"+ HibernateProxy.class.isAssignableFrom(clazz));
-      return HibernateProxy.class.isAssignableFrom(clazz);
-    }
-
-    public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {	
-      System.err.println("converter marshalls: "  + ((HibernateProxy)arg0).getHibernateLazyInitializer().getImplementation());
-      super.marshal(((HibernateProxy)arg0).getHibernateLazyInitializer().getImplementation(), arg1, arg2);
-    }
-    	
-  }
 }
