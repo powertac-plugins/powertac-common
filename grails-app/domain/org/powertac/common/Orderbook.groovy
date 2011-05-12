@@ -20,7 +20,9 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 import org.powertac.common.enumerations.ProductType
 import com.thoughtworks.xstream.annotations.*
+import com.thoughtworks.xstream.converters.collections.TreeSetConverter
 import org.powertac.common.transformer.TimeslotConverter
+import org.powertac.common.enumerations.BuySellIndicator
 
 /**
  * An orderbook instance captures a snapshot of the PowerTAC wholesale market's orderbook
@@ -63,14 +65,16 @@ class Orderbook {
   BigDecimal clearingPrice
 
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
-  SortedSet<OrderbookEntry> bids = new TreeSet<OrderbookEntry>()
+  //@XStreamOmitField
+  TreeSet<OrderbookEntry> bids
 
   /** sorted set of OrderbookEntries with buySellIndicator = sell (ascending)*/
-  SortedSet<OrderbookEntry> asks = new TreeSet<OrderbookEntry>()
+  //@XStreamOmitField
+  TreeSet<OrderbookEntry> asks
+
+
 
   static auditable = true
-  
-  static transients = ['timeService']
 
   static belongsTo = [timeslot: Timeslot]
 
