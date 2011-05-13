@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.joda.time.Instant
 import org.powertac.common.enumerations.ProductType
 import com.thoughtworks.xstream.annotations.*
+import com.thoughtworks.xstream.converters.collections.TreeSetConverter
 import org.powertac.common.transformer.TimeslotConverter
 
 /**
@@ -62,10 +63,14 @@ class Orderbook {
   @XStreamOmitField
   BigDecimal clearingPrice
 
+
+  /* Todo: OrderbookEntries have to be serialized correctly! */
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
+  @XStreamOmitField
   SortedSet<OrderbookEntry> bids = new TreeSet<OrderbookEntry>()
 
   /** sorted set of OrderbookEntries with buySellIndicator = sell (ascending)*/
+  @XStreamOmitField
   SortedSet<OrderbookEntry> asks = new TreeSet<OrderbookEntry>()
 
   static auditable = true

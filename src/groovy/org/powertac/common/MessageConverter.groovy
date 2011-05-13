@@ -20,9 +20,15 @@ import org.powertac.common.transformer.BrokerConverter
 import org.powertac.common.msg.*
 
 import org.hibernate.proxy.HibernateProxy;
-
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.alias.ClassMapper;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentCollectionConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentMapConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentSortedMapConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernatePersistentSortedSetConverter;
+import com.thoughtworks.xstream.hibernate.converter.HibernateProxyConverter;
+import com.thoughtworks.xstream.hibernate.mapper.HibernateMapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.javabean.JavaBeanConverter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
@@ -31,37 +37,40 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
+import org.apache.commons.logging.LogFactory
 
 class MessageConverter implements org.springframework.beans.factory.InitializingBean
 {
 
   XStream xstream
+  private static final log = LogFactory.getLog(this)
+
+  private static final List<Class> classes =
+      [Competition, SimStart, CustomerInfo, CashPosition, Timeslot, ClearedTrade, MarketPosition, Shout, TariffStatus,
+       TariffTransaction, TariffSpecification, Rate, HourlyCharge, TariffUpdate, TariffExpire, TariffRevoke,
+       VariableRateUpdate, BankTransaction, CashPosition, TimeslotUpdate, PluginConfig]
+
 
   void afterPropertiesSet ()
   {
-    xstream = new XStream()
-    xstream.processAnnotations(Competition.class)
-    xstream.processAnnotations(SimStart.class)
-    xstream.processAnnotations(CustomerInfo.class)
-    xstream.processAnnotations(CashPosition.class)
-    xstream.processAnnotations(Timeslot.class)
-    xstream.processAnnotations(ClearedTrade.class)
-    xstream.processAnnotations(MarketPosition.class)
-    xstream.processAnnotations(MarketTransaction.class)
-    xstream.processAnnotations(Shout.class)
-    xstream.processAnnotations(TariffStatus.class)
-    xstream.processAnnotations(TariffTransaction.class)
-    xstream.processAnnotations(TariffSpecification.class)
-    xstream.processAnnotations(Rate.class)
-    xstream.processAnnotations(HourlyCharge.class)
-    xstream.processAnnotations(TariffUpdate.class)
-    xstream.processAnnotations(TariffExpire.class)
-    xstream.processAnnotations(TariffRevoke.class)
-    xstream.processAnnotations(VariableRateUpdate.class)
-    xstream.processAnnotations(BankTransaction.class)
-    xstream.processAnnotations(CashPosition.class)
+    xstream = new XStream() {
+        protected MapperWrapper wrapMapper(final MapperWrapper next) {
+          return new HibernateMapper(next);
+        }
+    };
 
-    xstream.registerConverter(new HibernateProxyConverter(xstream.getMapper(),new PureJavaReflectionProvider()),XStream.PRIORITY_VERY_HIGH);
+    for (clazz in classes) {
+      xstream.processAnnotations(clazz)
+      xstream.omitField(clazz, 'version')
+    }
+
+    xstream.registerConverter(new HibernateProxyConverter());
+    xstream.registerConverter(new HibernatePersistentCollectionConverter(xstream.getMapper()));
+    xstream.registerConverter(new HibernatePersistentMapConverter(xstream.getMapper()));
+    xstream.registerConverter(new HibernatePersistentSortedMapConverter(xstream.getMapper()));
+    xstream.registerConverter(new HibernatePersistentSortedSetConverter(xstream.getMapper()));
+
+    xstream.autodetectAnnotations(true);
   }
 
   String toXML(Object message) {
@@ -70,25 +79,5 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
 
   Object fromXML(String xml) {
     xstream.fromXML(xml)
-  }
-
-  class HibernateProxyConverter extends ReflectionConverter {
-    public HibernateProxyConverter(Mapper arg0, ReflectionProvider arg1) {
-      super(arg0, arg1);
-    }
-
-    /**
-     * be responsible for hibernate proxy
-     */
-    public boolean canConvert(Class clazz) {
-      println("converter says can convert " + clazz + ":"+ HibernateProxy.class.isAssignableFrom(clazz));
-      return HibernateProxy.class.isAssignableFrom(clazz);
-    }
-
-    public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {	
-      System.err.println("converter marshalls: "  + ((HibernateProxy)arg0).getHibernateLazyInitializer().getImplementation());
-      super.marshal(((HibernateProxy)arg0).getHibernateLazyInitializer().getImplementation(), arg1, arg2);
-    }
-    	
   }
 }
