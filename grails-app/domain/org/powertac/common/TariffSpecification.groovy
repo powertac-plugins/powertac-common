@@ -85,5 +85,6 @@ class TariffSpecification //implements Serializable
   static mapping = {
     id (generator: 'assigned')
     rates lazy: false
+    broker fetch: 'join'
   }
 }
