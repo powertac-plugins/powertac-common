@@ -67,7 +67,7 @@ class TimeService
   
   // simulation clock parameters
   long base
-  long start
+  long start = new DateTime(2036, 12, 31, 23, 59, 0, 0, DateTimeZone.UTC).millis
   long rate = 720l
   long modulo = HOUR
   
@@ -95,11 +95,13 @@ class TimeService
     }
     busy = true
     long systemTime = new Instant().getMillis()
-    long raw = base + (systemTime - start) * rate
-    currentTime = new Instant(raw - raw % modulo)
-    currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
-    log.info "updateTime: sys=${systemTime}, simTime=${currentTime}"
-    runActions()
+    if (systemTime >= start) { 
+      long raw = base + (systemTime - start) * rate
+      currentTime = new Instant(raw - raw % modulo)
+      currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
+      log.info "updateTime: sys=${systemTime}, simTime=${currentTime}"
+      runActions()
+    }
     busy = false
   }
   

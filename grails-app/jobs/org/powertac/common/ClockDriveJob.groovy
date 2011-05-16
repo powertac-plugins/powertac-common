@@ -26,7 +26,9 @@ class ClockDriveJob
   def concurrent = false // don't want two copies running
 
   // scheduler trigger support
-  //static triggers = {simple name:'clockTrigger', group:'clockGroup'}
+  static triggers = {
+  //  cron name: 'cronTrigger', cronExpression: '0/5 * * * * ?'
+  }
   
   /**
    * Target for scheduler
