@@ -23,6 +23,6 @@ package org.powertac.common.enumerations;
  * @version 1.0, Date: 16.12.10
  */
 public enum ProductType {
-  Future,
-  Option
+    Future//, Option type produces a huge amount of fluff in logs, messages
+	//Option
 }
