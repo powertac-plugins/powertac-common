@@ -11,12 +11,17 @@
 package com.thoughtworks.xstream.hibernate.converter;
 
 import com.thoughtworks.xstream.converters.ConversionException;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.TreeSetConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 import org.hibernate.collection.PersistentSortedSet;
+
+import java.util.HashMap;
+import java.util.TreeSet;
 
 
 /**
@@ -47,4 +52,17 @@ public class HibernatePersistentSortedSetConverter extends TreeSetConverter {
         final UnmarshallingContext context) {
         throw new ConversionException("Cannot deserialize Hibernate collection");
     }
+
+    @SuppressWarnings("unchecked")
+	  public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+		    Object collection = source;
+
+        if (source instanceof PersistentSortedSet) {
+            PersistentSortedSet col = (PersistentSortedSet)source;
+            col.forceInitialization();
+            collection = new TreeSet(((HashMap)col.getStoredSnapshot()).values());
+        }
+
+		    super.marshal(collection, writer, context);
+	  }
 }

@@ -37,7 +37,7 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-import org.apache.commons.logging.LogFactory
+import org.apache.commons.logging.LogFactory;
 
 class MessageConverter implements org.springframework.beans.factory.InitializingBean
 {
@@ -46,9 +46,11 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
   private static final log = LogFactory.getLog(this)
 
   private static final List<Class> classes =
-      [Competition, SimStart, CustomerInfo, CashPosition, Timeslot, ClearedTrade, MarketPosition, Shout, TariffStatus,
-       TariffTransaction, TariffSpecification, Rate, HourlyCharge, TariffUpdate, TariffExpire, TariffRevoke,
-       VariableRateUpdate, BankTransaction, CashPosition, TimeslotUpdate, PluginConfig]
+      [Competition, SimStart, CustomerInfo, CashPosition, Timeslot,
+       ClearedTrade, MarketPosition, Shout, TariffStatus, TariffTransaction,
+       TariffSpecification, Rate, HourlyCharge, TariffUpdate, TariffExpire,
+       TariffRevoke, VariableRateUpdate, BankTransaction, CashPosition,
+       TimeslotUpdate, PluginConfig, Orderbook]
 
 
   void afterPropertiesSet ()
