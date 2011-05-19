@@ -19,6 +19,7 @@ grails.project.dependency.resolution = {
     mavenLocal()
     mavenCentral()
     //mavenRepo "http://snapshots.repository.codehaus.org"
+    mavenRepo "https://nexus.codehaus.org/content/repositories/snapshots"
     //mavenRepo "http://repository.codehaus.org"
     //mavenRepo "http://download.java.net/maven/2/"
     //mavenRepo "http://repository.jboss.com/maven2/"
