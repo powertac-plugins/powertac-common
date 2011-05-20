@@ -20,8 +20,9 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
+import org.apache.commons.logging.LogFactory
 
- /**
+/**
  * A competition instance represents a single PowerTAC competition and
  * at the same time serves as the place for all competition properties that can be
  * adjusted during competition setup (i.e. during server runtime but before competition start).
@@ -32,6 +33,7 @@ import com.thoughtworks.xstream.annotations.*
 @XStreamAlias("competition")
 class Competition //implements Serializable 
 {
+  private static final log = LogFactory.getLog(this)
 
   @XStreamAsAttribute
   String id = IdGenerator.createId()
@@ -126,7 +128,7 @@ class Competition //implements Serializable
   public String toString() 
   {
     if (name == null)
-      println "competition name is null"
+      log.info "competition name is null"
     return name
   }
 }
