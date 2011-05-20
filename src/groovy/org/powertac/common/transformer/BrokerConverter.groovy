@@ -2,9 +2,11 @@ package org.powertac.common.transformer
 
 import com.thoughtworks.xstream.converters.SingleValueConverter
 import org.powertac.common.Broker
+import org.apache.commons.logging.LogFactory
 
 class BrokerConverter implements SingleValueConverter
 {
+  private static final log = LogFactory.getLog(this)
 
   @Override
   public boolean canConvert (Class type)
@@ -13,7 +15,7 @@ class BrokerConverter implements SingleValueConverter
       return true
     }
     else {
-      println "BrokerConverter cannot convert ${type}" 
+      log.info "BrokerConverter cannot convert ${type}"
       return false
     }
   }
