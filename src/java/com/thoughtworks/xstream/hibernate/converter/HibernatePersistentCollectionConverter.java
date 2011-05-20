@@ -14,12 +14,19 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 import org.hibernate.collection.PersistentBag;
 import org.hibernate.collection.PersistentList;
 import org.hibernate.collection.PersistentSet;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 
+import org.hibernate.collection.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * A converter for Hibernate's {@link PersistentBag}, {@link PersistentList} and
@@ -31,24 +38,41 @@ import org.hibernate.collection.PersistentSet;
  */
 public class HibernatePersistentCollectionConverter extends CollectionConverter {
 
-    /**
-     * Construct a HibernatePersistentCollectionConverter.
-     * 
-     * @param mapper
-     * @since upcoming
-     */
-    public HibernatePersistentCollectionConverter(final Mapper mapper) {
-        super(mapper);
+  /**
+   * Construct a HibernatePersistentCollectionConverter.
+   *
+   * @param mapper
+   * @since upcoming
+   */
+  public HibernatePersistentCollectionConverter(final Mapper mapper) {
+    super(mapper);
+  }
+
+  public boolean canConvert(final Class type) {
+    return type == PersistentBag.class
+    || type == PersistentList.class
+    || type == PersistentSet.class;
+  }
+
+  public Object unmarshal(final HierarchicalStreamReader reader,
+                          final UnmarshallingContext context) {
+    throw new ConversionException("Cannot deserialize Hibernate collection");
+  }
+
+  @SuppressWarnings("unchecked")
+  public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+    Object collection = source;
+
+    if (source instanceof PersistentCollection) {
+      PersistentCollection col = (PersistentCollection) source;
+      col.forceInitialization();
+      collection = col.getStoredSnapshot();
     }
 
-    public boolean canConvert(final Class type) {
-        return type == PersistentBag.class
-            || type == PersistentList.class
-            || type == PersistentSet.class;
+    if (source instanceof PersistentSet) {
+      collection = new HashSet(((HashMap)collection).values());
     }
 
-    public Object unmarshal(final HierarchicalStreamReader reader,
-        final UnmarshallingContext context) {
-        throw new ConversionException("Cannot deserialize Hibernate collection");
-    }
+    super.marshal(collection, writer, context);
+  }
 }

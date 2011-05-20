@@ -20,6 +20,7 @@ import org.joda.time.base.AbstractDateTime
 import org.joda.time.base.AbstractInstant
 import org.joda.time.*
 import com.thoughtworks.xstream.annotations.*
+import org.apache.commons.logging.LogFactory
 
 /**
 * Tariffs are composed of Rates.
@@ -30,6 +31,8 @@ import com.thoughtworks.xstream.annotations.*
 @XStreamAlias("rate")
 class Rate //implements Serializable
 {
+  private static final log = LogFactory.getLog(this)
+
   @XStreamAsAttribute
   String id = IdGenerator.createId()
 
@@ -374,7 +377,7 @@ class Rate //implements Serializable
     if (isFixed)
       return minValue
     else if (rateHistory.size() == 0) {
-      println "no rate history, return default"
+      log.info "no rate history, return default"
       return expectedMean // default
     }
     else {
