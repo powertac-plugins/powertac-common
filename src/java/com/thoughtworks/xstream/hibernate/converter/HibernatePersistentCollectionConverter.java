@@ -11,16 +11,18 @@
 package com.thoughtworks.xstream.hibernate.converter;
 
 import com.thoughtworks.xstream.converters.ConversionException;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
-import org.hibernate.collection.PersistentBag;
-import org.hibernate.collection.PersistentList;
-import org.hibernate.collection.PersistentSet;
-import com.thoughtworks.xstream.converters.MarshallingContext;
+import org.hibernate.collection.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.hibernate.collection.*;
 
@@ -30,37 +32,37 @@ import java.util.TreeSet;
 
 /**
  * A converter for Hibernate's {@link PersistentBag}, {@link PersistentList} and
- * {@link PersistentSet}. The converter will drop any reference to the Hibernate collection and
- * emit at serialization time an equivalent JDK collection instead.
+ * {@link PersistentSet}. The converter will drop any reference to the Hibernate
+ * collection and emit at serialization time an equivalent JDK collection
+ * instead.
  * 
  * @author J&ouml;rg Schaible
  * @since upcoming
  */
-public class HibernatePersistentCollectionConverter extends CollectionConverter {
+public class HibernatePersistentCollectionConverter extends CollectionConverter
+{
 
   /**
    * Construct a HibernatePersistentCollectionConverter.
-   *
+   * 
    * @param mapper
    * @since upcoming
    */
-  public HibernatePersistentCollectionConverter(final Mapper mapper) {
+  public HibernatePersistentCollectionConverter (final Mapper mapper)
+  {
     super(mapper);
   }
 
-  public boolean canConvert(final Class type) {
-    return type == PersistentBag.class
-    || type == PersistentList.class
-    || type == PersistentSet.class;
-  }
-
-  public Object unmarshal(final HierarchicalStreamReader reader,
-                          final UnmarshallingContext context) {
+  public Object unmarshal (final HierarchicalStreamReader reader,
+                           final UnmarshallingContext context)
+  {
     throw new ConversionException("Cannot deserialize Hibernate collection");
   }
 
   @SuppressWarnings("unchecked")
-  public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+  public void marshal (Object source, HierarchicalStreamWriter writer,
+                       MarshallingContext context)
+  {
     Object collection = source;
 
     if (source instanceof PersistentCollection) {
@@ -70,7 +72,7 @@ public class HibernatePersistentCollectionConverter extends CollectionConverter 
     }
 
     if (source instanceof PersistentSet) {
-      collection = new HashSet(((HashMap)collection).values());
+      collection = new HashSet(((HashMap) collection).values());
     }
 
     super.marshal(collection, writer, context);
