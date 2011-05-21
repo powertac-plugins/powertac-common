@@ -42,11 +42,6 @@ class Competition //implements Serializable
   @XStreamAsAttribute
   String name
 
-  /** Lifecycle state of the competition    */
-  // This field seems unnecessary, given that the purpose of Competition
-  // is to communicate and record competition parameters.
-  //CompetitionStatus competitionStatus = CompetitionStatus.Created
-
   /** Optional text that further describes the competition    */
   String description
 
@@ -69,9 +64,6 @@ class Competition //implements Serializable
   @XStreamAsAttribute
   Integer deactivateTimeslotsAhead = 1
 
-  /** the start time of the simulation scenario, in wall-clock time */
-  // This will need to be communicated separately -- JEC
-
   /** the start time of the simulation scenario, in sim time. */
   @XStreamAsAttribute
   Instant simulationBaseTime = new DateTime(2010, 6, 21, 0, 0, 0, 0, DateTimeZone.UTC).toInstant()
@@ -92,7 +84,11 @@ class Competition //implements Serializable
   @XStreamAsAttribute
   Long simulationModulo = 60*60*1000
   
-  static hasMany = [plugins:PluginConfig]
+  // include the list of brokers
+  @XStreamImplicit(itemFieldName = 'broker')
+  List<String> brokers
+
+  static hasMany = [plugins: PluginConfig]
 
   static constraints = {
     id(nullable: false, unique: true, blank: false)

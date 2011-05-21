@@ -31,9 +31,6 @@ class SimStart
 {
   Instant start
 
-  @XStreamImplicit(itemFieldName = 'broker')
-  List<String> brokers
-
   static constraints = {
     start (nullable: false)
   }
