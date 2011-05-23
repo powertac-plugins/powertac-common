@@ -64,13 +64,10 @@ class Orderbook {
   BigDecimal clearingPrice
 
 
-  /* Todo: OrderbookEntries have to be serialized correctly! */
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
-  @XStreamOmitField
   SortedSet<OrderbookEntry> bids = new TreeSet<OrderbookEntry>()
 
   /** sorted set of OrderbookEntries with buySellIndicator = sell (ascending)*/
-  @XStreamOmitField
   SortedSet<OrderbookEntry> asks = new TreeSet<OrderbookEntry>()
 
   static auditable = true
