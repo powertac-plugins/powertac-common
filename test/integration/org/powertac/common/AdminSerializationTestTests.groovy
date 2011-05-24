@@ -87,7 +87,8 @@ class AdminSerializationTestTests extends GroovyTestCase
   {
     Competition comp =
         new Competition(name: "testing", description: "more testing",
-                        simulationBaseTime: new DateTime(2010, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant())
+                        simulationBaseTime: new DateTime(2010, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC).toInstant(),
+                        brokers: Broker.list().collect { it.username })
     PluginConfig pc1 = new PluginConfig(roleName: 'Test1',
                                         configuration: ['a':'1', 'value':'42.3'])
     comp.addToPlugins(pc1)
@@ -106,6 +107,7 @@ class AdminSerializationTestTests extends GroovyTestCase
     PluginConfig xt2 = xc.plugins.find { it.roleName == 'Test2' }
     assertNotNull("found second config", xt2)
     assertEquals("correct answer", '42', xt2.configuration['answer'])
+    assertEquals("correct broker", broker.username, xc.brokers[0])
   }
 
   void testCustomerInfo ()
@@ -121,8 +123,7 @@ class AdminSerializationTestTests extends GroovyTestCase
 
   void testSimStart ()
   {
-    SimStart start = new SimStart(start: new DateTime(2011, 4, 10, 15, 25, 30, 0, DateTimeZone.UTC).toInstant(),
-                                  brokers: Broker.list().collect { it.username })
+    SimStart start = new SimStart(start: new DateTime(2011, 4, 10, 15, 25, 30, 0, DateTimeZone.UTC).toInstant())
     StringWriter serialized = new StringWriter ()
     serialized.write(xstream.toXML(start))
 
@@ -132,6 +133,5 @@ class AdminSerializationTestTests extends GroovyTestCase
     assertNotNull("deserialized something", xs)
     assertTrue("correct type", xs instanceof SimStart)
     assertEquals("correct id", start.id, xs.id)
-    assertEquals("correct broker", broker.username, xs.brokers[0])
   }
 }
