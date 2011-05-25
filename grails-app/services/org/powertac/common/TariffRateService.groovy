@@ -21,9 +21,9 @@ import org.joda.time.Instant
  * Stores Rate arrays on behalf of Tariffs, bypassing the database.
  * @author John Collins
  */
-class TariffRateService {
-
-  static transactional = true
+class TariffRateService 
+{
+  static transactional = false
 
   Map tiers = [:]
   Map rates = [:]
@@ -40,7 +40,7 @@ class TariffRateService {
     long tariffId = tariff.id
     // make sure we already have the list
     if (tiers[tariffId] == null) {
-      log.info "create tier list for tariff ${tariffId}"
+      log.debug "create tier list for tariff ${tariffId}"
       tiers[tariffId] = []
     }
     // make sure we don't already have this tier in the list

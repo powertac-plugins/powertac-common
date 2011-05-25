@@ -84,11 +84,11 @@ class Competition //implements Serializable
   @XStreamAsAttribute
   Long simulationModulo = 60*60*1000
   
-  // include the list of brokers
+  // include the list of broker usernames
   @XStreamImplicit(itemFieldName = 'broker')
   List<String> brokers
 
-  static hasMany = [plugins: PluginConfig]
+  static hasMany = [plugins: PluginConfig, brokers: String]
 
   static constraints = {
     id(nullable: false, unique: true, blank: false)
