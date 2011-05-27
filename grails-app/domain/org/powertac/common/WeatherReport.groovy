@@ -16,6 +16,9 @@
 
 package org.powertac.common
 
+import org.powertac.common.transformer.TimeslotConverter
+import com.thoughtworks.xstream.annotations.*
+
 /**
 * A weather report instance that describes the weather data for one hour of the
 * simulation
@@ -24,23 +27,33 @@ package org.powertac.common
 *
 * @version 1.0 - 03/May/2011
 */
-
+@XStreamAlias("weather-report")
 class WeatherReport implements Serializable {
 
   /** the current or reference timeslot from which the weather (forecast) is generated */
+  @XStreamAsAttribute
+  @XStreamConverter(TimeslotConverter)
   Timeslot currentTimeslot
   
   /** the current timeslot's temperature*/
+  @XStreamAsAttribute
   BigDecimal temperature
   
   /**  the current timeslot's windSpeed*/
+  @XStreamAsAttribute
   BigDecimal windSpeed
   
   /** the current timeslot's windDirection*/
+  @XStreamAsAttribute
   BigDecimal windDirection
   
   /** the current timeslot's cloudCover*/
+  @XStreamAsAttribute
   BigDecimal cloudCover
+  
+  /** Explicit version so we can omit*/
+  @XStreamOmitField
+  int version
   
     
     static constraints = {

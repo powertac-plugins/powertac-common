@@ -16,6 +16,8 @@
 
 package org.powertac.common
 
+import org.powertac.common.transformer.TimeslotConverter
+import com.thoughtworks.xstream.annotations.*
 /**
 * A collection of weatherReports for a current timeslot
 *
@@ -23,10 +25,12 @@ package org.powertac.common
 *
 * @version 1.0 - 03/May/2011
 */
-
+@XStreamAlias("weather-forecast")
 class WeatherForecast {
 
   /** the current or reference timeslot from which the weather (forecast) is generated */
+  @XStreamAsAttribute
+  @XStreamConverter(TimeslotConverter)
   Timeslot currentTimeslot
   
   static hasMany = [weatherReports : WeatherReport]
