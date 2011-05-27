@@ -66,12 +66,11 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
       xstream.omitField(clazz, 'version')
     }
 
-    xstream.registerConverter(new HibernateProxyConverter());
-    xstream.registerConverter(new HibernatePersistentCollectionConverter(xstream.getMapper()), XStream.PRIORITY_LOW);
-    xstream.registerConverter(new HibernatePersistentMapConverter(xstream.getMapper()), XStream.PRIORITY_LOW);
-    xstream.registerConverter(new HibernatePersistentSortedMapConverter(xstream.getMapper()), XStream.PRIORITY_LOW);
-    xstream.registerConverter(new HibernatePersistentSortedSetConverter(xstream.getMapper()), XStream.PRIORITY_LOW);
-
+    xstream.registerConverter(new HibernateProxyConverter())
+    xstream.registerConverter(new HibernatePersistentCollectionConverter(xstream.getMapper()))
+    xstream.registerConverter(new HibernatePersistentMapConverter(xstream.getMapper()))
+    xstream.registerConverter(new HibernatePersistentSortedMapConverter(xstream.getMapper()))
+    xstream.registerConverter(new HibernatePersistentSortedSetConverter(xstream.getMapper()))
     xstream.autodetectAnnotations(true);
   }
 
