@@ -50,7 +50,7 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
        ClearedTrade, MarketPosition, Shout, TariffStatus, TariffTransaction,
        TariffSpecification, Rate, HourlyCharge, TariffUpdate, TariffExpire,
        TariffRevoke, VariableRateUpdate, BankTransaction, CashPosition,
-       TimeslotUpdate, PluginConfig, Orderbook]
+       TimeslotUpdate, PluginConfig, Orderbook, OrderbookEntry]
 
 
   void afterPropertiesSet ()
