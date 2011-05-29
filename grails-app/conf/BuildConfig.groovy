@@ -44,18 +44,6 @@ grails.project.dependency.resolution = {
   }
 }
 
-def repositoryUserName = '[your powertac artifactory user]'
-def repositoryPassword = '[your powertac artifactory pw]'
-
-grails.project.dependency.distribution = {
-  remoteRepository(id: "powertacPlugins", url: "http://ibwstinger.iw.uni-karlsruhe.de/artifactory/plugins-release-local/") {
-    authentication username: repositoryUserName, password: repositoryPassword
-  }
-  remoteRepository(id: "powertacPluginSnapshots", url: "http://ibwstinger.iw.uni-karlsruhe.de/artifactory/plugins-snapshot-local/") {
-    authentication username: repositoryUserName, password: repositoryPassword
-  }
-}
-
 coverage {
   xml = true
   nopost = true
