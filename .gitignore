@@ -17,6 +17,9 @@ ehthumbs.db
 Icon?
 Thumbs.db
 *.log
+*.zip
+*.sha1
+plugin.xml
 
 # Compiled source
 *.class
