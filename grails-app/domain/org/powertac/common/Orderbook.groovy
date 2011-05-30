@@ -60,7 +60,7 @@ class Orderbook {
   Timeslot timeslot
 
   /** last clearing price; if there is no last clearing price the min ask (max bid) will be returned*/
-  @XStreamOmitField
+  @XStreamAsAttribute
   BigDecimal clearingPrice
 
 
