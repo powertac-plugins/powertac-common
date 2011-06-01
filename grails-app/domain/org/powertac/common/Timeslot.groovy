@@ -25,7 +25,8 @@ import com.thoughtworks.xstream.annotations.*
  * correlate tradeable products (energy futures) and trades in the market with a future time
  * interval where settlement (i.e. delivery / consumption) has to take place, (ii) to
  * correlate meter readings with a duration in time, (iii) to  allow tariffs to define
- * different consumption / production prices for different times of a day
+ * different consumption / production prices for different times of a day. Timeslots are
+ * represented in server-broker communications by serial number and start time.
  *
  * @author Carsten Block
  * @version 1.0 - Feb,6,2011

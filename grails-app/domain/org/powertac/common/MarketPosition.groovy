@@ -27,7 +27,8 @@ import com.thoughtworks.xstream.annotations.*
  * A {@code MarketPosition} domain instance represents the current position of a
  * single broker for wholesale power in a given timeslot. The evolution of this
  * position over time is represented by the sequence of MarketTransaction instances
- * for this broker and timeslot.
+ * for this broker and timeslot. These are created by the AccountingService and
+ * communicated to individual brokers after the market clears in each timeslot.
  *
  * @author Carsten Block, David Dauer, John Collins
  */

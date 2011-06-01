@@ -27,7 +27,8 @@ import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * A shout domain instance represents a market or a limit order in the PowerTAC wholesale
+ * A shout domain instance represents a market (no price specified) or a limit (min/max
+ * price specified) order in the PowerTAC wholesale
  * market. More precisely it represents a single state of this specific order. Each time a
  * change occurs, the shout object is cloned, the {@code latest} property is set to false
  * for the original object (which remains unchanged otherwise) and all necessary changes

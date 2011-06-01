@@ -32,6 +32,11 @@ import org.powertac.common.enumerations.PowerType
  * a particular accounting event. This will also make it easy to estimate the
  * cost of a multi-Rate Tariff given an expected load/production profile.
  * <p>
+ * This is not a serializable type; The server and brokers are responsible
+ * for creating and maintaining their own Tariff entities if they have an
+ * interest in the transformation of TariffSpecification represented by a
+ * Tariff instance.</p>
+ * <p>
  * <strong>NOTE:</strong> When creating one of these for the first time, you must
  * call the init() method to initialize the publication date. It does not work
  * to call it inside the constructor for some reason.</p>

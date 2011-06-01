@@ -1,5 +1,5 @@
 /*
-* Copyright 2009-2011 the original author or authors.
+* Copyright 2011 the original author or authors.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,12 +18,11 @@ package org.powertac.common
 
 import org.powertac.common.transformer.TimeslotConverter
 import com.thoughtworks.xstream.annotations.*
+
 /**
-* A collection of weatherReports for a current timeslot
+* A collection of weatherReports giving hourly forecasts for future timeslot.
 *
-* @author Erik Onarheim & Josh Edeen
-*
-* @version 1.0 - 03/May/2011
+* @author Erik Onarheim and Josh Edeen
 */
 @XStreamAlias("weather-forecast")
 class WeatherForecast {

@@ -18,6 +18,10 @@ package org.powertac.common
 import org.powertac.common.enumerations.BuySellIndicator
 import com.thoughtworks.xstream.annotations.*
 
+/**
+ * Each instance is an individual entry within an Orderbook.
+ * @author Daniel Schnurr
+ */
 @XStreamAlias("orderbook-entry")
 class OrderbookEntry implements Comparable {
 

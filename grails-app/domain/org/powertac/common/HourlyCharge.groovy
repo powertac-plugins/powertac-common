@@ -22,7 +22,8 @@ import com.thoughtworks.xstream.annotations.*
  * Represents the cost of power during a specific timeslot in a variable
  * Rate. The value slot represents the charge/kWh; atTime is the Instant
  * at the start of the relevant timeslot. Therefore, the charge is in effect
- * from atTime until atTime + 1 hour.
+ * from atTime until atTime + 1 hour. These are created by brokers and sent
+ * to the server to update tariff pricing.
  * 
  * @author jcollins
  */

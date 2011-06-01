@@ -26,6 +26,8 @@ import org.apache.commons.logging.LogFactory
 * Tariffs are composed of Rates.
 * Rates may be applicable on particular days of the week, particular times
 * of day, or above some usage threshold. Rates may be fixed or variable. 
+* Tariffs and their rates are public information. New tariffs and their Rates
+* are communicated to Customers and to Brokers when tariffs are published.
 * @author jcollins
 */
 @XStreamAlias("rate")

@@ -23,7 +23,8 @@ import com.thoughtworks.xstream.annotations.*
 
 /**
  * A {@code CashPosition} domain instance represents the current state of
- * a broker's cash account.
+ * a broker's cash account. An updated CashPosition is sent to brokers
+ * during each timeslot. This is not public information.
  *
  * @author Carsten Block, David Dauer
  * @version 1.1 - 02/27/2011
@@ -31,20 +32,6 @@ import com.thoughtworks.xstream.annotations.*
 @XStreamAlias("cash")
 class CashPosition //implements Serializable 
 {
-
-  //def timeService
-  /**
-   * Retrieves the timeService (Singleton) reference from the main application context
-   * This is necessary as DI by name (i.e. def timeService) stops working if a class
-   * instance is deserialized rather than constructed.
-   * Note: In the code below you can can still user timeService.xyzMethod()
-   */
-  //private getTimeService() {
-  //  ApplicationHolder.application.mainContext.timeService
-  //}
-  // Server-generated type, don't need UUID
-  //String id = IdGenerator.createId()
-
   /** The broker who owns this cash account  */
   @XStreamConverter(BrokerConverter)
   Broker broker

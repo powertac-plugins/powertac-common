@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.annotations.*
  * communicate configuration information to brokers at the beginning
  * of a simulation. In order to use this correctly, there should be
  * exactly once instance created for each configurable plugin. This
- * should be created in plugin's XxBootStrap.groovy script.
+ * should be created in plugin's initialization service.
  * @author John Collins
  */
 @XStreamAlias("plugin-config")

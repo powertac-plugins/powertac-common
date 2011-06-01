@@ -24,10 +24,12 @@ import org.powertac.common.transformer.TariffConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
- *  A {@code TariffTransaction} instance represents the quantity of energy consumed
+ * A {@code TariffTransaction} instance represents the quantity of energy consumed
  * ({@code quantity < 0}) or produced {@code quantity > 0} by some members of a 
  * specific customer model, in a specific timeslot, under a particular tariff.
- * Note that this is an immutable type, and therefore is not auditable.
+ * Note that this is an immutable type, and therefore is not auditable. Instances
+ * are created by the TariffMarket and communicated to brokers to represent customer
+ * interactions with tariffs (subscribe, consume, etc.).
  *
  * @author Carsten Block, John Collins
  */

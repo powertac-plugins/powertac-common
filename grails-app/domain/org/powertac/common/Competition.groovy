@@ -27,7 +27,8 @@ import org.apache.commons.logging.LogFactory
  * at the same time serves as the place for all competition properties that can be
  * adjusted during competition setup (i.e. during server runtime but before competition start).
  * This is an immutable value type, and most parameters are included in the
- * parameterMap, rather than in individual fields.
+ * PluginConfig instances, rather than in individual fields. The single instance is
+ * communicated to brokers at the beginning of a game scenario.
  * @author Carsten Block, KIT; John Collins, U of Minnesota
  */
 @XStreamAlias("competition")

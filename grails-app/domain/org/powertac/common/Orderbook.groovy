@@ -25,8 +25,11 @@ import org.powertac.common.transformer.TimeslotConverter
 
 /**
  * An orderbook instance captures a snapshot of the PowerTAC wholesale market's orderbook
- * Each entry of the orderbook consists of the limit price, as well as the aggregated buy / sell quantity on that level.
- *
+ * (the un-cleared bids and asks remaining after the market is cleared). 
+ * Each OrderbookEntry contained in the orderbook contains a limit price and
+ * total un-cleared buy / sell quantity at that price.
+ * Each time the market clears, one orderbook is created and sent to brokers for each
+ * timeslot being traded during that clearing event.
  *
  * @author Daniel Schnurr
  * @version 1.2 , 05/02/2011

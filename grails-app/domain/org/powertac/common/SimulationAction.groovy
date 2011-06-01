@@ -4,7 +4,8 @@ import org.joda.time.Instant
 
 /**
  * Actions run at specified times by the TimeService. This would be a nested
- * class of TimeService if groovy would allow that.
+ * class of TimeService if groovy would allow that. These are not serialized
+ * or communicated between broker and server.
  * @author jcollins
  */
 class SimulationAction implements Comparable

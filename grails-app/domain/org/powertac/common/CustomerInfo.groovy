@@ -24,7 +24,9 @@ import com.thoughtworks.xstream.annotations.*
  * A {@code CustomerInfo} instance represents a customer model (i.e. a consumer or a producer)
  * within a specific competition. The customer data stored is published to all brokers in
  * the respective competition in order to provide them with an brief overview on what type
- * of customers participate in the specific competition.
+ * of customers participate in the specific competition. The collection of CustomerInfo
+ * instances are serialized and sent to brokers at the beginning of a game, allowing brokers
+ * to correlate tariff subscriptions and power consumption/production with individual customers.
  *
  * @author Carsten Block, KIT; John Collins, U of Minnesota
  */

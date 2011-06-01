@@ -31,7 +31,9 @@ import com.thoughtworks.xstream.annotations.*
  * One domain instance can (i) represent a trade that happened on the market
  * (price, quantity tuple and - in case of CDA markets - buyer and seller) or (ii)
  * a quote (which occurs if an order was entered into the system that changed the best
- * bid and/or best ask price / quantity but did not causing a clearing / trade).
+ * bid and/or best ask price / quantity but did not causing a clearing / trade). These
+ * are created by the market, used by Accounting to update broker accounts, and then
+ * forwarded to brokers.
  *<p>
  * Note: this domain class / table is closely modeled after the Thompson Reuter's TAQ data
  * file format in order to allow ex-post data analysis using the econometrics tools of the

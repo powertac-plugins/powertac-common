@@ -26,7 +26,8 @@ import com.thoughtworks.xstream.annotations.*
  * prices for energy in various circumstances, along with upfront and periodic
  * payments and basic constraints. This class is a value type -- a 
  * serializable, immutable data structure. You need to initialize a 
- * Tariff from it to make serious use of it.
+ * Tariff from it to make serious use of it. New tariffs and their Rates
+* are communicated to Customers and to Brokers when tariffs are published.
  * <p>
  * <strong>Note:</strong> Must be serialized "deep" to gather up the Rates and
  * associated HourlyCharge instances.</p>

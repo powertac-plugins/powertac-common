@@ -20,6 +20,8 @@ package org.powertac.common
  * A broker domain instance represents a competition participants, or more
  * precisely the competition participant's agent. Every incoming request
  * from a broker agent is authenticated against the credentials stored in this class.
+ * Broker instances are not communicated to other brokers; only usernames are 
+ * considered public information and get communicated.
  *
  * @author Carsten Block, David Dauer
  * @version 1.1 , 03/22/2011
