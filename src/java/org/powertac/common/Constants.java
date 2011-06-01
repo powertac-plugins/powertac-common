@@ -32,6 +32,16 @@ public class Constants
    */
   public static final int DECIMALS = 4;
   public static final int HOURS_OF_DAY = 24;
+  public static final int PERCENTAGE = 100;
+  public static final int MILLION = 1000000;
+  public static final double EPSILON = 2.7;
+  public static final int MEAN_TARIFF_DURATION = 5;
+  public static final int MORNING_START_HOUR = 7;
+  public static final int EVENING_START_HOUR = 18;
+  public static final int MEAN_NIGHT_CONSUMPTION = 0;
+  public static final int MEAN_MORNING_CONSUMPTION = 2;
+  public static final int MEAN_EVENING_CONSUMPTION = 3;
+
   public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
 
   public static final String COMPETITION_INACTIVE = "competition.inactive";
