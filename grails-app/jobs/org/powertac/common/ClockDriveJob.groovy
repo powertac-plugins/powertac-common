@@ -15,12 +15,15 @@
  */
 package org.powertac.common
 
+import org.quartz.Job
+import org.quartz.JobExecutionContext
+
 /**
  * Runs the clock. This needs to be scheduled externally to avoid breaking
  * integration tests.
  * @author John Collins
  */
-class ClockDriveJob
+class ClockDriveJob implements Job
 {
   def timeService
   def concurrent = false // don't want two copies running
@@ -28,12 +31,14 @@ class ClockDriveJob
   // scheduler trigger support
   static triggers = {
   //  cron name: 'cronTrigger', cronExpression: '0/5 * * * * ?'
+    simple name: 'default', group: 'default'
   }
   
   /**
    * Target for scheduler
    */
-  def execute ()
+  @Override
+  void execute (JobExecutionContext context)
   {
     timeService.updateTime()
     log.info("Clock Update " + timeService.getCurrentTime())
