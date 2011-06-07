@@ -15,21 +15,16 @@
  */
 package org.powertac.common.msg
 
-import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * This message is used to communicate the simulation start time from server
- * to brokers in the last few seconds before the simulation starts. This
- * allows all parties to start their sim clocks at the same time.
+ * This message is used to communicate the end of a simulation. It is intended
+ * to be sent as the only message in timeslot n+1 for a simulation of n timeslots.
  * @author John Collins
  */
-@XStreamAlias("sim-start")
-class SimStart 
-{
-  Instant start
+@XStreamAlias("sim-end")
+class SimEnd {
 
-  static constraints = {
-    start (nullable: false)
-  }
+    static constraints = {
+    }
 }
