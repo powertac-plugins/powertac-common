@@ -27,6 +27,10 @@ This plugin provides common domain classes and command objects for powertac comp
 
     def doWithSpring = {
       //domainClassTransformer(org.powertac.common.transformer.DomainClassTransformer)
+
+      messageConverter(org.powertac.common.MessageConverter) {
+        grailsApplication = ref('grailsApplication')
+      }
     }
 
     def doWithDynamicMethods = { ctx ->

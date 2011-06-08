@@ -41,17 +41,11 @@ import org.apache.commons.logging.LogFactory;
 
 class MessageConverter implements org.springframework.beans.factory.InitializingBean
 {
+  // injection
+  def grailsApplication
 
   XStream xstream
   private static final log = LogFactory.getLog(this)
-
-  private static final List<Class> classes =
-      [Competition, SimStart, CustomerInfo, CashPosition, Timeslot,
-       ClearedTrade, MarketPosition, Shout, TariffStatus, TariffTransaction,
-       TariffSpecification, Rate, HourlyCharge, TariffUpdate, TariffExpire,
-       TariffRevoke, VariableRateUpdate, BankTransaction, CashPosition,
-       TimeslotUpdate, PluginConfig, Orderbook, OrderbookEntry]
-
 
   void afterPropertiesSet ()
   {
@@ -61,6 +55,8 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
         }
     };
 
+    def classes = grailsApplication.domainClasses*.clazz
+//    def classes = grailsApplication.getArtefacts("Domain")*.clazz
     for (clazz in classes) {
       xstream.processAnnotations(clazz)
       xstream.omitField(clazz, 'version')
