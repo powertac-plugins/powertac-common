@@ -45,4 +45,9 @@ class PluginConfig
   static constraints = {
     configuration(nullable: false)
   }
+  
+    public String toString() {
+    return "PluginConfig ${roleName}.${name}"
+  }
+
 }
