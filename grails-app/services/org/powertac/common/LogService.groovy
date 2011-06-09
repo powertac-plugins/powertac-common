@@ -16,13 +16,11 @@ class LogService
   def logFilename
   def loggers = []
 
-
   def start()
   {
     Competition competition = Competition.list()?.get(0)
     if (competition) {
-      def fmt = DateTimeFormat.forPattern("yyyyMMdd_HHmmss");
-      def filename = "logs/${competition.name}_${fmt.print(new DateTime())}.log"
+      def filename = "logs/PowerTAC-${competition.id}.log"
       def loggerNames = ['org.powertac',
                          'grails.app.service.org.powertac',
                          'grails.app.controller.org.powertac',
