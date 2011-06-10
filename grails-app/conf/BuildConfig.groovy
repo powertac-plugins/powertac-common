@@ -32,15 +32,15 @@ grails.project.dependency.resolution = {
 
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-    //compile( group: 'joda-time', name: 'joda-time', version: '1.6.2', export: false )
-    //compile( group: 'joda-time', name: 'joda-time-hibernate', version: '1.2', export: false )
-    //compile( group: 'org.simpleframework', name: 'simple-xml', version: '2.4.1', export: false )
-    //compile( group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.3.1', export: true )
     compile(
       [group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4-SNAPSHOT', export: true],
       [group: 'xpp3', name: 'xpp3', version: '1.1.4c', export: true]
     )
     // runtime 'mysql:mysql-connector-java:5.1.13'
+  }
+  
+  plugins {
+    build ':joda-time:1.1'
   }
 }
 
