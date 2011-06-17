@@ -65,7 +65,8 @@ class MarketSerializationTests extends GroovyTestCase
     xstream.processAnnotations(MarketTransaction.class)
     xstream.processAnnotations(Shout.class)
     xstream.processAnnotations(Orderbook.class)
-    xstream.processAnnotations(OrderbookEntry.class)
+    xstream.processAnnotations(OrderbookAsk.class)
+    xstream.processAnnotations(OrderbookBid.class)
   }
 
   protected void tearDown() 
@@ -257,12 +258,9 @@ class MarketSerializationTests extends GroovyTestCase
     Orderbook ob =
         new Orderbook(dateExecuted: timeService.currentTime, transactionId: 'ab',
                       product: product, timeslot: timeslot)
-    ob.addToBids(new OrderbookEntry(limitPrice: 22.0, quantity: 42.0,
-                                    buySellIndicator: BuySellIndicator.BUY))     
-    ob.addToBids(new OrderbookEntry(limitPrice: 19.0, quantity: 22.0,
-                                    buySellIndicator: BuySellIndicator.BUY))
-    ob.addToAsks(new OrderbookEntry(limitPrice: 25.0, quantity: 12.0,
-                                    buySellIndicator: BuySellIndicator.SELL))
+    ob.addToBids(new OrderbookBid(limitPrice: 22.0, quantity: 42.0))
+    ob.addToBids(new OrderbookBid(limitPrice: 19.0, quantity: 22.0))
+    ob.addToAsks(new OrderbookAsk(limitPrice: 25.0, quantity: 12.0))
 
     StringWriter serialized = new StringWriter ()
     serialized.write(xstream.toXML(ob))
