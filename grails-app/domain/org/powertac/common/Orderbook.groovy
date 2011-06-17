@@ -68,10 +68,10 @@ class Orderbook {
 
 
   /** sorted set of OrderbookEntries with buySellIndicator = buy (descending)*/
-  SortedSet<OrderbookEntry> bids = new TreeSet<OrderbookEntry>()
+  SortedSet<OrderbookBid> bids = new TreeSet<OrderbookBid>()
 
   /** sorted set of OrderbookEntries with buySellIndicator = sell (ascending)*/
-  SortedSet<OrderbookEntry> asks = new TreeSet<OrderbookEntry>()
+  SortedSet<OrderbookAsk> asks = new TreeSet<OrderbookAsk>()
 
   static auditable = true
   
@@ -79,7 +79,7 @@ class Orderbook {
 
   static belongsTo = [timeslot: Timeslot]
 
-  static hasMany = [bids: OrderbookEntry, asks: OrderbookEntry]
+  static hasMany = [bids: OrderbookBid, asks: OrderbookAsk]
 
   static constraints = {
     dateExecuted(nullable: false)
@@ -92,8 +92,8 @@ class Orderbook {
   }
 
   public BigDecimal determineClearingPrice() {
-    OrderbookEntry bestBid
-    OrderbookEntry bestAsk
+    OrderbookBid bestBid
+    OrderbookAsk bestAsk
     if (this.bids?.size() != 0) bestBid = this.bids?.first()
     if (this.asks?.size() != 0) bestAsk = this.asks?.first()
 
