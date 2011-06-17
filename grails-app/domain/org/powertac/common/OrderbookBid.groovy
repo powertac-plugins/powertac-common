@@ -22,8 +22,8 @@ import com.thoughtworks.xstream.annotations.*
  * Each instance is an individual entry within an Orderbook.
  * @author Daniel Schnurr
  */
-@XStreamAlias("orderbook-entry")
-class OrderbookEntry implements Comparable {
+@XStreamAlias("orderbook-bid")
+class OrderbookBid implements Comparable {
 
   @XStreamAsAttribute
   BigDecimal limitPrice
@@ -31,25 +31,16 @@ class OrderbookEntry implements Comparable {
   @XStreamAsAttribute
   BigDecimal quantity
 
-  @XStreamAsAttribute
-  BuySellIndicator buySellIndicator
-
   static belongsTo = [orderbook: Orderbook]
 
   static constraints = {
     limitPrice(nullable: false)
     quantity(nullable: false)
-    buySellIndicator(nullable: false)
   }
 
   int compareTo(Object o) {
-    if (!o instanceof OrderbookEntry) return 1
-    OrderbookEntry other = (OrderbookEntry) o
-    if (buySellIndicator == BuySellIndicator.BUY) {
-      return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? 1 : -1
-    } else {
-      return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? -1 : 1
-    }
-
+    if (!o instanceof OrderbookBid) return 1
+    OrderbookBid other = (OrderbookBid) o
+    return this.limitPrice.equals(other.limitPrice) ? 0 : this.limitPrice < other.limitPrice ? 1 : -1
   }
 }
