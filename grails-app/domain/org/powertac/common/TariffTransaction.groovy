@@ -21,6 +21,7 @@ import org.powertac.common.enumerations.TariffTransactionType
 import org.powertac.common.transformer.BrokerConverter
 import org.powertac.common.transformer.CustomerConverter
 import org.powertac.common.transformer.TariffConverter
+
 import com.thoughtworks.xstream.annotations.*
 
 /**
@@ -34,15 +35,15 @@ import com.thoughtworks.xstream.annotations.*
  * @author Carsten Block, John Collins
  */
 @XStreamAlias("tariff-tx")
-class TariffTransaction //implements Serializable 
+class TariffTransaction //implements Serializable
 {
   @XStreamAsAttribute
   Integer id
-  
+
   /** Whose transaction is this? */
   @XStreamConverter(BrokerConverter)
   Broker broker
-  
+
   /** Purpose of this transaction */
   @XStreamAsAttribute
   TariffTransactionType txType = TariffTransactionType.CONSUME
@@ -50,7 +51,7 @@ class TariffTransaction //implements Serializable
   /** The customerInfo or more precisely his meter that is being read */
   @XStreamConverter(CustomerConverter)
   CustomerInfo customerInfo
-  
+
   /** Number of individual customers involved */
   @XStreamAsAttribute
   Integer customerCount = 0
@@ -62,13 +63,13 @@ class TariffTransaction //implements Serializable
    *  Note that this is not per-individual in a population model, but rather
    *  aggregate usage by customerCount individuals. */
   @XStreamAsAttribute
-  BigDecimal quantity = 0.0
-  
+  double quantity = 0.0
+
   /** The total charge for this reading, according to the tariff:
    *  positive for credit to broker, negative for debit from broker */
   @XStreamAsAttribute
-  BigDecimal charge = 0.0
-  
+  double charge = 0.0
+
   @XStreamConverter(TariffConverter)
   Tariff tariff
 
@@ -85,10 +86,8 @@ class TariffTransaction //implements Serializable
     charge (nullable: false, scale: Constants.DECIMALS)
   }
 
-  static mapping = {
-    // id (generator: 'assigned')
-    tariff fetch: 'join'
-  }
+  static mapping = { // id (generator: 'assigned')
+    tariff fetch: 'join' }
 
   public String toString() {
     return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${quantity}"

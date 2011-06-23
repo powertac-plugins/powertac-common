@@ -15,10 +15,10 @@
  */
 package org.powertac.common
 
+import org.joda.time.Instant
 import org.powertac.common.enumerations.PowerType
 import org.powertac.common.transformer.BrokerConverter
-import org.joda.time.Duration
-import org.joda.time.Instant
+
 import com.thoughtworks.xstream.annotations.*
 
 /**
@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.annotations.*
  * payments and basic constraints. This class is a value type -- a 
  * serializable, immutable data structure. You need to initialize a 
  * Tariff from it to make serious use of it. New tariffs and their Rates
-* are communicated to Customers and to Brokers when tariffs are published.
+ * are communicated to Customers and to Brokers when tariffs are published.
  * <p>
  * <strong>Note:</strong> Must be serialized "deep" to gather up the Rates and
  * associated HourlyCharge instances.</p>
@@ -38,47 +38,47 @@ class TariffSpecification //implements Serializable
 {
   @XStreamAsAttribute
   String id = IdGenerator.createId()
-  
+
   /** The Broker who offers this Tariff */
   @XStreamConverter(BrokerConverter)
   Broker broker
-  
+
   /** Last date new subscriptions will be accepted */
   Instant expiration
-  
+
   /** Minimum contract duration (in milliseconds) */
   @XStreamAsAttribute
   Long minDuration = 0
-  
+
   /** Type of power covered by this tariff */
   @XStreamAsAttribute
   PowerType powerType = PowerType.CONSUMPTION
-  
+
   /** One-time payment for subscribing to tariff, positive for payment
    *  from customer, negative for payment to customer. */
   @XStreamAsAttribute
-  BigDecimal signupPayment = 0.0
-  
+  double signupPayment = 0.0
+
   /** Payment from customer to broker for canceling subscription before
    *  minDuration has elapsed. */
   @XStreamAsAttribute
-  BigDecimal earlyWithdrawPayment = 0.0
-  
+  double earlyWithdrawPayment = 0.0
+
   /** Flat payment per period for two-part tariffs */
   @XStreamAsAttribute
-  BigDecimal periodicPayment = 0.0
-  
+  double periodicPayment = 0.0
+
   List<Rate> rates
 
   List<String> supersedes
-  
+
   static hasMany = [rates: Rate, supersedes: String]
-  
+
   static constraints = {
     id (nullable: false, blank: false, unique: true)
     broker(nullable: false)
     expiration(nullable: true)
-    minDuration(min: 0l) 
+    minDuration(min: 0l)
     powerType(nullable: false)
     rates(nullable: false, minSize: 1)
   }

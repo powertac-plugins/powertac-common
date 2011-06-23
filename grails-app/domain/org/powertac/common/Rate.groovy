@@ -15,21 +15,22 @@
  */
 package org.powertac.common
 
+import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.joda.time.*
 import org.joda.time.base.AbstractDateTime
 import org.joda.time.base.AbstractInstant
-import org.joda.time.*
+
 import com.thoughtworks.xstream.annotations.*
-import org.apache.commons.logging.LogFactory
 
 /**
-* Tariffs are composed of Rates.
-* Rates may be applicable on particular days of the week, particular times
-* of day, or above some usage threshold. Rates may be fixed or variable. 
-* Tariffs and their rates are public information. New tariffs and their Rates
-* are communicated to Customers and to Brokers when tariffs are published.
-* @author jcollins
-*/
+ * Tariffs are composed of Rates.
+ * Rates may be applicable on particular days of the week, particular times
+ * of day, or above some usage threshold. Rates may be fixed or variable. 
+ * Tariffs and their rates are public information. New tariffs and their Rates
+ * are communicated to Customers and to Brokers when tariffs are published.
+ * @author jcollins
+ */
 @XStreamAlias("rate")
 class Rate //implements Serializable
 {
@@ -47,7 +48,7 @@ class Rate //implements Serializable
   @XStreamAsAttribute
   int dailyEnd = -1
   @XStreamAsAttribute
-  BigDecimal tierThreshold = 0.0 // tier applicability
+  double tierThreshold = 0.0 // tier applicability
   @XStreamAsAttribute
   boolean isFixed = true // if true, minValue is fixed rate
   @XStreamAsAttribute
@@ -57,7 +58,7 @@ class Rate //implements Serializable
   @XStreamAsAttribute
   int noticeInterval = 0 // notice interval for variable rate in hours
   @XStreamAsAttribute
-  BigDecimal expectedMean = 0.0 // expected mean value for variable rate
+  double expectedMean = 0.0 // expected mean value for variable rate
   TreeSet<HourlyCharge> rateHistory // history of values for variable rate
 
   static auditable = true
@@ -69,10 +70,8 @@ class Rate //implements Serializable
     minValue(min:0.0)
     maxValue(min:0.0)
   }
-  
-  static mapping = {
-    id (generator: 'assigned')
-  }
+
+  static mapping = { id (generator: 'assigned') }
 
   // introduce dependency on TimeService
   //def timeService
@@ -85,7 +84,7 @@ class Rate //implements Serializable
   private getTimeService() {
     ApplicationHolder.application.mainContext.timeService
   }
-  
+
   /**
    * Constructor must mung the Partials for weeklyBegin, weeklyEnd,
    * dailyBegin, and dailyEnd
@@ -121,7 +120,7 @@ class Rate //implements Serializable
       weeklyBegin = begin.getDayOfWeek()
     }
   }
-  
+
   /**
    * Process weeklyBegin spec to extract dayOfWeek field
    */
@@ -131,7 +130,7 @@ class Rate //implements Serializable
       weeklyBegin = begin.get(DateTimeFieldType.dayOfWeek())
     }
   }
-  
+
   // normal setter also, for Hibernate
   void setWeeklyBegin (int begin)
   {
@@ -147,7 +146,7 @@ class Rate //implements Serializable
       weeklyEnd= end.getDayOfWeek()
     }
   }
-  
+
   /**
    * Process weeklyEnd spec to extract dayOfWeek field
    */
@@ -173,7 +172,7 @@ class Rate //implements Serializable
       dailyBegin = begin.getHourOfDay()
     }
   }
-  
+
   /**
    * Process dailyBegin specification to extract hourOfDay field
    */
@@ -189,7 +188,7 @@ class Rate //implements Serializable
   {
     dailyBegin = begin
   }
-  
+
   /**
    * Process dailyEnd specification to extract hourOfDay field
    */
@@ -199,7 +198,7 @@ class Rate //implements Serializable
       dailyEnd = end.getHourOfDay()
     }
   }
-  
+
   /**
    * Process dailyEnd specification to extract hourOfDay field
    */
@@ -215,7 +214,7 @@ class Rate //implements Serializable
   {
     dailyEnd = end
   }
-  
+
   /**
    * Truncate noticeInterval field to integer hours
    */
@@ -224,13 +223,13 @@ class Rate //implements Serializable
     // we assume that integer division will do the Right Thing here
     noticeInterval = interval.getMillis() / TimeService.HOUR
   }
-  
+
   // normal setter also, for Hibernate
   void setNoticeInterval (int interval)
   {
     noticeInterval = interval
   }
-  
+
   /**
    * Adds a new HourlyCharge to a variable rate. If this
    * Rate is not variable, or if the HourlyCharge arrives
@@ -264,7 +263,7 @@ class Rate //implements Serializable
           HourlyCharge item = head.last()
           if (item.atTime == newCharge.atTime)
             rateHistory.remove(item)
-        }  
+        }
         log.info "Adding $newCharge to $this"
         //println "Adding $newCharge to $this"
         rateHistory.add(newCharge)
@@ -274,7 +273,7 @@ class Rate //implements Serializable
     }
     return result
   }
-  
+
   /**
    * True just in case this Rate applies at this moment, ignoring the
    * tier.
@@ -308,7 +307,7 @@ class Rate //implements Serializable
     else {
       appliesWeekly = (day >= weeklyBegin || day <= weeklyEnd)
     }
-    
+
     // check daily applicability
     def hour = time.getHourOfDay()
     if (dailyBegin == -1 || dailyEnd == -1) {
@@ -325,21 +324,21 @@ class Rate //implements Serializable
 
     return (appliesWeekly && appliesDaily)
   }
-  
+
   /**
    * True just in case this Rate applies at this moment, for the
    * indicated usage tier.
    */
-  boolean applies (BigDecimal usage)
+  boolean applies (double usage)
   {
     return applies(usage, timeService.getCurrentTime())
   }
-  
+
   /**
    * True just in case this Rate applies at the specified
    * time, for the indicated usage tier.
    */
-  boolean applies (BigDecimal usage, AbstractInstant when)
+  boolean applies (double usage, AbstractInstant when)
   {
     if (usage >= tierThreshold) {
       return applies(when)
@@ -352,7 +351,7 @@ class Rate //implements Serializable
   /**
    * Allows Hibernate to set the value
    */
-  void setValue(BigDecimal value) {
+  void setValue(double value) {
     minValue = value
   }
 
@@ -362,19 +361,19 @@ class Rate //implements Serializable
    * usage tier. For variable rates, the value returned during periods of
    * inapplicability is meaningless, of course.
    */
-  BigDecimal getValue ()
+  double getValue ()
   {
     //return getValue(Timeslot.currentTimeslot().getStartDateTime())
     return getValue(timeService.getCurrentTime())
   }
-  
+
   /**
    * Returns the rate for some time in the past or future, regardless of
    * whether the Rate applies at that time, and regardless of whether
    * the requested time is beyond the notification interval of a
    * variable rate.
    */
-  BigDecimal getValue (AbstractInstant when)
+  double getValue (AbstractInstant when)
   {
     if (isFixed)
       return minValue
@@ -401,7 +400,7 @@ class Rate //implements Serializable
       }
     }
   }
-  
+
   String toString ()
   {
     String result = "Rate:"
