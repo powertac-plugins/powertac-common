@@ -82,8 +82,8 @@ class TariffTransaction //implements Serializable
     customerInfo (nullable: true) // no customer for publication
     tariff (nullable: false)
     postedTime (nullable: false)
-    quantity (nullable: false, scale: Constants.DECIMALS)
-    charge (nullable: false, scale: Constants.DECIMALS)
+    quantity (scale: Constants.DECIMALS)
+    charge (scale: Constants.DECIMALS)
   }
 
   static mapping = { // id (generator: 'assigned')
