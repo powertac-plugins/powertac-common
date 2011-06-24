@@ -39,11 +39,12 @@ class Broker {
   Boolean accountLocked
   Boolean passwordExpired
 
-  /** the broker's identifier token     */
-  //String apiKey = IdGenerator.createId()
-
   /** If true, the broker is local to the server and does not receive messages  */
   Boolean local = false
+  
+  /** If true, broker is a wholesale market participant, but not a "real" broker */
+  Boolean wholesale = false
+
   def testProxy = null // redirect incoming messages for testing
 
   /** Broker's current cashPosn position  */

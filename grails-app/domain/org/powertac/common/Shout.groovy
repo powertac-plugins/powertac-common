@@ -135,6 +135,7 @@ class Shout //implements Serializable
   }
 
   static mapping = {
+    cache(true)
     id (generator: 'assigned')
   }
 
