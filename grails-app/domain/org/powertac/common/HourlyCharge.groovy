@@ -16,7 +16,6 @@
 package org.powertac.common
 
 import org.joda.time.Instant
-
 import com.thoughtworks.xstream.annotations.*
 
 /**
@@ -29,13 +28,14 @@ import com.thoughtworks.xstream.annotations.*
  * @author jcollins
  */
 @XStreamAlias("charge")
-class HourlyCharge implements Serializable, Comparable {
+class HourlyCharge implements Serializable, Comparable
+{
   @XStreamAsAttribute
   BigDecimal value
   Instant atTime
-
+  
   static belongsTo = [Rate]
-
+                      
   static constraints = {
     value(nullable:false, min:0.0)
     atTime(nullable:false)

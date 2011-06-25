@@ -71,7 +71,7 @@ class Competition //implements Serializable
 
   /** the time-compression ratio for the simulation. So if we are running one-hour timeslots every 5 seconds, the rate would be 720 (=default).    */
   @XStreamAsAttribute
-  Long simulationRate = 300l
+  Long simulationRate = 600l
 
   /** controls the values of simulation time values reported. If
    *  we are running one-hour timeslots, then the modulo should be one hour, expressed
