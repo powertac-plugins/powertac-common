@@ -21,8 +21,7 @@ import org.joda.time.Instant
  * Stores Rate arrays on behalf of Tariffs, bypassing the database.
  * @author John Collins
  */
-class TariffRateService 
-{
+class TariffRateService {
   static transactional = false
 
   Map tiers = [:]
@@ -34,8 +33,8 @@ class TariffRateService
     long tariffId = tariff.id
     return tiers[tariffId]
   }
-  
-  def addTier (Tariff tariff, BigDecimal value)
+
+  def addTier (Tariff tariff, double value)
   {
     long tariffId = tariff.id
     // make sure we already have the list
@@ -49,7 +48,7 @@ class TariffRateService
       tiers[tariffId] << value
     }
   }
-  
+
   def sortTiers (Tariff tariff)
   {
     long tariffId = tariff.id
@@ -62,11 +61,11 @@ class TariffRateService
 
   // manage rate maps
   void createRateMap (Tariff tariff, int tiers, int hours)
-   {
+  {
     log.info "create rate map for tariff ${tariff.id} [${tiers}][${hours}]"
     rates[tariff.id] = new String[tiers][hours]
   }
-  
+
   void setRate (Tariff tariff, int tier, int hour, Rate rate)
   {
     def rateMap = rates[tariff.id]
@@ -76,8 +75,8 @@ class TariffRateService
     }
     rateMap[tier][hour] = rate.id
   }
-  
-  boolean hasRate (Tariff tariff, int tierIndex, int timeIndex) 
+
+  boolean hasRate (Tariff tariff, int tierIndex, int timeIndex)
   {
     def rateMap = rates[tariff.id]
     if (rateMap == null) {
@@ -85,8 +84,8 @@ class TariffRateService
     }
     return (rateMap[tierIndex][timeIndex] != null)
   }
-  
-  BigDecimal rateValue (Tariff tariff, int tierIndex, int timeIndex, Instant when)
+
+  double rateValue (Tariff tariff, int tierIndex, int timeIndex, Instant when)
   {
     def rateMap = rates[tariff.id]
     if (rateMap == null) {
@@ -101,6 +100,6 @@ class TariffRateService
     }
     return rate.getValue(when)
   }
-  
-  
+
+
 }

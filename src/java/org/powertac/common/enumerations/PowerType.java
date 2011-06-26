@@ -16,23 +16,11 @@
 package org.powertac.common.enumerations;
 
 /**
- * Types of power a Customer can produce or consume. 
- * A single Customer may buy or sell multiple PowerTypes.
+ * Types of power a Customer can produce or consume. A single Customer may buy
+ * or sell multiple PowerTypes.
+ * 
  * @author jcollins
  */
-public enum PowerType
-{
-  CONSUMPTION, 
-  INTERRUPTIBLE_CONSUMPTION,
-  THERMAL_STORAGE_CONSUMPTION,
-  PRODUCTION, 
-  SOLAR_PRODUCTION, 
-  WIND_PRODUCTION,
-  RUN_OF_RIVER_PRODUCTION,
-  PUMPED_STORAGE_PRODUCTION,
-  CHP_PRODUCTION,
-  FOSSIL_PRODUCTION,
-  BATTERY_STORAGE,
-  ELECTRIC_VEHICLE
+public enum PowerType {
+  CONSUMPTION, PRODUCTION, INTERRUPTIBLE_CONSUMPTION, THERMAL_STORAGE_CONSUMPTION, SOLAR_PRODUCTION, WIND_PRODUCTION, RUN_OF_RIVER_PRODUCTION, PUMPED_STORAGE_PRODUCTION, CHP_PRODUCTION, FOSSIL_PRODUCTION, BATTERY_STORAGE, ELECTRIC_VEHICLE
 }
-  

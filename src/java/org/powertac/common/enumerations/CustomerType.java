@@ -17,14 +17,11 @@
 package org.powertac.common.enumerations;
 
 /**
- * Types of customer. 
- * See PowerType to see the types of power a Customer can produce or consume.
+ * Types of customer. See PowerType to see the types of power a Customer can
+ * produce or consume.
+ * 
  * @author cblock
  */
 public enum CustomerType {
-  CustomerHousehold,
-  CustomerOffice,
-  CustomerFactory,
-  CustomerElectricVehicle,
-  CustomerOther
+  CustomerHousehold, CustomerOffice, CustomerFactory, CustomerElectricVehicle, CustomerOther, CustomerProducer
 }

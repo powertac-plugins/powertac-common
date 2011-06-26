@@ -33,16 +33,15 @@ class HourlyCharge implements Serializable, Comparable
   @XStreamAsAttribute
   BigDecimal value
   Instant atTime
-	
-  static belongsTo = [Rate]
   
+  static belongsTo = [Rate]
+                      
   static constraints = {
     value(nullable:false, min:0.0)
     atTime(nullable:false)
   }
-  
-  int compareTo (obj)
-  {
+
+  int compareTo (obj) {
     atTime.compareTo(obj.atTime)
   }
 }
