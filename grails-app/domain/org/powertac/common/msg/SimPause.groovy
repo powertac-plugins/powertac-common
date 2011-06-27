@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common
+package org.powertac.common.msg
+
+import com.thoughtworks.xstream.annotations.*
 
 /**
- * Runs the clock. This needs to be scheduled externally to avoid breaking
- * integration tests.
+ * This message is used to communicate a pause in a simulation. It is
+ * guaranteed to be sent at least 100 ms before the end of the timeslot
+ * being extended, and a sim-resume message is guaranteed to be sent
+ * before the clock re-starts.
  * @author John Collins
  */
-class ClockDriveJob
-{
-  def timeService
-  def concurrent = false // don't want two copies running
+@XStreamAlias("sim-pause")
+class SimPause {
 
-  // scheduler trigger support
-  static triggers = {
-  //  cron name: 'cronTrigger', cronExpression: '0/5 * * * * ?'
-    simple name: 'default', group: 'default'
-  }
-  
-  /**
-   * Target for scheduler
-   */
-  def execute (context)
-  {
-    timeService.updateTime()
-    log.info("Clock Update " + timeService.getCurrentTime())
-  }
+    static constraints = {
+    }
 }

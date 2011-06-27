@@ -35,15 +35,8 @@ import org.powertac.common.transformer.TimeslotConverter
  * @version 1.2 , 05/02/2011
  */
 @XStreamAlias("orderbook")
-class Orderbook {
-
-  /**
-   * Retrieves the timeService (Singleton) reference from the main application context
-   * This is necessary as DI by name (i.e. def timeService) stops working if a class
-   * instance is deserialized rather than constructed.
-   * Note: In the code below you can can still user timeService.xyzMethod()
-   */
-
+class Orderbook 
+{
   //@XStreamAsAttribute
   Instant dateExecuted
 
@@ -56,7 +49,7 @@ class Orderbook {
 
   /** the product this orderbook is generated for  */
   @XStreamAsAttribute
-  ProductType product
+  ProductType product = ProductType.Future
 
   /** the timeslot this orderbook is generated for  */
   @XStreamConverter(TimeslotConverter)
@@ -75,7 +68,7 @@ class Orderbook {
 
   static auditable = true
   
-  static transients = ['timeService']
+  //static transients = ['timeService']
 
   static belongsTo = [timeslot: Timeslot]
 
@@ -91,15 +84,15 @@ class Orderbook {
     bids(nullable: true)
   }
 
-  public BigDecimal determineClearingPrice() {
-    OrderbookBid bestBid
-    OrderbookAsk bestAsk
-    if (this.bids?.size() != 0) bestBid = this.bids?.first()
-    if (this.asks?.size() != 0) bestAsk = this.asks?.first()
-
+  public BigDecimal determineClearingPrice()
+  {
     if (this.clearingPrice) {
       return this.clearingPrice
     } else {
+      OrderbookBid bestBid
+      OrderbookAsk bestAsk
+      if (this.bids?.size() != 0) bestBid = this.bids?.first()
+      if (this.asks?.size() != 0) bestAsk = this.asks?.first()
       if (bestBid && !bestAsk) return bestBid.limitPrice
       if (bestAsk && !bestBid) return bestAsk.limitPrice
       return null

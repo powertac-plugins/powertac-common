@@ -60,7 +60,8 @@ class TimeService
   
   //def log // autowire
 
-  static final long MINUTE = 1000l * 60
+  static final long SECOND = 1000l
+  static final long MINUTE = SECOND * 60
   static final long HOUR = MINUTE * 60
   static final long DAY = HOUR * 24
   static final long WEEK = DAY * 7
@@ -81,6 +82,17 @@ class TimeService
   private Instant currentTime
   private DateTime currentDateTime
 
+  /**
+   * Sets current time to modulo before base time. This allows scheduling
+   * of actions to take place on the first tick, which should be at the
+   * base time. Call this after setting clock parameters.
+   */
+  void init ()
+  {
+    currentTime = new Instant(base - modulo)
+    currentDateTime = new DateTime(currentTime, DateTimeZone.UTC)
+  }
+  
   /**
    * Updates simulation time when called as specified by clock
    * parameters, then runs any actions that may be due.

@@ -40,17 +40,18 @@ class CashPosition //implements Serializable
   @XStreamAsAttribute
   BigDecimal balance = 0.0
 
-  @XStreamOmitField
-  List<MarketTransaction> marketTransactions
+  // The following two fields seem unnecessary and are unused
+  //@XStreamOmitField
+  //List<MarketTransaction> marketTransactions
   
-  @XStreamOmitField
-  List<TariffTransaction> tariffTransactions
+  //@XStreamOmitField
+  //List<TariffTransaction> tariffTransactions
   
   // explicit version so we can omit it
   @XStreamOmitField
   int version
 
-  static hasMany = [marketTransactions:MarketTransaction, tariffTransactions:TariffTransaction]
+  //static hasMany = [marketTransactions:MarketTransaction, tariffTransactions:TariffTransaction]
   
   static belongsTo = [broker: Broker]
 
