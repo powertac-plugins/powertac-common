@@ -188,7 +188,7 @@ class TariffSerializationTests extends GroovyTestCase
     TariffTransaction ttx =
         new TariffTransaction(broker: broker, customerInfo:customerInfo,
                               customerCount: 4, postedTime: txTime,
-                              quantity: 56.7, charge: 67.8, tariff: tariff)
+                              quantity: 56.7, charge: 67.8, tariffSpec: tariffSpec)
     assert ttx.save()
     StringWriter serialized = new StringWriter ()
     serialized.write(xstream.toXML(ttx))
@@ -197,7 +197,7 @@ class TariffSerializationTests extends GroovyTestCase
     assertNotNull("got something", xttx)
     assertTrue("correct type", xttx instanceof TariffTransaction)
     //assertEquals("correct ID", 3, xttx.id)
-    assertEquals("correct tariff", tariff, xttx.tariff)
+    assertEquals("correct tariffSpec", tariffSpec, xttx.tariffSpec)
     assertEquals("correct broker", broker, xttx.broker)
     assertEquals("correct customer", customerInfo, xttx.customerInfo)
     assertEquals("correct quantity", 56.7, xttx.quantity, 1e-6)

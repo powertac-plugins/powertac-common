@@ -15,17 +15,27 @@
  */
 package org.powertac.common
 
+import java.util.List;
+
 import org.joda.time.Instant
 
 /**
  * Stores Rate arrays on behalf of Tariffs, bypassing the database.
  * @author John Collins
  */
-class TariffRateService {
+class TariffRateService
+{
   static transactional = false
 
   Map tiers = [:]
   Map rates = [:]
+
+  @Override
+  public String init ()
+  {
+    tiers.clear()
+    rates.clear()
+  }
 
   // manage tier lists
   def getTiers (Tariff tariff)

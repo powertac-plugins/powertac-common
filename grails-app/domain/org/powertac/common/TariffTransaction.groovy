@@ -71,16 +71,16 @@ class TariffTransaction //implements Serializable
   double charge = 0.0
 
   @XStreamConverter(TariffConverter)
-  Tariff tariff
+  TariffSpecification tariffSpec
 
   /** The Tariff that applies to this billing */
-  static belongsTo = Tariff
+  //static belongsTo = Tariff
 
   static constraints = {
     //id (nullable: false, unique: true)
     broker(nullable: false)
     customerInfo (nullable: true) // no customer for publication
-    tariff (nullable: false)
+    tariffSpec (nullable: false)
     postedTime (nullable: false)
     quantity (scale: Constants.DECIMALS)
     charge (scale: Constants.DECIMALS)
