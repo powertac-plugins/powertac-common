@@ -88,32 +88,6 @@ class MarketSerializationTests extends GroovyTestCase
     assertEquals("correct balance", 42.1, xcp.balance, 1e-6)
   }
   
-  void testCashPositionHasMany ()
-  {
-    CashPosition position =
-      new CashPosition(broker: broker, balance: 42.2)
-    MarketTransaction mt =
-      new MarketTransaction(broker: broker, timeslot: timeslot, product: product,
-                            postedTime: timeService.currentTime,
-                            quantity: 101.1, price: 12.3)
-    if (!mt.validate()) {
-      mt.errors.allErrors.each { println it.toString() }
-    }
-    assert mt.save()
-    position.addToMarketTransactions(mt)
-    assert position.save()
-    
-    StringWriter serialized = new StringWriter ()
-    serialized.write(xstream.toXML(position))
-    println serialized.toString()
-    def xcp = xstream.fromXML(serialized.toString())
-    assertNotNull("deserialized something", xcp)
-    assertTrue("correct type", xcp instanceof CashPosition)
-    //assertEquals("correct id", position.id, xcp.id)
-    assertEquals("correct balance", 42.2, xcp.balance, 1e-6)
-    assertNull("no transactions", xcp.marketTransactions)
-  }
-  
   void testTimeslot ()
   {
     StringWriter serialized = new StringWriter ()

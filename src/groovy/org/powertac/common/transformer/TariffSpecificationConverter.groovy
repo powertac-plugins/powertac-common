@@ -1,7 +1,7 @@
 package org.powertac.common.transformer
 
 import com.thoughtworks.xstream.converters.SingleValueConverter
-import org.powertac.common.Tariff
+import org.powertac.common.TariffSpecification
 
 class TariffConverter implements SingleValueConverter
 {
@@ -9,19 +9,19 @@ class TariffConverter implements SingleValueConverter
   @Override
   public boolean canConvert (Class type)
   {
-    return Tariff.class.isAssignableFrom(type)
+    return TariffSpecification.class.isAssignableFrom(type)
   }
 
   @Override
   public Object fromString (String id)
   {
-    return Tariff.get(id)
+    return TariffSpecification.get(id)
   }
 
   @Override
-  public String toString (Object tariff)
+  public String toString (Object tariffSpec)
   {
-    return tariff.id
+    return tariffSpec.id
   }
 
 }
