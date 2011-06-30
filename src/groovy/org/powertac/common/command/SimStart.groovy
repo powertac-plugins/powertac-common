@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common.msg
+package org.powertac.common.command
 
 import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*

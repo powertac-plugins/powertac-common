@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common.msg
+package org.powertac.common.command
 
-import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * This message is used to communicate a revised simulation start time
- * prior to the end of a simulation pause. This
- * allows all parties to synchronize their simulation clocks.
+ * This message is used to communicate a pause in a simulation. It is
+ * guaranteed to be sent at least 100 ms before the end of the timeslot
+ * being extended, and a sim-resume message is guaranteed to be sent
+ * before the clock re-starts.
  * @author John Collins
  */
-@XStreamAlias("sim-resume")
-class SimResume 
-{
-  Instant start
-  
-  static constraints = {
-    start (nullable: false)
-  }
+@XStreamAlias("sim-pause")
+class SimPause {
+
+    static constraints = {
+    }
 }

@@ -15,8 +15,8 @@
  */
 package org.powertac.common
 
+import org.powertac.common.command.SimStart;
 import org.powertac.common.enumerations.CustomerType
-import org.powertac.common.msg.SimStart
 import grails.test.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
