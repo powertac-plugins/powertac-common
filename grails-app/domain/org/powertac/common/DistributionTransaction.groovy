@@ -69,6 +69,6 @@ class DistributionTransaction
   }
 
   public String toString() {
-    return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${quantity}"
+    return "DistributionTransaction-${postedTime.millis/TimeService.HOUR}-${quantity}-${charge}}"
   }
 }
