@@ -28,8 +28,4 @@ import com.thoughtworks.xstream.annotations.*
 class SimResume 
 {
   Instant start
-  
-  static constraints = {
-    start (nullable: false)
-  }
 }

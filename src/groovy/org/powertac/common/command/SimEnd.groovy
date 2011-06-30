@@ -23,8 +23,7 @@ import com.thoughtworks.xstream.annotations.*
  * @author John Collins
  */
 @XStreamAlias("sim-end")
-class SimEnd {
+class SimEnd 
+{
 
-    static constraints = {
-    }
 }

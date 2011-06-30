@@ -25,8 +25,7 @@ import com.thoughtworks.xstream.annotations.*
  * @author John Collins
  */
 @XStreamAlias("sim-pause")
-class SimPause {
+class SimPause 
+{
 
-    static constraints = {
-    }
 }

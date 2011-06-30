@@ -28,8 +28,4 @@ import com.thoughtworks.xstream.annotations.*
 class SimStart 
 {
   Instant start
-
-  static constraints = {
-    start (nullable: false)
-  }
 }
