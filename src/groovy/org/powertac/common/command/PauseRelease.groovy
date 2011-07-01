@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common.msg
+package org.powertac.common.command
 
-import org.joda.time.Instant
+
+import org.powertac.common.Broker
+import org.powertac.common.transformer.BrokerConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * This message is used to communicate a revised simulation start time
- * prior to the end of a simulation pause. This
- * allows all parties to synchronize their simulation clocks.
+ * This message is used by a broker to release a pause in the simulation that
+ * was previously requested by the same broker. If valid (the simulation is
+ * actually paused as a result of a request by the same broker), it will in
+ * turn result in a broadcast sim-resume message giving the updated start time.
  * @author John Collins
  */
-@XStreamAlias("sim-resume")
-class SimResume 
+@XStreamAlias("pause-release")
+class PauseRelease
 {
-  Instant start
-  
-  static constraints = {
-    start (nullable: false)
-  }
+  /** The broker who is requesting the pause release. */
+  @XStreamConverter(BrokerConverter)
+  Broker broker
 }

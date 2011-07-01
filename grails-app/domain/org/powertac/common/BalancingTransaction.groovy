@@ -67,6 +67,6 @@ class BalancingTransaction
   }
 
   public String toString() {
-    return "${customerInfo}-${postedTime.millis/TimeService.HOUR}-${txType}-${quantity}"
+    return "Balancing transaction ${postedTime.millis/TimeService.HOUR}-${quantity}-${charge}"
   }
 }

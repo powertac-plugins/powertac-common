@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common.msg
+package org.powertac.common.command
 
+import org.joda.time.Instant
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * This message is used to communicate the end of a simulation. It is intended
- * to be sent as the only message in timeslot n+1 for a simulation of n timeslots.
+ * This message is used to communicate a revised simulation start time
+ * prior to the end of a simulation pause. This
+ * allows all parties to synchronize their simulation clocks.
  * @author John Collins
  */
-@XStreamAlias("sim-end")
-class SimEnd {
-
-    static constraints = {
-    }
+@XStreamAlias("sim-resume")
+class SimResume 
+{
+  Instant start
 }

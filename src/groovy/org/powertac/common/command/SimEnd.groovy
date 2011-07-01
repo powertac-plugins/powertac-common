@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common.msg
+package org.powertac.common.command
 
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * This message is used to communicate a pause in a simulation. It is
- * guaranteed to be sent at least 100 ms before the end of the timeslot
- * being extended, and a sim-resume message is guaranteed to be sent
- * before the clock re-starts.
+ * This message is used to communicate the end of a simulation. It is intended
+ * to be sent as the only message in timeslot n+1 for a simulation of n timeslots.
  * @author John Collins
  */
-@XStreamAlias("sim-pause")
-class SimPause {
+@XStreamAlias("sim-end")
+class SimEnd 
+{
 
-    static constraints = {
-    }
 }
