@@ -47,19 +47,19 @@ class Broker {
 
   def testProxy = null // redirect incoming messages for testing
 
-  /** Broker's current cashPosn position  */
+  /** Broker's current cash position  */
   CashPosition cashPosn
 
   static auditable = true
 
   static hasMany = [shouts: Shout, tariffs: Tariff, marketPositions: MarketPosition]
-  static transients = ['cashPosn', 'apiKey', 'testProxy']
+  static transients = ['cash', 'apiKey', 'testProxy']
   static constraints = {
     id(nullable: false, blank: false, unique: true)
     username(nullable: false, blank: false, unique: true, minSize: 2, matches: /([a-zA-Z0-9_])*/)
     password(nullable: true, blank: false, minSize: 2) // TODO: with nullable:false all tests fail?!
     //apiKey(nullable: false, blank: false, unique: true, minSize: 32)
-    cash(nullable: true)
+    cashPosn(nullable: true)
     enabled(nullable: true)
     accountExpired(nullable: true)
     accountLocked(nullable: true)
