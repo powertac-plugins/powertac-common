@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.annotations.*
 *
 * @version 1.0 - 03/Jun/2011
 */
-@XStreamAlias("weather-report")
+@XStreamAlias("weather-forecast-report")
 class WeatherForecastReport implements Serializable {
 
   /** the current or reference timeslot from which the weather forecast is generated */
