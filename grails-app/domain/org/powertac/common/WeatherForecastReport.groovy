@@ -32,7 +32,7 @@ class WeatherForecastReport implements Serializable {
   /** the current or reference timeslot from which the weather forecast is generated */
   @XStreamAsAttribute
   @XStreamConverter(TimeslotConverter)
-  Timeslot currentTimeslot
+  Timeslot forecastTimeslot
   
   /** the current timeslot's temperature*/
   @XStreamAsAttribute
@@ -56,7 +56,7 @@ class WeatherForecastReport implements Serializable {
   
     
     static constraints = {
-      currentTimeslot(nullable: true)
+      forecastTimeslot(nullable: true)
       temperature (nullable: true)
       windSpeed (nullable: true)
       windDirection (nullable: true)
