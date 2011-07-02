@@ -83,6 +83,11 @@ class Orderbook
     asks(nullable: true)
     bids(nullable: true)
   }
+  
+  static mapping = {
+    bids cascade: "all-delete-orphan"
+    asks cascade: "all-delete-orphan"
+  }
 
   public BigDecimal determineClearingPrice()
   {
