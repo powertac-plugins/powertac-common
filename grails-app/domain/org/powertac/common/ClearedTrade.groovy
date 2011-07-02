@@ -19,6 +19,7 @@ package org.powertac.common
 import com.thoughtworks.xstream.annotations.*
 import org.powertac.common.enumerations.ProductType
 import org.powertac.common.transformer.TimeslotConverter
+import org.joda.time.Instant
 
 /**
  * A clearedTrade instance reports public trade information, i.e. the execution price and quantity.
@@ -59,6 +60,10 @@ class ClearedTrade //implements Serializable
   /** traded quantity of the specified product */
   @XStreamAsAttribute
   BigDecimal executionQuantity
+
+  /** point in time when cleared Trade object was created */
+  @XStreamAsAttribute
+  Instant dateExecuted
   
   // explicit version so we can omit it
   @XStreamOmitField
