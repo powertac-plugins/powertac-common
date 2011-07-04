@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.powertac.common.command
-
+package org.powertac.common.msg
 
 import org.powertac.common.Broker
 import org.powertac.common.transformer.BrokerConverter
 import com.thoughtworks.xstream.annotations.*
 
 /**
- * This message is used by a broker to release a pause in the simulation that
- * was previously requested by the same broker. If valid (the simulation is
- * actually paused as a result of a request by the same broker), it will in
- * turn result in a broadcast sim-resume message giving the updated start time.
+ * This message is used by a broker to request a pause in the simulation. 
+ * If the server is configured to allow broker-initiated pause, then the
+ * clock will be paused, either in the current timeslot if either the clock
+ * is already paused or if the watchdog timer has not run out, or in the
+ * succeeding timeslot. In the last two instances, the server will send out
+ * a sim-pause message in response. Since this is a tool for experimentation
+ * and debugging, there is no time limit on the pause. To release a requested
+ * pause, the same broker must submit a pause-release message, which will in
+ * turn result in a sim-resume message giving the updated start time.
  * @author John Collins
  */
-@XStreamAlias("pause-release")
-class PauseRelease
+@XStreamAlias("pause-request")
+class PauseRequest
 {
-  /** The broker who is requesting the pause release. */
+  /** The broker who is requesting this pause  */
   @XStreamConverter(BrokerConverter)
   Broker broker
 }

@@ -27,7 +27,8 @@ class LogService
       def loggerNames = ['org.powertac',
                          'grails.app.service.org.powertac',
                          'grails.app.controller.org.powertac',
-                         'grails.app.domain.org.powertac']
+                         'grails.app.domain.org.powertac',
+                         'grails.app.task.org.powertac']
       start(filename, loggerNames)
     } else {
       log.warn("No competition exists")

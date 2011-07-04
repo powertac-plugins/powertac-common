@@ -32,7 +32,7 @@ class WeatherForecast {
   @XStreamConverter(TimeslotConverter)
   Timeslot currentTimeslot
   
-  static hasMany = [weatherReports : WeatherReport]
+  static hasMany = [weatherForecastReports : WeatherForecastReport]
     
     static constraints = {
     currentTimeslot(nullable: true)  
