@@ -26,18 +26,16 @@ import org.powertac.common.CustomerInfo
 @XStreamAlias("customer-bootstrap-data")
 class CustomerBootstrapData {
 
-        CustomerInfo customer
-        Map<String, Map<String,Long>> bootstrapData = [:]
+  CustomerInfo customer
+  Map<String, Map<String,Long>> bootstrapData = [:]
 
-        //static transients = ['bootstrapData']
-
-        void fillBootstrapData(long[][] bootstrap){
-                for (int i=0;i < bootstrap.length; i++){
-                        Map day = [:]
-                        for (int j=0;j < bootstrap[i].length; j++){
-                                day["Hour " + j] = bootstrap[i][j]
-                        }
-                        bootstrapData["Day "+ i] = day
-                }
-        }
+  void fillBootstrapData(long[][] bootstrap){
+    for (int i=0;i < bootstrap.length; i++){
+      Map day = [:]
+      for (int j=0;j < bootstrap[i].length; j++){
+        day["Hour " + j] = bootstrap[i][j]
+      }
+      bootstrapData["Day "+ i] = day
+    }
+  }
 }
