@@ -37,12 +37,23 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.LogFactory
+import org.powertac.common.command.CustomerBootstrapData
+import org.powertac.common.command.CustomerList
+import org.powertac.common.command.ErrorCmd
+import org.powertac.common.command.LoginRequestCmd
+import org.powertac.common.command.SimPause
+import org.powertac.common.command.SimResume
+import org.powertac.common.command.SimStart
+import org.powertac.common.command.SimEnd;
 
 class MessageConverter implements org.springframework.beans.factory.InitializingBean
 {
   // injection
   def grailsApplication
+
+  // TODO: retrieve all classes within cmd package programmatically
+  def commandClasses = [CustomerBootstrapData, CustomerList, ErrorCmd, SimEnd, SimStart, SimPause, SimResume]
 
   XStream xstream
   private static final log = LogFactory.getLog(this)
@@ -60,6 +71,10 @@ class MessageConverter implements org.springframework.beans.factory.Initializing
     for (clazz in classes) {
       xstream.processAnnotations(clazz)
       xstream.omitField(clazz, 'version')
+    }
+
+    for (clazz in commandClasses) {
+      xstream.processAnnotations(clazz)
     }
 
     xstream.registerConverter(new HibernateProxyConverter())
