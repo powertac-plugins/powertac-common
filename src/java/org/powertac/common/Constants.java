@@ -32,6 +32,7 @@ public class Constants
    */
   public static final int DECIMALS = 4;
   public static final int HOURS_OF_DAY = 24;
+  public static final int DAYS_OF_BOOTSTRAP = 14;
   public static final int PERCENTAGE = 100;
   public static final int MILLION = 1000000;
   public static final double EPSILON = 2.7;
