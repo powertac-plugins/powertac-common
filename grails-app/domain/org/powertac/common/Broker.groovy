@@ -52,6 +52,8 @@ class Broker {
 
   static auditable = true
 
+  static hasOne = [cashPosn:CashPosition]
+
   static hasMany = [shouts: Shout, tariffs: Tariff, marketPositions: MarketPosition]
   static transients = ['cash', 'apiKey', 'testProxy']
   static constraints = {
