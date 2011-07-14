@@ -15,9 +15,10 @@
  */
 package org.powertac.common.command
 
-import com.thoughtworks.xstream.annotations.*
-import org.powertac.common.CustomerInfo
 import org.powertac.common.Constants
+import org.powertac.common.CustomerInfo
+
+import com.thoughtworks.xstream.annotations.*
 
 /**
  * This message is used to send the bootstrap of every customer in the competition to the brokers
@@ -26,11 +27,10 @@ import org.powertac.common.Constants
  */
 @XStreamAlias("customer-bootstrap-data")
 class CustomerBootstrapData {
-
         CustomerInfo customer
-        Map<String, Map<String,Long>> bootstrapData = [:]
+        Map<String, Map<String,Double>> bootstrapData = [:]
 
-        void fillBootstrapData(long[][] bootstrap){
+        void fillBootstrapData(double[][] bootstrap){
                 for (int i=0;i < bootstrap.length; i++){
                         Map day = [:]
                         for (int j=0;j < bootstrap[i].length; j++){
@@ -40,9 +40,9 @@ class CustomerBootstrapData {
                 }
         }
 
-        long[][] getBootstrapData(){
+        double[][] getBootstrapData(){
 
-                long[][] bootstrap = new long[Constants.DAYS_OF_BOOTSTRAP][Constants.HOURS_OF_DAY]
+                double[][] bootstrap = new double[Constants.DAYS_OF_BOOTSTRAP][Constants.HOURS_OF_DAY]
 
                 for (int i=0;i < Constants.DAYS_OF_BOOTSTRAP;i++){
                         Map temp = bootstrapData["Day " +i]
