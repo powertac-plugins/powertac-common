@@ -16,24 +16,34 @@ class LogService
   static final Level DEFAULT_OFF = Level.OFF
 
   def appender
-  def logFilename
   def loggers = []
   def savedDefaultAppenderThreshold = Level.DEBUG
-  def start()
-  {
-    Competition competition = Competition.list()?.get(0)
-    if (competition) {
-      def filename = "logs/PowerTAC-${competition.id}.log"
-      def loggerNames = ['org.powertac',
+  static final def DEFAULT_LOGGERS_LIST = ['org.powertac',
                          'grails.app.service.org.powertac',
                          'grails.app.controller.org.powertac',
                          'grails.app.domain.org.powertac',
                          'grails.app.task.org.powertac']
-      start(filename, loggerNames)
+
+  static def getDefaultLogFileName() {
+    Competition competition = Competition.currentCompetition()
+
+    def filename
+    if (competition) {
+      filename = "logs/PowerTAC-${competition.id}.log"
+    }
+
+    return filename
+  }
+
+  def start()
+  {
+    Competition competition = Competition.currentCompetition()
+    if (competition) {
+
+      start(getDefaultLogFileName(), DEFAULT_LOGGERS_LIST)
     } else {
       log.warn("No competition exists")
     }
-
   }
 
   def start (String filename, List loggerNames)
@@ -48,6 +58,7 @@ class LogService
       Logger logger = Logger.getLogger(loggerName)
       if (logger) {
         loggers << logger
+        logger.level = Level.DEBUG
         logger.addAppender(appender)
       } else {
         log.warn("Could not find logger for '${loggerName}'")
