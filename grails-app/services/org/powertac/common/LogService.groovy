@@ -17,7 +17,7 @@ class LogService
 
   def appender
   def loggers = []
-  def savedDefaultAppenderThreshold = Level.DEBUG
+  def savedDefaultAppenderThreshold = Level.INFO
   static final def DEFAULT_LOGGERS_LIST = ['org.powertac',
                          'grails.app.service.org.powertac',
                          'grails.app.controller.org.powertac',
