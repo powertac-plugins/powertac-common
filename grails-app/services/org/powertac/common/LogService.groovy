@@ -58,7 +58,7 @@ class LogService
       Logger logger = Logger.getLogger(loggerName)
       if (logger) {
         loggers << logger
-        logger.level = Level.DEBUG
+        logger.level = Level.INFO
         logger.addAppender(appender)
       } else {
         log.warn("Could not find logger for '${loggerName}'")
