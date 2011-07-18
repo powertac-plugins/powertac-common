@@ -52,10 +52,10 @@ class Competition //implements Serializable
 
   /** Minimum number of timeslots, aka competition length    */
   @XStreamAsAttribute
-  Integer minimumTimeslotCount = 96
+  Integer minimumTimeslotCount = 240
   
   @XStreamAsAttribute
-  Integer expectedTimeslotCount = 105
+  Integer expectedTimeslotCount = 288
 
   /** concurrently open timeslots, i.e. time window in which broker actions like trading are allowed   */
   @XStreamAsAttribute
