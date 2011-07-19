@@ -67,8 +67,6 @@ class Rate //implements Serializable
   static transients = ["value"]
 
   static constraints = {
-    minValue(min:0.0)
-    maxValue(min:0.0)
   }
 
   static mapping = { id (generator: 'assigned') }
