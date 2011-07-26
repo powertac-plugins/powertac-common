@@ -60,11 +60,11 @@ class TimeService
   
   //def log // autowire
 
-  static final long SECOND = 1000l
-  static final long MINUTE = SECOND * 60
-  static final long HOUR = MINUTE * 60
-  static final long DAY = HOUR * 24
-  static final long WEEK = DAY * 7
+  static public final long SECOND = 1000l
+  static public final long MINUTE = SECOND * 60
+  static public final long HOUR = MINUTE * 60
+  static public final long DAY = HOUR * 24
+  static public final long WEEK = DAY * 7
   
   // simulation clock parameters
   long base
