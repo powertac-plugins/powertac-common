@@ -37,7 +37,7 @@ import org.powertac.common.transformer.TimeslotConverter
 @XStreamAlias("orderbook")
 class Orderbook 
 {
-  //@XStreamAsAttribute
+  @XStreamAsAttribute
   Instant dateExecuted
 
   /** the transactionId is generated during the execution of a trade in market and

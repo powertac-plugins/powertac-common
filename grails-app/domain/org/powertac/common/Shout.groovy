@@ -111,7 +111,7 @@ class Shout //implements Serializable
   
   static auditable = true
 
-  static belongsTo = [broker: Broker, timeslot: Timeslot]
+  //static belongsTo = [broker: Broker, timeslot: Timeslot]
 
   static transients = ['timeService']
 
